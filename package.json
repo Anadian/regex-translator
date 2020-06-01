@@ -1,0 +1,56 @@
+{
+  "name": "regex-translator",
+  "version": "0.1.0",
+  "description": "Convert a Regular Expression from one flavour to another.",
+  "main": "source/main.js",
+  "scripts": {
+    "test": "./source/main.js --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anadian/regex-translator.git"
+  },
+  "keywords": [
+    "re",
+    "regex",
+    "regexp",
+    "translator",
+    "converter",
+	"format",
+    "posix",
+    "pcre",
+    "vim",
+    "re2",
+    "ecma",
+    "javascript",
+    "grep",
+    "egrep",
+    "tool",
+    "cli",
+    "command",
+    "line",
+    "free",
+    "libre",
+    "open",
+    "mit"
+  ],
+  "author": "Anadian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Anadian/regex-translator/issues"
+  },
+  "homepage": "https://github.com/Anadian/regex-translator#readme",
+  "devDependencies": {
+    "coveralls": "^3.1.0",
+    "nyc": "^15.0.1"
+  },
+  "dependencies": {
+    "application-log-winston-interface": "^1.0.5",
+    "clipboardy": "^2.3.0",
+    "command-line-args": "^5.1.1",
+    "command-line-usage": "^6.1.0",
+    "env-paths": "^2.2.0",
+    "get-stream": "^5.1.0",
+    "make-dir": "^3.1.0"
+  }
+}
