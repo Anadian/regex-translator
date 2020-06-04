@@ -38,6 +38,7 @@ Documentation License: [![Creative Commons License](https://i.creativecommons.or
 	//##Internal
 	//##Standard
 	const FileSystem = require('fs');
+	const Utility = require('util');
 	//##External
 	const GetStream = require('get-stream');
 //#Constants
@@ -83,7 +84,7 @@ var MetaRegexObject = {
 		},
 		"CHARACTER_CLASS": { 
 			to: {
-				search_regex: /([^\\])\[([^\]]*?)\]/g,
+				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
 				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
 			}, 
 			from: {
@@ -498,7 +499,7 @@ var MetaRegexObject = {
 			},
 			from: {
 				search_regex: /<CC_punct>/g,
-				replace_string: '[!-/:-@[-`{-~]'
+				replace_string: '[!-\\/:-@[-`{-~]'
 			}
 		},
 		"CC_upper": {
@@ -605,7 +606,7 @@ var MetaRegexObject = {
 		},
 		"CHARACTER_CLASS": { 
 			to: {
-				search_regex: /([^\\])\[([^\]]*?)\]/g,
+				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
 				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
 			}, 
 			from: {
@@ -850,7 +851,7 @@ var MetaRegexObject = {
 			},
 			from: {
 				search_regex: /<LFS>/g,
-				replace_string: '\\\/'
+				replace_string: '\\/'
 			}
 		},
 		"OMQ": {
@@ -1020,7 +1021,7 @@ var MetaRegexObject = {
 			},
 			from: {
 				search_regex: /<CC_punct>/g,
-				replace_string: '[!-/:-@[-`{-~]'
+				replace_string: '[!-\\/:-@[-`{-~]'
 			}
 		},
 		"CC_upper": {
@@ -1127,7 +1128,7 @@ var MetaRegexObject = {
 		},
 		"CHARACTER_CLASS": { 
 			to: {
-				search_regex: /([^\\])\[([^\]]*?)\]/g,
+				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
 				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
 			}, 
 			from: {
@@ -1173,6 +1174,26 @@ var MetaRegexObject = {
 			from: {
 				search_regex: /<LZMQ>/g,
 				replace_string: '\\{-}'
+			}
+		},
+		"MOP": {
+			to: {
+				search_regex: /\\\(/g,
+				replace_string: '<MOP>'
+			},
+			from: {
+				search_regex: /<MOP>/g,
+				replace_string: '\\('
+			}
+		},
+		"MCP": {
+			to: {
+				search_regex: /\\\)/g,
+				replace_string: '<MCP>'
+			},
+			from: {
+				search_regex: /<MCP>/g,
+				replace_string: '\\)'
 			}
 		},
 		"LOP": {
@@ -1235,26 +1256,6 @@ var MetaRegexObject = {
 				replace_string: '}'
 			}
 		},
-		"MOP": {
-			to: {
-				search_regex: /\\\(/g,
-				replace_string: '<MOP>'
-			},
-			from: {
-				search_regex: /<MOP>/g,
-				replace_string: '\\('
-			}
-		},
-		"MCP": {
-			to: {
-				search_regex: /\\\)/g,
-				replace_string: '<MCP>'
-			},
-			from: {
-				search_regex: /<MCP>/g,
-				replace_string: '\\)'
-			}
-		},
 		"LB": {
 			to: {
 				search_regex: /\\r/g,
@@ -1273,6 +1274,16 @@ var MetaRegexObject = {
 			from: {
 				search_regex: /<LBS>/g,
 				replace_string: '\\\\'
+			}
+		},
+		"OMQ": {
+			to: {
+				search_regex: /\\\+/g,
+				replace_string: '<OMQ>'
+			},
+			from: {
+				search_regex: /<OMQ>/g,
+				replace_string: '\\+'
 			}
 		},
 		"LPS": {
@@ -1373,16 +1384,6 @@ var MetaRegexObject = {
 			from: {
 				search_regex: /<LFS>/g,
 				replace_string: '\\/'
-			}
-		},
-		"OMQ": {
-			to: {
-				search_regex: /\\\+/g,
-				replace_string: '<OMQ>'
-			},
-			from: {
-				search_regex: /<OMQ>/g,
-				replace_string: '\\+'
 			}
 		},
 		"ZOQ": {
@@ -1542,7 +1543,7 @@ var MetaRegexObject = {
 			},
 			from: {
 				search_regex: /<CC_punct>/g,
-				replace_string: '[!-/:-@[-`{-~]'
+				replace_string: '[!-\\/:-@[-`{-~]'
 			}
 		},
 		"CC_upper": {
@@ -1738,38 +1739,6 @@ function getMediaryStringFromRegexString( regex_string, input_flavour_string = '
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `returned: ${_return}`});
 	return _return;
 }
-
-/**
-### getMediaryStringFromRegexString_Test (private)
-> Tests [getMediaryStringFromRegexString](#getMediaryStringFromRegexString); this function is not exported and should only be used internally by this module. 
- 
-Returns:
-| type | description |
-| --- | --- |
-| {boolean} | Returns `true` if all tests pass successfully. |
-
-Throws:
-| code | type | condition |
-| --- | --- | --- |
-| any | {Error} | Thrown if a test fails. |
-
-Status:
-| version | change |
-| --- | --- |
-| 0.0.1 | Introduced |
-*/
-function getMediaryStringFromRegexString_Test(){
-	const FUNCTION_NAME = 'getMediaryStringFromRegexString_Test';
-	//Variables
-	var _return = false;
-	var successful_input = '^t*h+i?s{5,10} (is) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)egex\\.\\+\\*\\?=$';
-	var temp_output = '';
-	//Tests
-	temp_output = getMediaryStringFromRegexString( successful_input, 'pcre' );
-	
-	//Return
-	return _return;
-}
 /**
 ### getRegexStringFromMediaryString
 > Returns the given mediary string reformatted to the given regex flavour.
@@ -1831,36 +1800,6 @@ function getRegexStringFromMediaryString( mediary_string, flavour_string = 'pcre
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `returned: ${_return}`});
 	return _return;
 }
-
-/**
-### getRegexStringFromMediaryString_Test (private)
-> Tests [getRegexStringFromMediaryString](#getRegexStringFromMediaryString); this function is not exported and should only be used internally by this module. 
- 
-Returns:
-| type | description |
-| --- | --- |
-| {boolean} | Returns `true` if all tests pass successfully. |
-
-Throws:
-| code | type | condition |
-| --- | --- | --- |
-| any | {Error} | Thrown if a test fails. |
-
-Status:
-| version | change |
-| --- | --- |
-| 0.0.1 | Introduced |
-*/
-function getRegexStringFromMediaryString_Test(){
-	const FUNCTION_NAME = 'getRegexStringFromMediaryString_Test';
-	//Variables
-	var _return = false;
-	var return_error = null;
-	//Tests
-	//Return
-	return _return;
-}
-
 /**
 ### main_Async (private)
 > The main function when the script is run as an executable without the `--test` command-line option. Not exported and should never be manually called.
@@ -1968,13 +1907,262 @@ Status:
 async function main_Async_Test(){
 	const FUNCTION_NAME = 'main_Async_Test';
 	//Variables
-	var _return = false;
-	var return_error = null;
-	var input_string = '^t*h+i?s{5,10} (is) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)egex\\.\\+\\*\\?=$';
-	var mediary_string = '';
-	var output_regex_string = '';
+	//var _return = false;
+	//var return_error = null;
+	//var input_string = '^t*h+i?s{5,10} (is) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)egex\\.\\+\\*\\?=$';
+	//var mediary_string = '';
+	//var output_regex_string = '';
 	//Tests
-	try{
+	var unit_tests_array = [
+		{
+			name: 'getMediaryStringFromRegexString_Test',
+			result: false,
+			message: '',
+			test: function(){
+				const FUNCTION_NAME = 'getMediaryStringFromRegexString_Test';
+				console.log(`unit_test this: ${this}`);
+				//Variables
+				//Define tests.
+				var tests_array = [
+					{
+						name: 'InvalidRegexString',
+						result: false,
+						message: '',
+						params: {
+							regex_string: {},
+							flavour_string: 'pcre'
+						},
+						test: function(){
+							try{
+								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
+								this.message = `Test: ${this.name}: Failed; getMediaryStringFromRegexString failed to throw an error when it should have. test_return: ${test_return}`;
+								this.result = false;
+							} catch(error){
+								this.message = `Caught expected error: ${error}`;
+								this.result = true;
+							}
+						}
+					},
+					{
+						name: 'InvalidFlavourString',
+						result: false,
+						message: '',
+						params: {
+							regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
+							flavour_string: {}
+						},
+						test: function(){
+							try{
+								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
+								this.message = `Test: ${this.name}: Failed; getMediaryStringFromRegexString failed to throw an error when it should have. test_return: ${test_return}`;
+								this.result = false;
+							} catch(error){
+								this.message = `Caught expected error: ${error}`;
+								this.result = true;
+							}
+						}
+					},
+					{
+						name: 'SuccessPCRE',
+						result: false,
+						message: '',
+						params: {
+							regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
+							flavour_string: 'pcre'
+						},
+						test: function(){
+							try{
+								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
+								if( test_return === '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>' ){
+									this.message = `Returned: ${test_return}`;
+									this.result = true;
+								} else{
+									this.message = `Returned mediary string didn't match: expected: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>' got ${test_return}`;
+									this.result = false;
+								}
+							} catch(error){
+								this.message = `Caught unexpected error: ${error}`;
+								this.result = false;
+							}
+						}
+					},
+					{
+						name: 'SuccessVim',
+						result: false,
+						message: '',
+						params: {
+							regex_string: '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$',
+							flavour_string: 'vim'
+						},
+						test: function(){
+							try{
+								var expected = '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>';
+								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
+								if( test_return === expected ){
+									this.message = `Returned: ${test_return}`;
+									this.result = true;
+								} else{
+									this.message = `Returned mediary string didn't match expected value: expected: '${expected}' got: '${test_return}'`;
+									this.result = false;
+								}
+							} catch(error){
+								this.message = `Caught unexpected error: ${error}`;
+								this.result = false;
+							}
+						}
+					}
+				];
+				var all_test_passed = true;
+				//Run tests.
+				for( var i = 0; i < tests_array.length; i++ ){
+					tests_array[i].test();
+					if( (all_test_passed !== true) || (tests_array[i].result !== true) ){
+						all_test_passed = false;
+					}
+				}
+				if( all_test_passed === true ){
+					this.message = Utility.format('tests_array: %O', tests_array);
+					Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: this.message});
+					this.result = true;
+				} else{
+					this.message = `Test(s) failed: ${tests_array}`;
+					this.result = false;
+				}
+			}
+		},
+		{
+			name: 'getRegexStringFromMediaryString_Test',
+			result: false,
+			message: '',
+			test: function(){
+				const FUNCTION_NAME = this.name;
+				console.log(`unit_test this: ${this}`);
+				//Variables
+				//Define tests.
+				var tests_array = [
+					{
+						name: 'InvalidMediaryString',
+						result: false,
+						message: '',
+						params: {
+							mediary_string: {},
+							flavour_string: 'pcre'
+						},
+						test: function(){
+							try{
+								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
+								this.message = `Test: ${this.name}: Failed; getRegexStringFromMediaryString failed to throw an error when it should have. test_return: ${test_return}`;
+								this.result = false;
+							} catch(error){
+								this.message = `Caught expected error: ${error}`;
+								this.result = true;
+							}
+						}
+					},
+					{
+						name: 'InvalidFlavourString',
+						result: false,
+						message: '',
+						params: {
+							mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><RS>',
+							flavour_string: {}
+						},
+						test: function(){
+							try{
+								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
+								this.message = `Test: ${this.name}: Failed; getRegexStringFromMediaryString failed to throw an error when it should have. test_return: ${test_return}`;
+								this.result = false;
+							} catch(error){
+								this.message = `Caught expected error: ${error}`;
+								this.result = true;
+							}
+						}
+					},
+					{
+						name: 'SuccessPCRE',
+						result: false,
+						message: '',
+						params: {
+							mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+							flavour_string: 'pcre'
+						},
+						test: function(){
+							try{
+								var expected = '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?\\=$\\/\\{[0-9] [0-9] [^0-9] [A-Za-z0-9_] [^A-Za-z0-9_] [A-Za-z0-9] [!-~] [a-z] [!-\\/:-@[-`{-~] [A-Z] [0-9A-Fa-f] [^\\r\\n] [ \\t] [ \\t] [^ \\t] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [\\r\\n\\f\\t\\v]\\\\/';
+								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
+								if( test_return === expected ){
+									this.message = `Returned: ${test_return}`;
+									this.result = true;
+								} else{
+									this.message = `Returned regex string didn't match expected value: expected: '${expected}' got: '${test_return}'`;
+									this.result = false;
+								}
+							} catch(error){
+								this.message = `Caught unexpected error: ${error}`;
+								this.result = false;
+							}
+						}
+					},
+					{
+						name: 'SuccessVim',
+						result: false,
+						message: '',
+						params: {
+							mediary_string: '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>',
+							flavour_string: 'vim'
+						},
+						test: function(){
+							try{
+								var expected = '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{-,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$';
+								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
+								if( test_return === expected ){
+									this.message = `Returned: ${test_return}`;
+									this.result = true;
+								} else{
+									this.message = `Returned regex string didn't match expected value: expected: '${expected}' got: '${test_return}'`;
+									this.result = false;
+								}
+							} catch(error){
+								this.message = `Caught unexpected error: ${error}`;
+								this.result = false;
+							}
+						}
+					}
+				];
+				var all_test_passed = true;
+				//Run tests.
+				for( var i = 0; i < tests_array.length; i++ ){
+					tests_array[i].test();
+					if( (all_test_passed !== true) || (tests_array[i].result !== true) ){
+						all_test_passed = false;
+					}
+				}
+				if( all_test_passed === true ){
+					this.message = Utility.format('tests_array: %O', tests_array);
+					Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: this.message});
+					this.result = true;
+				} else{
+					this.message = Utility.format('Test(s) failed: %O', tests_array);
+					this.result = false;
+				}
+			}
+		}
+	];
+	var all_tests_passed = true;
+	for( var i = 0; i < unit_tests_array.length; i++ ){
+		unit_tests_array[i].test();
+		if( (all_tests_passed !== true) || (unit_tests_array[i].result !== true) ){
+			all_tests_passed = false;
+		}
+	}
+	if( all_tests_passed === true ){
+		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `All tests passed successfully. unit_tests_array: ${unit_tests_array}`});
+	} else{
+		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: Utility.format('Test(s) failed: unit_tests_array: %O', unit_tests_array)});
+		process.exitCode = 1;
+	}
+
+/*	try{
 		mediary_string = getMediaryStringFromRegexString( input_string, 'pcre' );
 		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `mediary_string: ${mediary_string}`});
 		output_regex_string = getRegexStringFromMediaryString( mediary_string, 'pcre' );
@@ -1984,7 +2172,8 @@ async function main_Async_Test(){
 	} catch(error){
 		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'crit', message: `Test failed with error: '${error}'`});
 		process.exitCode = 4;
-	}
+	}*/
+
 	//Return
 	return _return;
 }
