@@ -2290,5 +2290,7 @@ if(require.main === module){
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: 'End of execution block.'});
 } else{
 	exports.setLogger = setLogger;
+	exports.getMediaryStringFromRegexString = getMediaryStringFromRegexString;
+	exports.getRegexStringFromMediaryString = getRegexStringFromMediaryString;
 }
 
