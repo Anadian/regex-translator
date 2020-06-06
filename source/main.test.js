@@ -53,18 +53,63 @@ if(require.main === module){
 //##Errors
 
 //#Global Variables
-AVA('ExampleTest', function(t){
-	console.log('This is an example test.');
-	t.pass();
-});
 AVA('getMediaryStringFromRegexString:InvalidRegexString', function(t){
-	var function_variable = function(){
-		var params = {
-			regex_string: {},
-			flavour_string: 'pcre'
-		}
-		RegexTranslator.getMediaryStringFromRegexString( params.regex_string, params.flavour_string );
-	}
-	var error = t.throws( function_variable, { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' }, 'Is this shown?' );
+	var params = {
+		regex_string: {},
+		flavour_string: 'pcre'
+	};
+	var error = t.throws( RegexTranslator.getMediaryStringFromRegexString.bind(null, params.regex_string, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' }, 'Is this shown?' );
 });
-
+AVA('getMediaryStringFromRegexString:InvalidFlavourString', function(t){
+	var params = {
+		regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
+		flavour_string: {}
+	};
+	var error = t.throws( RegexTranslator.getMediaryStringFromRegexString.bind(null, params.regex_string, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' });
+});
+AVA('getMediaryStringFromRegexString:SuccessPCRE', function(t){
+	var params = {
+		regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
+		flavour_string: 'pcre'
+	};
+	var expected = '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>';
+	t.is( RegexTranslator.getMediaryStringFromRegexString(params.regex_string, params.flavour_string), expected);
+});
+AVA('getMediaryStringFromRegexString:SuccessVim', function(t){
+	var params = {
+		regex_string: '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$',
+		flavour_string: 'vim'
+	};
+	var expected = '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>';
+	t.is( RegexTranslator.getMediaryStringFromRegexString(params.regex_string, params.flavour_string), expected);
+});
+AVA('getRegexStringFromMediaryString:InvalidMediaryString', function(t){
+	var params = {
+		mediary_string: {},
+		flavour_string: 'pcre'
+	};
+	var error = t.throws( RegexTranslator.getRegexStringFromMediaryString.bind(null, params.mediary_string, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' }, 'Is this shown?' );
+});
+AVA('getRegexStringFromMediaryString:InvalidFlavourString', function(t){
+	var params = {
+		mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+		flavour_string: {}
+	};
+	var error = t.throws( RegexTranslator.getRegexStringFromMediaryString.bind(null, params.mediary_string, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' });
+});
+AVA('getRegexStringFromMediaryString:SuccessPCRE', function(t){
+	var params = {
+		mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+		flavour_string: 'pcre'
+	};
+	var expected = '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?\\=$\\/\\{[0-9] [0-9] [^0-9] [A-Za-z0-9_] [^A-Za-z0-9_] [A-Za-z0-9] [!-~] [a-z] [!-\\/:-@[-`{-~] [A-Z] [0-9A-Fa-f] [^\\r\\n] [ \\t] [ \\t] [^ \\t] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [\\r\\n\\f\\t\\v]\\\\/';
+	t.is( RegexTranslator.getRegexStringFromMediaryString(params.mediary_string, params.flavour_string), expected);
+});
+AVA('getRegexStringFromMediaryString:SuccessVim', function(t){
+	var params = {
+		mediary_string: '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>',
+		flavour_string: 'vim'
+	};
+	var expected = '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{-,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$';
+	t.is( RegexTranslator.getRegexStringFromMediaryString(params.mediary_string, params.flavour_string), expected);
+});
