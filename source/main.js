@@ -2103,7 +2103,7 @@ if(require.main === module){
 			parent_dirname = Path.dirname( source_dirname );
 			package_path = Path.join( parent_dirname, 'package.json' );
 			PACKAGE_JSON = require(package_path);
-		} catch(error){
+		} catch(error)/* istanbul ignore next */{
 			Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `Soft error: ${error}`});
 		}
 	}
