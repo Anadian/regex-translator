@@ -60,6 +60,9 @@
     "get-stream": "^5.1.0",
     "make-dir": "^3.1.0"
   },
+  "bin": {
+	  "regex-translator": "./source/main.js"
+  },
   "eslintConfig": {
     "env": {
       "commonjs": true,
