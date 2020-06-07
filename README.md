@@ -21,8 +21,12 @@ to install it globally.
 # Usage
 To use the command-line interface `npx regex-translator` or just `regex-translator` if installed globally.
 # API
+```js
+const RegexTranslator = require('regex-translator');
+```
+See [API.md](API.md) for full API.
 # Contributing
-Changes are tracked in [CHANGES.md](CHANGES.md).
+Changes are tracked in [CHANGELOG.md](CHANGELOG.md).
 # License
 MIT ©2020 Anadian
 
