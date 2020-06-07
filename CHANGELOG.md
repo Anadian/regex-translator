@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/Anadian/regex-translator/compare/v0.2.2...v0.2.3) (2020-06-07)
+
+
+### Documentation
+
+* **README.md:** Added more badges. ([5335e06](https://github.com/Anadian/regex-translator/commit/5335e0608068b071cf69c927caf9098c2c50f438))
+
+
+### Tests
+
+* Debugging `cli_test.sh`. ([c58a125](https://github.com/Anadian/regex-translator/commit/c58a125b35b0af4adfd45730d0f04fda237f6cbe))
+* Trying something new with adding an external cli test via `cli_test.sh` ([54e302d](https://github.com/Anadian/regex-translator/commit/54e302dc679861e06e3dc268818d66adf0c3f1c4))
+
+
+### Chores
+
+* Got `cli_test.sh` working and slightly improved coverage. ([9f442db](https://github.com/Anadian/regex-translator/commit/9f442dbc1246536643889bf1d5b3ce4e073e2dbb))
+
 ### [0.2.2](https://github.com/Anadian/regex-translator/compare/v0.2.1...v0.2.2) (2020-06-07)
 
 
