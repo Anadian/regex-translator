@@ -14,12 +14,17 @@
 - [License](#License)
 # Background
 # Install
+`npm install regex-translator`
+to install it to a local package or
+`npm install --global regex-translator`
+to install it globally.
 # Usage
+To use the command-line interface `npx regex-translator` or just `regex-translator` if installed globally.
 # API
 # Contributing
 Changes are tracked in [CHANGES.md](CHANGES.md).
 # License
- ©2020 Anadian
+MIT ©2020 Anadian
 
 SEE LICENSE IN [LICENSE](LICENSE)
 
