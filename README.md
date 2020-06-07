@@ -3,6 +3,10 @@
 [![Semantic Versioning 2.0.0](https://img.shields.io/badge/semver-2.0.0-brightgreen?style=flat-square)](https://semver.org/spec/v2.0.0.html)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=flat-square)](https://conventionalcommits.org)
 [![License](https://img.shields.io/github/license/Anadian/regex-translator)](https://github.com/Anadian/regex-translator/LICENSE)
+[![npm](https://img.shields.io/npm/v/regex-translator)](https://www.npmjs.com/package/regex-translator)
+[![Travis (.org)](https://img.shields.io/travis/Anadian/regex-translator)](https://travis-ci.org/Anadian/regex-translator)
+[![Coveralls github](https://img.shields.io/coveralls/github/Anadian/regex-translator)](https://coveralls.io/github/Anadian/regex-translator?branch=master<Paste>)
+![David](https://img.shields.io/david/Anadian/regex-translator)
 
 > Convert a Regular Expression from one flavour to another.
 # Table of Contents
