@@ -113,3 +113,31 @@ AVA('getRegexStringFromMediaryString:SuccessVim', function(t){
 	var expected = '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{-,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$';
 	t.is( RegexTranslator.getRegexStringFromMediaryString(params.mediary_string, params.flavour_string), expected);
 });
+AVA('getMultiPartObjectFromInputString:InvalidInputString', function(t){
+	t.throws( RegexTranslator.getMultiPartObjectFromInputString.bind( null, {} ), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' } );
+});
+AVA('getMultiPartObjectFromInputString:TooManyRegexSeperators', function(t){
+	t.throws( RegexTranslator.getMultiPartObjectFromInputString.bind( null, 'start/something/something else/ what the/end' ), { instanceOf: Error, code: 'ERR_INVALID_ARG_VALUE' } );
+});
+AVA('getMultiPartObjectFromInputString:MinimalInputString', function(t){
+	var input_string = 'something';
+	var expected_output = {
+		input_flavour: null,
+		regex_string: 'something',
+		replace_string: null,
+		output_flavour: null
+	};
+	var actual_output = RegexTranslator.getMultiPartObjectFromInputString( input_string );
+	t.deepEqual( actual_output, expected_output );
+});
+AVA('getMultiPartObjectFromInputString:MaximalInputString', function(t){
+	var input_string = 'pcre/something/else/vim';
+	var expected_output = {
+		input_flavour: 'pcre',
+		regex_string: 'something',
+		replace_string: 'else',
+		output_flavour: 'vim'
+	};
+	var actual_output = RegexTranslator.getMultiPartObjectFromInputString( input_string );
+	t.deepEqual( actual_output, expected_output );
+});
