@@ -20,6 +20,31 @@ to install it to a local package or
 to install it globally.
 # Usage
 To use the command-line interface `npx regex-translator` or just `regex-translator` if installed globally.
+## CLI
+```
+regex-translator
+
+  Convert a Regular Expression from one flavour to another. 
+
+Options
+
+  -h, --help                        Writes this help text to STDOUT.                                              
+  -n, --noop                        [Reserved] Show what would be done without actually doing it.                 
+  -v, --verbose                     Verbose output to STDERR.                                                     
+  -V, --version                     Writes version information to STDOUT.                                         
+  -x, --no-quick-exit               Don't immediately exit after printing help, version, and/or config            
+                                    information.                                                                  
+  -i, --stdin                       Read input from STDIN.                                                        
+  -I, --input string                The path to the file to read input from.                                      
+  -R, --input-regex-string string   The input regular expression as a string.                                     
+  -F, --input-flavour string        The flavour of the input regex.                                               
+  -T, --output-flavour string       The flavour to convert to input regex to.                                     
+  -o, --stdout                      Write output to STDOUT.                                                       
+  -O, --output string               The name of the file to write output to.                                      
+  -p, --pasteboard                  Copy output to pasteboard (clipboard).                                        
+  -c, --config                      Print search paths and configuration values to STDOUT.                        
+  -C, --config-file string          [Resevred] Use the given config file instead of the default.                  
+```
 # API
 ```js
 const RegexTranslator = require('regex-translator');
