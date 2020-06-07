@@ -1724,7 +1724,7 @@ function getMultiPartObjectFromInputString( input_string, options = {},){
 	//Function
 	matches = super_string.match( /[^\\]\//g );
 	if( matches != null ){
-		if( matches.length < 3 ){
+		if( matches.length <= 3 ){
 			//Check if its denoting a flavour
 			matches = super_string.match( /^((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))\// );
 			if( matches != null ){
