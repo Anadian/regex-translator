@@ -1966,7 +1966,7 @@ async function main_Async( options = {} ){
 		if( options['output-flavour'] != null ){
 			if( typeof(options['output-flavour']) === 'string' ){
 				input_object.output_flavour = options['output-flavour'];
-				Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `Overriding output flavour to be ${input_object.output_flavour}`});
+				Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `Overriding output flavour to '${input_object.output_flavour}'`});
 			} else{
 				return_error = new TypeError('"output-flavour" option specified but the value is not a string.');
 				Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
@@ -1978,7 +1978,7 @@ async function main_Async( options = {} ){
 	///Transform
 	if( return_error === null ){
 		try{
-			mediary_string = getMediaryStringFromInputString( input_object.regex_string, input_object.input_flavour );
+			mediary_string = getMediaryStringFromRegexString( input_object.regex_string, input_object.input_flavour );
 		} catch(error){
 			return_error = new Error(`getMediaryStringFromInputString threw an error: ${error}`);
 		}
