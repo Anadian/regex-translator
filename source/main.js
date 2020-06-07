@@ -47,6 +47,7 @@ const FILENAME = 'regex-translator.js';
 const MODULE_NAME = 'RegexTranslator';
 var PACKAGE_JSON = {};
 var PROCESS_NAME = '';
+/* istanbul ignore if */
 if(require.main === module){
 	PROCESS_NAME = 'regex-translator';
 } else{
