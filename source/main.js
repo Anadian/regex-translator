@@ -1677,6 +1677,97 @@ function setLogger( logger ){
 	//Return
 }
 /**
+### getMultiPartObjectFromInputString
+> Parses the given input string to identify its individual parts and returns said parts as an object.
+
+Parametres:
+| name | type | description |
+| --- | --- | --- |
+| input_string | {string} | The input string to be parsed.  |
+| options | {?Object} | [Reserved] Additional run-time options. \[default: {}\] |
+
+Returns:
+| type | description |
+| --- | --- |
+| {Object} | The multipart object with possible properties 'input_flavour', 'regex_string', 'replace_string', and 'output_flavour'. |
+
+Throws:
+| code | type | condition |
+| --- | --- | --- |
+| 'ERR_INVALID_ARG_TYPE' | {TypeError} | Thrown if a given argument isn't of the correct type. |
+| 'ERR_INVALID_ARG_VALUE' | {Error} | Thrown if given input string contains more than three regex seperators. |
+
+Status:
+| version | change |
+| --- | --- |
+| 0.0.1 | Introduced |
+*/
+function getMultiPartObjectFromInputString( input_string, options = {},){
+	var arguments_array = Array.from(arguments);
+	var _return;
+	var return_error;
+	const FUNCTION_NAME = 'getMultiPartObjectFromInputString';
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `received: ${arguments_array}`});
+	//Variables
+	var super_string = input_string;
+	var matches = null;
+	var input_flavour = null;
+	var regex_string = null;
+	var replace_string = null;
+	var output_flavour = null;
+	//Parametre checks
+	if( typeof(input_string) !== 'string' ){
+		return_error = new TypeError('Param "input_string" is not string.');
+		return_error.code = 'ERR_INVALID_ARG_TYPE';
+		throw return_error;
+	}
+	//Function
+	matches = super_string.match( /[^\\]\//g );
+	if( matches != null ){
+		if( matches.length < 3 ){
+			//Check if its denoting a flavour
+			matches = super_string.match( /^((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))\// );
+			if( matches != null ){
+				input_flavour = matches[1];
+				super_string = super_string.replace( /^((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))\//, '' );
+			}
+			matches = super_string.match( /([^\\])\/((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))$/ );
+			if( matches != null ){
+				output_flavour = matches[2];
+				super_string = super_string.replace( /([^\\])\/((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))$/, '$1' );
+			}
+			matches = super_string.match( /([^\/]+?)([^\\])\/(.*)/ );
+			if( matches != null ){
+				regex_string = matches[1] + matches[2];
+				replace_string = matches[3];
+			}
+			_return = {
+				input_flavour: input_flavour,
+				regex_string: regex_string,
+				replace_string: replace_string,
+				output_flavour: output_flavour
+			};
+		} else{
+			return_error = new Error("More than 3 regex seperators '/' were found in the given input string.");
+			return_error.code = 'ERR_INVALID_ARG_VALUE';
+			Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
+			throw return_error;
+		}
+	} else{
+		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'warn', message: 'No regex seperators found in given input string.'});
+		_return = {
+			input_flavour: null,
+			regex_string: input_string,
+			replace_string: null,
+			output_flavour: null
+		};
+	}
+
+	//Return
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `returned: ${_return}`});
+	return _return;
+}
+/**
 ### getMediaryStringFromRegexString
 > Returns an intermediary string with special characters converted to a flavour-agnostic syntax.
 
@@ -1822,6 +1913,8 @@ async function main_Async( options = {} ){
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `received: ${arguments_array}`});
 	//Variables
 	var input_string = '';
+	var input_object = {};
+	var mediary_string = '';
 	var output_string = '';
 	//Parametre checks
 	//Function
@@ -1848,16 +1941,53 @@ async function main_Async( options = {} ){
 			return_error = new Error('"options.input" is not a string.');
 			Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
 		}
+	} else if( options['input-regex-string'] != null ){
+		if( typeof(options['input-regex-string']) === 'string' ){
+			input_string = options['input-regex-string'];
+		} else{
+			return_error = new TypeError('"input-regex-string" option is specified but is not a string.');
+			Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
+		}
 	} else{
 		return_error = new Error('No input options specified.');
 		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
 	}
+	try{
+		input_object = getMultiPartObjectFromInputString( input_string );
+		if( options['input-flavour'] != null ){
+			if( typeof(options['input-flavour']) === 'string' ){
+				input_object.input_flavour = options['input-flavour'];
+				Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `Overriding input flavour to '${input_object.input_flavour}'`});
+			} else{
+				return_error = new TypeError('"input-flavour" option is specified but the value is not a string.');
+				Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
+			}
+		}
+		if( options['output-flavour'] != null ){
+			if( typeof(options['output-flavour']) === 'string' ){
+				input_object.output_flavour = options['output-flavour'];
+				Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `Overriding output flavour to be ${input_object.output_flavour}`});
+			} else{
+				return_error = new TypeError('"output-flavour" option specified but the value is not a string.');
+				Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
+			}
+		}
+	} catch(error){
+		return_error = new Error(`getMultiPartObjectFromInputString threw an error: ${error}`);
+	}
 	///Transform
 	if( return_error === null ){
-		if( input_string !== '' && typeof(input_string) === 'string' ){
-		} else{
-			return_error = new Error('input_string is either null or not a string.');
-			Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
+		try{
+			mediary_string = getMediaryStringFromInputString( input_object.regex_string, input_object.input_flavour );
+		} catch(error){
+			return_error = new Error(`getMediaryStringFromInputString threw an error: ${error}`);
+		}
+		if( return_error === null ){
+			try{
+				output_string = getRegexStringFromMediaryString( mediary_string, input_object.output_flavour );
+			} catch(error){
+				return_error = new Error(`getRegexStringFromMediaryString threw an error: ${error}`);
+			}
 		}
 	}
 	///Output
@@ -1889,294 +2019,6 @@ async function main_Async( options = {} ){
 	}
 }
 
-/**
-### main_Async_Test (private)
-> The main function when the script is run as an executable **with** the `--test` command-line option. Runs all of the other `*_Test()`-type unit-test functions in this module. Not exported and should never be manually called.
-
-Parametres:
-| name | type | description |
-| --- | --- | --- |
-| options | {?options} | An object representing the command-line options. \[default: {}\] |
-
-Status:
-| version | change |
-| --- | --- |
-| 0.0.1 | Introduced |
-*/
-/* istanbul ignore next */
-async function main_Async_Test(){
-	const FUNCTION_NAME = 'main_Async_Test';
-	//Variables
-	//var _return = false;
-	//var return_error = null;
-	//var input_string = '^t*h+i?s{5,10} (is) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)egex\\.\\+\\*\\?=$';
-	//var mediary_string = '';
-	//var output_regex_string = '';
-	//Tests
-	var unit_tests_array = [
-		{
-			name: 'getMediaryStringFromRegexString_Test',
-			result: false,
-			message: '',
-			test: function(){
-				const FUNCTION_NAME = 'getMediaryStringFromRegexString_Test';
-				console.log(`unit_test this: ${this}`);
-				//Variables
-				//Define tests.
-				var tests_array = [
-					{
-						name: 'InvalidRegexString',
-						result: false,
-						message: '',
-						params: {
-							regex_string: {},
-							flavour_string: 'pcre'
-						},
-						test: function(){
-							try{
-								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
-								this.message = `Test: ${this.name}: Failed; getMediaryStringFromRegexString failed to throw an error when it should have. test_return: ${test_return}`;
-								this.result = false;
-							} catch(error){
-								this.message = `Caught expected error: ${error}`;
-								this.result = true;
-							}
-						}
-					},
-					{
-						name: 'InvalidFlavourString',
-						result: false,
-						message: '',
-						params: {
-							regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
-							flavour_string: {}
-						},
-						test: function(){
-							try{
-								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
-								this.message = `Test: ${this.name}: Failed; getMediaryStringFromRegexString failed to throw an error when it should have. test_return: ${test_return}`;
-								this.result = false;
-							} catch(error){
-								this.message = `Caught expected error: ${error}`;
-								this.result = true;
-							}
-						}
-					},
-					{
-						name: 'SuccessPCRE',
-						result: false,
-						message: '',
-						params: {
-							regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
-							flavour_string: 'pcre'
-						},
-						test: function(){
-							try{
-								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
-								if( test_return === '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>' ){
-									this.message = `Returned: ${test_return}`;
-									this.result = true;
-								} else{
-									this.message = `Returned mediary string didn't match: expected: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>' got ${test_return}`;
-									this.result = false;
-								}
-							} catch(error){
-								this.message = `Caught unexpected error: ${error}`;
-								this.result = false;
-							}
-						}
-					},
-					{
-						name: 'SuccessVim',
-						result: false,
-						message: '',
-						params: {
-							regex_string: '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$',
-							flavour_string: 'vim'
-						},
-						test: function(){
-							try{
-								var expected = '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>';
-								var test_return = getMediaryStringFromRegexString( this.params.regex_string, this.params.flavour_string );
-								if( test_return === expected ){
-									this.message = `Returned: ${test_return}`;
-									this.result = true;
-								} else{
-									this.message = `Returned mediary string didn't match expected value: expected: '${expected}' got: '${test_return}'`;
-									this.result = false;
-								}
-							} catch(error){
-								this.message = `Caught unexpected error: ${error}`;
-								this.result = false;
-							}
-						}
-					}
-				];
-				var all_test_passed = true;
-				//Run tests.
-				for( var i = 0; i < tests_array.length; i++ ){
-					tests_array[i].test();
-					if( (all_test_passed !== true) || (tests_array[i].result !== true) ){
-						all_test_passed = false;
-					}
-				}
-				if( all_test_passed === true ){
-					this.message = Utility.format('tests_array: %O', tests_array);
-					Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: this.message});
-					this.result = true;
-				} else{
-					this.message = `Test(s) failed: ${tests_array}`;
-					this.result = false;
-				}
-			}
-		},
-		{
-			name: 'getRegexStringFromMediaryString_Test',
-			result: false,
-			message: '',
-			test: function(){
-				const FUNCTION_NAME = this.name;
-				console.log(`unit_test this: ${this}`);
-				//Variables
-				//Define tests.
-				var tests_array = [
-					{
-						name: 'InvalidMediaryString',
-						result: false,
-						message: '',
-						params: {
-							mediary_string: {},
-							flavour_string: 'pcre'
-						},
-						test: function(){
-							try{
-								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
-								this.message = `Test: ${this.name}: Failed; getRegexStringFromMediaryString failed to throw an error when it should have. test_return: ${test_return}`;
-								this.result = false;
-							} catch(error){
-								this.message = `Caught expected error: ${error}`;
-								this.result = true;
-							}
-						}
-					},
-					{
-						name: 'InvalidFlavourString',
-						result: false,
-						message: '',
-						params: {
-							mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><RS>',
-							flavour_string: {}
-						},
-						test: function(){
-							try{
-								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
-								this.message = `Test: ${this.name}: Failed; getRegexStringFromMediaryString failed to throw an error when it should have. test_return: ${test_return}`;
-								this.result = false;
-							} catch(error){
-								this.message = `Caught expected error: ${error}`;
-								this.result = true;
-							}
-						}
-					},
-					{
-						name: 'SuccessPCRE',
-						result: false,
-						message: '',
-						params: {
-							mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
-							flavour_string: 'pcre'
-						},
-						test: function(){
-							try{
-								var expected = '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?\\=$\\/\\{[0-9] [0-9] [^0-9] [A-Za-z0-9_] [^A-Za-z0-9_] [A-Za-z0-9] [!-~] [a-z] [!-\\/:-@[-`{-~] [A-Z] [0-9A-Fa-f] [^\\r\\n] [ \\t] [ \\t] [^ \\t] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [\\r\\n\\f\\t\\v]\\\\/';
-								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
-								if( test_return === expected ){
-									this.message = `Returned: ${test_return}`;
-									this.result = true;
-								} else{
-									this.message = `Returned regex string didn't match expected value: expected: '${expected}' got: '${test_return}'`;
-									this.result = false;
-								}
-							} catch(error){
-								this.message = `Caught unexpected error: ${error}`;
-								this.result = false;
-							}
-						}
-					},
-					{
-						name: 'SuccessVim',
-						result: false,
-						message: '',
-						params: {
-							mediary_string: '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>',
-							flavour_string: 'vim'
-						},
-						test: function(){
-							try{
-								var expected = '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{-,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$';
-								var test_return = getRegexStringFromMediaryString( this.params.mediary_string, this.params.flavour_string );
-								if( test_return === expected ){
-									this.message = `Returned: ${test_return}`;
-									this.result = true;
-								} else{
-									this.message = `Returned regex string didn't match expected value: expected: '${expected}' got: '${test_return}'`;
-									this.result = false;
-								}
-							} catch(error){
-								this.message = `Caught unexpected error: ${error}`;
-								this.result = false;
-							}
-						}
-					}
-				];
-				var all_test_passed = true;
-				//Run tests.
-				for( var i = 0; i < tests_array.length; i++ ){
-					tests_array[i].test();
-					if( (all_test_passed !== true) || (tests_array[i].result !== true) ){
-						all_test_passed = false;
-					}
-				}
-				if( all_test_passed === true ){
-					this.message = Utility.format('tests_array: %O', tests_array);
-					Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: this.message});
-					this.result = true;
-				} else{
-					this.message = Utility.format('Test(s) failed: %O', tests_array);
-					this.result = false;
-				}
-			}
-		}
-	];
-	var all_tests_passed = true;
-	for( var i = 0; i < unit_tests_array.length; i++ ){
-		unit_tests_array[i].test();
-		if( (all_tests_passed !== true) || (unit_tests_array[i].result !== true) ){
-			all_tests_passed = false;
-		}
-	}
-	if( all_tests_passed === true ){
-		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `All tests passed successfully. unit_tests_array: ${unit_tests_array}`});
-	} else{
-		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: Utility.format('Test(s) failed: unit_tests_array: %O', unit_tests_array)});
-		process.exitCode = 1;
-	}
-
-/*	try{
-		mediary_string = getMediaryStringFromRegexString( input_string, 'pcre' );
-		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `mediary_string: ${mediary_string}`});
-		output_regex_string = getRegexStringFromMediaryString( mediary_string, 'pcre' );
-		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `output_regex_string (pcre): ${output_regex_string}`});
-		output_regex_string = getRegexStringFromMediaryString( mediary_string, 'vim' );
-		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'note', message: `output_regex_string (vim): ${output_regex_string}`});
-	} catch(error){
-		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'crit', message: `Test failed with error: '${error}'`});
-		process.exitCode = 4;
-	}*/
-
-	//Return
-	return _return;
-}
 //#Exports and Execution
 if(require.main === module){
 	var _return = [1,null];
@@ -2203,8 +2045,10 @@ if(require.main === module){
 		//Input
 		{ name: 'stdin', alias: 'i', type: Boolean, description: 'Read input from STDIN.' },
 		{ name: 'input', alias: 'I', type: String, description: 'The path to the file to read input from.' },
-		{ name: 'test', alias: 't', type: Boolean, description: 'Run unit tests and exit.' },
+		{ name: 'input-regex-string', alias: 'R', type: String, description: 'The input regular expression as a string.' },
+		{ name: 'input-flavour', alias: 'F', type: String, description: 'The flavour of the input regex.' },
 		//Output
+		{ name: 'output-flavour', alias: 'T', type: String, description: 'The flavour to convert to input regex to.' },
 		{ name: 'stdout', alias: 'o', type: Boolean, description: 'Write output to STDOUT.' },
 		{ name: 'output', alias: 'O', type: String, description: 'The name of the file to write output to.' },
 		{ name: 'pasteboard', alias: 'p', type: Boolean, description: '[Reserved] Copy output to pasteboard (clipboard).' },
@@ -2280,17 +2124,13 @@ if(require.main === module){
 		quick_exit = true;
 	}
 	if( quick_exit === false || Options['no-quick-exit'] === true ){
-		/* istanbul ignore else */
-		if( Options.test === true ){
-			main_Async_Test();
-		} else{
-			main_Async( Options );
-		}
+		main_Async( Options );
 	}
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: 'End of execution block.'});
 } else{
 	exports.setLogger = setLogger;
 	exports.getMediaryStringFromRegexString = getMediaryStringFromRegexString;
 	exports.getRegexStringFromMediaryString = getRegexStringFromMediaryString;
+	exports.getMultiPartObjectFromInputString = getMultiPartObjectFromInputString;
 }
 
