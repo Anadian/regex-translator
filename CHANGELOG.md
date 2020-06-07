@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.2](https://github.com/Anadian/regex-translator/compare/v0.2.1...v0.2.2) (2020-06-07)
+
+
+### Features
+
+* **source/main.js:** Implemented pasteboard output option. ([c2a5709](https://github.com/Anadian/regex-translator/commit/c2a57090cf79238bce00212c1bde28d0c9a99c77))
+
+
+### Chores
+
+* Removed the now-unneccessary "scripts" directory. ([1f77368](https://github.com/Anadian/regex-translator/commit/1f77368765ef4f62e500d155b42b00162b5b6759))
+
+
+### Documentation
+
+* **README.md:** Added API and updated contributing sections. ([c857229](https://github.com/Anadian/regex-translator/commit/c857229bdd6effc9fd0644a9ea8693d6a494008a))
+* **README.md:** Added CLI section. ([4d9fdca](https://github.com/Anadian/regex-translator/commit/4d9fdca6d39bddf5f65f12e7e4fab7007e5944c2))
+* Updated documentation comments and added `extract-documentation-comments` as a dev dependency. ([7529062](https://github.com/Anadian/regex-translator/commit/7529062baa5afcf1d0365913543d2ac55bbcc841))
+* **README.md:** Added installation and usage sections. ([9730728](https://github.com/Anadian/regex-translator/commit/97307283a6e677abb504162957f5b085984f063e))
+
 ### [0.2.1](https://github.com/Anadian/regex-translator/compare/v0.2.0...v0.2.1) (2020-06-07)
 
 
