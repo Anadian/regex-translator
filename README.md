@@ -13,6 +13,7 @@
 - [Background](#Background)
 - [Install](#Install)
 - [Usage](#Usage)
+- [CLI](#CLI)
 - [API](#API)
 - [Contributing](#Contributing)
 - [License](#License)
