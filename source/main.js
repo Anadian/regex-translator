@@ -41,6 +41,7 @@ Documentation License: [![Creative Commons License](https://i.creativecommons.or
 	const Utility = require('util');
 	//##External
 	const GetStream = require('get-stream');
+	const ClipBoardy = require('clipboardy');
 //#Constants
 const FILENAME = 'regex-translator.js';
 const MODULE_NAME = 'RegexTranslator';
@@ -2003,6 +2004,12 @@ async function main_Async( options = {} ){
 					return_error = new Error(`FileSystem.writeFileSync threw an error: ${error}`);
 					Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'error', message: return_error.message});
 				}
+			} else if( options.pasteboard === true ){
+				try{
+					ClipBoardy.writeSync(output_string);
+				} catch(error){
+					return_error = new Error(`ClipBoardy.writeSync threw an error: ${error}`);
+				}
 			} else{
 				if( options.stdout !== true ){
 					Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'warn', message: 'No output options specified; defaulting to STDOUT.'});
@@ -2054,7 +2061,7 @@ if(require.main === module){
 		{ name: 'output-flavour', alias: 'T', type: String, description: 'The flavour to convert to input regex to.' },
 		{ name: 'stdout', alias: 'o', type: Boolean, description: 'Write output to STDOUT.' },
 		{ name: 'output', alias: 'O', type: String, description: 'The name of the file to write output to.' },
-		{ name: 'pasteboard', alias: 'p', type: Boolean, description: '[Reserved] Copy output to pasteboard (clipboard).' },
+		{ name: 'pasteboard', alias: 'p', type: Boolean, description: 'Copy output to pasteboard (clipboard).' },
 		//Config
 		{ name: 'config', alias: 'c', type: Boolean, description: 'Print search paths and configuration values to STDOUT.' },
 		{ name: 'config-file', alias: 'C', type: String, description: '[Resevred] Use the given config file instead of the default.' },
