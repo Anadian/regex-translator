@@ -1791,6 +1791,7 @@ Throws:
 Status:
 | version | change |
 | --- | --- |
+| 0.2.1 | Stable |
 | 0.0.1 | Introduced |
 */
 function getMediaryStringFromRegexString( regex_string, input_flavour_string = 'pcre', options = {},){
@@ -1854,6 +1855,7 @@ Throws:
 Status:
 | version | change |
 | --- | --- |
+| 0.2.1 | Stable |
 | 0.0.1 | Introduced |
 */
 function getRegexStringFromMediaryString( mediary_string, flavour_string = 'pcre', options = {},){
@@ -1893,7 +1895,7 @@ function getRegexStringFromMediaryString( mediary_string, flavour_string = 'pcre
 }
 /**
 ### main_Async (private)
-> The main function when the script is run as an executable without the `--test` command-line option. Not exported and should never be manually called.
+> The main function when the script is run as an executable. Not exported and should never be manually called.
 
 Parametres:
 | name | type | description |
@@ -1903,6 +1905,7 @@ Parametres:
 Status:
 | version | change |
 | --- | --- |
+| 0.2.1 | Stable |
 | 0.0.1 | Introduced |
 */
 /* istanbul ignore next */

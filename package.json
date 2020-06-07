@@ -6,6 +6,7 @@
   "scripts": {
     "test": "ava -v ./source/main.test.js",
     "lint": "eslint ./source/main.js",
+	"generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
     "update-travis-config": "json2yaml --preserve-key-order ci/travis.json .travis.yml"
   },
   "repository": {
@@ -48,6 +49,7 @@
     "ava": "^3.8.2",
     "coveralls": "^3.1.0",
     "eslint": "^7.1.0",
+    "extract-documentation-comments": "^0.1.2",
     "nyc": "^15.0.1",
     "standard-version": "^8.0.0"
   },
@@ -61,7 +63,7 @@
     "make-dir": "^3.1.0"
   },
   "bin": {
-	  "regex-translator": "./source/main.js"
+    "regex-translator": "./source/main.js"
   },
   "eslintConfig": {
     "env": {
