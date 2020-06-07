@@ -1,12 +1,12 @@
 {
   "name": "regex-translator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Convert a Regular Expression from one flavour to another.",
   "main": "source/main.js",
   "scripts": {
     "test": "ava -v ./source/main.test.js",
-	"lint": "eslint ./source/main.js",
-	"update-travis-config": "json2yaml --preserve-key-order ci/travis.json .travis.yml"
+    "lint": "eslint ./source/main.js",
+    "update-travis-config": "json2yaml --preserve-key-order ci/travis.json .travis.yml"
   },
   "repository": {
     "type": "git",
@@ -16,8 +16,8 @@
     "re",
     "regex",
     "regexp",
-	"regular",
-	"expressions",
+    "regular",
+    "expressions",
     "translator",
     "converter",
     "format",
@@ -62,34 +62,68 @@
   },
   "eslintConfig": {
     "env": {
-        "commonjs": true,
-        "es6": true,
-        "node": true
+      "commonjs": true,
+      "es6": true,
+      "node": true
     },
     "extends": "eslint:recommended",
     "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
     },
     "parserOptions": {
-        "ecmaVersion": 11
+      "ecmaVersion": 11
     },
     "rules": {
-		"no-unused-vars": ["warn"],
-		"no-useless-escape": "off",
-		"no-empty": "warn"
+      "no-unused-vars": [
+        "warn"
+      ],
+      "no-useless-escape": "off",
+      "no-empty": "warn"
     }
   },
   "standard-version": {
-	  "types": [
-		{"type": "feat", "section": "Features", "hidden": false},
-		{"type": "fix", "section": "Bug Fixes", "hidden": false},
-		{"type": "chore", "section": "Chores", "hidden": false},
-		{"type": "docs", "section": "Documentation", "hidden": false},
-		{"type": "style", "section": "Code Style", "hidden": false},
-		{"type": "refactor", "section": "Refactoring", "hidden": false},
-		{"type": "perf", "section": "Performance", "hidden": false},
-		{"type": "test", "section": "Tests", "hidden": false}
-	  ]
+    "types": [
+      {
+        "type": "feat",
+        "section": "Features",
+        "hidden": false
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes",
+        "hidden": false
+      },
+      {
+        "type": "chore",
+        "section": "Chores",
+        "hidden": false
+      },
+      {
+        "type": "docs",
+        "section": "Documentation",
+        "hidden": false
+      },
+      {
+        "type": "style",
+        "section": "Code Style",
+        "hidden": false
+      },
+      {
+        "type": "refactor",
+        "section": "Refactoring",
+        "hidden": false
+      },
+      {
+        "type": "perf",
+        "section": "Performance",
+        "hidden": false
+      },
+      {
+        "type": "test",
+        "section": "Tests",
+        "hidden": false
+      }
+    ]
   }
 }
