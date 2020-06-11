@@ -154,24 +154,57 @@ AVA('CLI:HelpData', function(t){
 		t.fail();
 	}
 });
-AVA('CLI:INPUT-REGEX-STRING-to-STDOUT', function(t){
+AVA('CLI:INPUT-REGEX-STRING-to-OUTPUT-FILE', function(t){
 	var expected_stdout_string = '\\(simple\\)\\= regex';
 	var stdout_string = '';
-	var something = 'something';
-	var process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '--input-regex-string', 'pcre/(simple)? regex/replace/vim', '-o'], { stdio: ['pipe', 'pipe', 'pipe'] } );
+	var process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '--input-regex-string', '\'pcre/(simple)? regex/replace/vim\'', '-O', 'temp_out.txt'], { shell: true } );
 	t.log(process_object);
 	if( process_object.status === 0 ){
 		try{
-			stdout_string = process_object.output[1].toString('utf8');
-			t.log(stdout_string, something);
-			console.log('stdout_string: %s %s', stdout_string, something);
-			t.is(stdout_string,expected_stdout_string);
+			stdout_string = FileSystem.readFileSync( 'temp_out.txt', 'utf8' );
+			try{
+				FileSystem.unlinkSync( 'temp_out.txt' );
+				t.is(stdout_string,expected_stdout_string);
+			} catch(error){
+				return_error = new Error(`FileSystem.unlinkSync threw an error: ${error}`);
+				t.fail(return_error);
+			}
 		} catch(error){
-			return_error = new Error(`process_object.toString threw an error: ${error}`);
-			throw return_error;
+			return_error = new Error(`FileSystem.readFileSync threw an error: ${error}`);
+			t.fail(return_error);
 		}
 	} else{
-		t.fail();
+		t.fail('Received a failure status code.');
 	}
 });
-		
+AVA('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
+	var expected_stdout_string = '\\(simple\\)\\= regex';
+	var stdout_string = '';
+	var process_object = null;
+	try{
+		FileSystem.writeFileSync( 'temp_in.txt', '(simple)? regex', 'utf8' );
+		process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '-vx', '-I', 'temp_in.txt', '--input-flavour', 'pcre', '--output-flavour', 'vim', '-O', 'temp_out2.txt'], { shell: true } );
+		t.log(process_object);
+		if( process_object.status === 0 ){
+			try{
+				stdout_string = FileSystem.readFileSync( 'temp_out2.txt', 'utf8' );
+				try{
+					FileSystem.unlinkSync( 'temp_out2.txt' );
+					FileSystem.unlinkSync( 'temp_in.txt' );
+					t.is(stdout_string,expected_stdout_string);
+				} catch(error){
+					return_error = new Error(`FileSystem.unlinkSync threw an error: ${error}`);
+					t.fail(return_error);
+				}
+			} catch(error){
+				return_error = new Error(`FileSystem.readFileSync threw an error: ${error}`);
+				t.fail(return_error);
+			}
+		} else{
+			t.fail('Received a failure status code.');
+		}
+	} catch(error){
+		return_error = new Error(`FileSystem.writeFileSync threw an error: ${error}`);
+		t.fail(return_error);
+	}
+});
