@@ -38,6 +38,8 @@ Documentation License: [![Creative Commons License](https://i.creativecommons.or
 	//##Internal
 	const RegexTranslator = require('./main.js');
 	//##Standard
+	const FileSystem = require('fs');
+	const ChildProcess = require('child_process');
 	//##External
 	const AVA = require('ava');
 //#Constants
@@ -141,3 +143,35 @@ AVA('getMultiPartObjectFromInputString:MaximalInputString', function(t){
 	var actual_output = RegexTranslator.getMultiPartObjectFromInputString( input_string );
 	t.deepEqual( actual_output, expected_output );
 });
+AVA('CLI:HelpData', function(t){
+	//t.log(process.cwd());
+	//t.log(process.env);
+	var process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '-Vhc'] );
+	//t.log( process_object );
+	if( process_object.status === 0 ){
+		t.pass();
+	} else{
+		t.fail();
+	}
+});
+AVA('CLI:INPUT-REGEX-STRING-to-STDOUT', function(t){
+	var expected_stdout_string = '\\(simple\\)\\= regex';
+	var stdout_string = '';
+	var something = 'something';
+	var process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '--input-regex-string', 'pcre/(simple)? regex/replace/vim', '-o'], { stdio: ['pipe', 'pipe', 'pipe'] } );
+	t.log(process_object);
+	if( process_object.status === 0 ){
+		try{
+			stdout_string = process_object.output[1].toString('utf8');
+			t.log(stdout_string, something);
+			console.log('stdout_string: %s %s', stdout_string, something);
+			t.is(stdout_string,expected_stdout_string);
+		} catch(error){
+			return_error = new Error(`process_object.toString threw an error: ${error}`);
+			throw return_error;
+		}
+	} else{
+		t.fail();
+	}
+});
+		
