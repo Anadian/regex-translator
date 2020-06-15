@@ -177,21 +177,18 @@ AVA('CLI:INPUT-REGEX-STRING-to-OUTPUT-FILE', function(t){
 		t.fail('Received a failure status code.');
 	}
 });
-AVA('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
-	var expected_stdout_string = '\\(simple\\)\\= regex';
-	var stdout_string = '';
+AVA.cb('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
 	var process_object = null;
-	try{
-		FileSystem.writeFileSync( 'temp_in.txt', '(simple)? regex', 'utf8' );
-		process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '-vx', '-I', 'temp_in.txt', '--input-flavour', 'pcre', '--output-flavour', 'vim', '-O', 'temp_out2.txt'], { shell: true } );
-		t.log(process_object);
-		if( process_object.status === 0 ){
+	var exit_func = function( code, signal ){
+		var expected_stdout_string = '\\(simple\\)\\= regex';
+		var output_string = '';
+		if( code === 0 ){
 			try{
-				stdout_string = FileSystem.readFileSync( 'temp_out2.txt', 'utf8' );
+				output_string = FileSystem.readFileSync( 'temp_out2.txt', 'utf8' );
 				try{
 					FileSystem.unlinkSync( 'temp_out2.txt' );
 					FileSystem.unlinkSync( 'temp_in.txt' );
-					t.is(stdout_string,expected_stdout_string);
+					t.is(output_string,expected_stdout_string);
 				} catch(error){
 					return_error = new Error(`FileSystem.unlinkSync threw an error: ${error}`);
 					t.fail(return_error);
@@ -201,8 +198,17 @@ AVA('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
 				t.fail(return_error);
 			}
 		} else{
-			t.fail('Received a failure status code.');
+			return_error = new Error(`Erroneous exit code: ${code} signal: ${signal}`);
+			t.fail(return_error);
 		}
+	};
+	var true_exit_func = exit_func.bind( t );
+	try{
+		FileSystem.writeFileSync( 'temp_in.txt', '(simple)? regex', 'utf8' );
+		process_object = ChildProcess.fork( 'source/main.js', ['-vx', '-I', 'temp_in.txt', '--input-flavour', 'pcre', '--output-flavour', 'vim', '-O', 'temp_out2.txt'], { silent: true } );
+		t.log(process_object);
+		exit_func.bind
+		process_object.on('exit', true_exit_func);
 	} catch(error){
 		return_error = new Error(`FileSystem.writeFileSync threw an error: ${error}`);
 		t.fail(return_error);
