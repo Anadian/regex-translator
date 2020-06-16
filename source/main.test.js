@@ -42,6 +42,7 @@ Documentation License: [![Creative Commons License](https://i.creativecommons.or
 	const ChildProcess = require('child_process');
 	//##External
 	const AVA = require('ava');
+	const Pify = require('pify');
 //#Constants
 const FILENAME = 'main.test.js';
 const MODULE_NAME = 'RegexTranslatorTest';
@@ -143,41 +144,44 @@ AVA('getMultiPartObjectFromInputString:MaximalInputString', function(t){
 	var actual_output = RegexTranslator.getMultiPartObjectFromInputString( input_string );
 	t.deepEqual( actual_output, expected_output );
 });
-AVA('CLI:HelpData', function(t){
+AVA('CLI:HelpData', async function(t){
 	//t.log(process.cwd());
 	//t.log(process.env);
-	var process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '-Vhc'] );
+	var return_error = null;
+	var process_object = ChildProcess.fork( 'source/main.js', ['-Vhc'], { silent: true } );
+	var promisified_process_object = Pify( process_object, { multiArgs: true, errorFirst: false } );
 	//t.log( process_object );
-	if( process_object.status === 0 ){
+	var results = await promisified_process_object.on( 'exit' );
+	t.log(results);
+	if( results[0] === 0 ){
 		t.pass();
 	} else{
-		t.fail();
+		return_error = new Error(`Erroneous exit code: ${results[0]}, signal: ${results[1]}`);
+		t.fail(return_error);
 	}
 });
-AVA('CLI:INPUT-REGEX-STRING-to-OUTPUT-FILE', function(t){
+AVA('CLI:INPUT-REGEX-STRING-to-STDOUT', async function(t){
+	//t.plan(2);
+	var return_error = null;
+	var process_object = ChildProcess.fork( 'source/main.js', ['--input-regex-string', '"pcre/(simple)? regex/replace/vim"', '-o'], { silent: true } );
+	var promisified_process_object = Pify( process_object, { multiArgs: true, errorFirst: false } );
+	//t.log(promisified_process_object);
+	var promisified_stdio_object = Pify( promisified_process_object.stdio );
+	var promisified_stdout_object = Pify( promisified_stdio_object[1] );
+	var stdout_data = await promisified_stdout_object.on( 'data' );
+	//var results = await promisified_process_object.on( 'exit' );
+	//t.log(results);
 	var expected_stdout_string = '\\(simple\\)\\= regex';
-	var stdout_string = '';
-	var process_object = ChildProcess.spawnSync( 'node', ['source/main.js', '--input-regex-string', '\'pcre/(simple)? regex/replace/vim\'', '-O', 'temp_out.txt'], { shell: true } );
-	t.log(process_object);
-	if( process_object.status === 0 ){
-		try{
-			stdout_string = FileSystem.readFileSync( 'temp_out.txt', 'utf8' );
-			try{
-				FileSystem.unlinkSync( 'temp_out.txt' );
-				t.is(stdout_string,expected_stdout_string);
-			} catch(error){
-				return_error = new Error(`FileSystem.unlinkSync threw an error: ${error}`);
-				t.fail(return_error);
-			}
-		} catch(error){
-			return_error = new Error(`FileSystem.readFileSync threw an error: ${error}`);
-			t.fail(return_error);
-		}
+	var stdout_string = stdout_data.toString( 'utf8' );
+	t.is(stdout_string,expected_stdout_string);
+	/*if( results[0] === 0 ){
+		t.pass();
 	} else{
-		t.fail('Received a failure status code.');
-	}
+		return_error = new Error(`Erroneous exit code: ${results[0]}, signal: ${results[1]}`);
+		t.fail(return_error.message);
+	}*/
 });
-AVA.cb('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
+AVA.skip('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
 	var process_object = null;
 	var exit_func = function( code, signal ){
 		var expected_stdout_string = '\\(simple\\)\\= regex';
@@ -201,14 +205,15 @@ AVA.cb('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
 			return_error = new Error(`Erroneous exit code: ${code} signal: ${signal}`);
 			t.fail(return_error);
 		}
+		t.end();
 	};
-	var true_exit_func = exit_func.bind( t );
+	//var true_exit_func = exit_func.bind( t );
 	try{
 		FileSystem.writeFileSync( 'temp_in.txt', '(simple)? regex', 'utf8' );
 		process_object = ChildProcess.fork( 'source/main.js', ['-vx', '-I', 'temp_in.txt', '--input-flavour', 'pcre', '--output-flavour', 'vim', '-O', 'temp_out2.txt'], { silent: true } );
 		t.log(process_object);
 		exit_func.bind
-		process_object.on('exit', true_exit_func);
+		process_object.on('exit', exit_func);
 	} catch(error){
 		return_error = new Error(`FileSystem.writeFileSync threw an error: ${error}`);
 		t.fail(return_error);
