@@ -1,6 +1,6 @@
 #!/bin/bash
 rm temp_stderr.txt;
-node -p 'const FileSystem = require("fs"); FileSystem.writeSync(2, "something");' 2>temp_stderr.txt;
+node -p 'const FileSystem = require("fs"); const TTY = require("tty"); console.log("%o", process, process.stdout.isTTY); FileSystem.writeSync(2, "something");' 2>temp_stderr.txt;
 echo "stdout:  stderr: $(cat temp_stderr.txt)";
 #  env;
 # echo $0 $SHELL;
