@@ -84,6 +84,16 @@ var MetaRegexObject = {
 				replace_string: '>' 
 			}
 		},
+		"CHARACTER_CLASS_CODE": {
+			to: {
+				search_regex: /<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>/g,
+				replace_string: null
+			},
+			from: {
+				search_regex: /<CHARACTER_CLASS_CODE_START:(\d+):CHARACTER_CLASS_CODE_END>/g,
+				replace_string: null
+			}
+		},
 		"CHARACTER_CLASS": { 
 			to: {
 				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
@@ -606,6 +616,16 @@ var MetaRegexObject = {
 				replace_string: '>' 
 			}
 		},
+		"CHARACTER_CLASS_CODE": {
+			to: {
+				search_regex: /<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>/g,
+				replace_string: null
+			},
+			from: {
+				search_regex: /<CHARACTER_CLASS_CODE_START:(\d+):CHARACTER_CLASS_CODE_END>/g,
+				replace_string: null
+			}
+		},
 		"CHARACTER_CLASS": { 
 			to: {
 				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
@@ -1126,6 +1146,16 @@ var MetaRegexObject = {
 			from: {
 				search_regex: /<%LGT%>/g,
 				replace_string: '>' 
+			}
+		},
+		"CHARACTER_CLASS_CODE": {
+			to: {
+				search_regex: /<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>/g,
+				replace_string: null
+			},
+			from: {
+				search_regex: /<CHARACTER_CLASS_CODE_START:(\d+):CHARACTER_CLASS_CODE_END>/g,
+				replace_string: null
 			}
 		},
 		"CHARACTER_CLASS": { 
@@ -1805,6 +1835,8 @@ function getMediaryStringFromRegexString( regex_string, input_flavour_string = '
 	//Variables
 	var to_object = {};
 	var to_values_array = [];
+	var character_classes_array = [];
+	var character_class_codes = [];
 	var intermediary_string = regex_string;
 	//Parametre checks
 	if( typeof(regex_string) !== 'string' ){
@@ -1828,6 +1860,89 @@ function getMediaryStringFromRegexString( regex_string, input_flavour_string = '
 		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `intermediary string at ${i}: ${intermediary_string}`});
 	}
 	_return = intermediary_string;
+
+	//Return
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `returned: ${_return}`});
+	return _return;
+}
+/**
+### getMediaryObjectFromRegexString
+> Returns a mediary object from the given regular expression string. This function should be used instead of `getMediaryStringFromRegexString` as this properly handles chracter classes in a "round-trip" fashion.
+
+Parametres:
+| name | type | description |
+| --- | --- | --- |
+| regex_string | {string} | The regular expression string to be converted to a mediary object.  |
+| input_flavour | {string} | The flavour of the regex string. \[default: \] |
+| options | {?Object} | [Reserved] Additional run-time options. \[default: {}\] |
+
+Returns:
+| type | description |
+| --- | --- |
+| {object} | A mediary object with the property `mediary_string` and, if necessary, a property `character_class_codes_array`. |
+
+Throws:
+| code | type | condition |
+| --- | --- | --- |
+| 'ERR_INVALID_ARG_TYPE' | {TypeError} | Thrown if a given argument isn't of the correct type. |
+
+Status:
+| version | change |
+| --- | --- |
+| 0.2.3 | Introduced: Breaking change; function now returns an object with an `intermediary_string` property and a `character_class_codes_array` property if necessary. |
+*/
+function getMediaryObjectFromRegexString( regex_string, input_flavour = 'pcre', options = {},){
+	var arguments_array = Array.from(arguments);
+	var _return;
+	var return_error;
+	const FUNCTION_NAME = 'getMediaryObjectFromRegexString';
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `received: ${arguments_array}`});
+	//Variables
+	var to_object = {};
+	var to_values_array = [];
+	var character_classes_array = [];
+	var character_class_codes = [];
+	var intermediary_string = regex_string;
+	//Parametre checks
+	if( typeof(regex_string) !== 'string' ){
+		return_error = new TypeError('Param "regex_string" is not string.');
+		return_error.code = 'ERR_INVALID_ARG_TYPE';
+		throw return_error;
+	}
+	if( typeof(input_flavour_string) !== 'string' ){
+		return_error = new TypeError('Param "input_flavour_string" is not string.');
+		return_error.code = 'ERR_INVALID_ARG_TYPE';
+		throw return_error;
+	}
+
+	//Function
+	to_object = MetaRegexObject[input_flavour_string];
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `to_object: ${to_object}`});
+	to_values_array = Array.from(Object.values(to_object));
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `to_values_array: ${to_values_array}`});
+	//LLT
+	intermediary_string = intermediary_string.replace( to_object['LLT'].to.serch_regex, to_object['LLT'].to.replace_string );
+	//LGT
+	intermediary_string = intermediary_string.replace( to_object['LGT'].to.serch_regex, to_object['LGT'].to.replace_string );
+	//CHARACTER_CLASS
+	intermediary_string = intermediary_string.replace( to_object['CHARACTER_CLASS'].to.serch_regex, to_object['CHARACTER_CLASS'].to.replace_string );
+	try{
+		character_classes_array = Array.from( intermediary_string.matchAll( to_object['CHARACTER_CLASS_CODE'].to.search_regex ) );
+		for( var i = 0; i < character_classes_array; i++ ){
+			character_class_codes.push( character_classes_array[i][1] );
+		}
+	} catch(error){
+		return_error = new Error(`Caught an unexpected error when creating character classes code arrays: ${error}`);
+		throw return_error;
+	}
+	for( var i = 4; i < to_values_array.length; i++ ){
+		intermediary_string = intermediary_string.replace( to_values_array[i].to.search_regex, to_values_array[i].to.replace_string );
+		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `intermediary string at ${i}: ${intermediary_string}`});
+	}
+	_return = {
+		mediary_string: intermediary_string,
+		character_class_codes_array: characer_class_codes
+	};	
 
 	//Return
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `returned: ${_return}`});
@@ -1895,6 +2010,84 @@ function getRegexStringFromMediaryString( mediary_string, flavour_string = 'pcre
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `returned: ${_return}`});
 	return _return;
 }
+/**
+### getRegexStringFromMediaryObject
+> Returns a regex string from the given mediary object formatted to the given regex flavour.
+
+Parametres:
+| name | type | description |
+| --- | --- | --- |
+| mediary_object | {object} | A mediary object with a `mediary_string` and `character_class_codes_array` properties.  |
+| flavour_string | {string} | A string repesenting the Regular Expression flavour to return the string in. \[default: 'pcre'\] |
+| options | {?Object} | [Reserved] Additional run-time options. \[default: {}\] |
+
+Returns:
+| type | description |
+| --- | --- |
+| {string} | The regex string translated from the mediary obejct. |
+
+Throws:
+| code | type | condition |
+| --- | --- | --- |
+| 'ERR_INVALID_ARG_TYPE' | {TypeError} | Thrown if a given argument isn't of the correct type. |
+
+Status:
+| version | change |
+| --- | --- |
+| 0.2.3 | Introduced |
+*/
+function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre', options = {},){
+	var arguments_array = Array.from(arguments);
+	var _return;
+	var return_error;
+	const FUNCTION_NAME = 'getRegexStringFromMediaryObject';
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `received: ${arguments_array}`});
+	//Variables
+	var from_object = {};
+	var from_values_array = [];
+	var intermediary_string = mediary_string;
+	//Parametre checks
+	if( typeof(mediary_object) !== 'object' ){
+		return_error = new TypeError('Param "mediary_object" is not object.');
+		return_error.code = 'ERR_INVALID_ARG_TYPE';
+		throw return_error;
+	}
+	if( typeof(flavour_string) !== 'string' ){
+		return_error = new TypeError('Param "flavour_string" is not string.');
+		return_error.code = 'ERR_INVALID_ARG_TYPE';
+		throw return_error;
+	}
+	if( typeof(options) !== 'object' ){
+		return_error = new TypeError('Param "options" is not ?Object.');
+		return_error.code = 'ERR_INVALID_ARG_TYPE';
+		throw return_error;
+	}
+
+	//Function
+	from_object = MetaRegexObject[flavour_string];
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `from_object: ${from_object}`});
+	from_values_array = Array.from(Object.values(from_object));
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `from_values_array: ${from_values_array}`});
+	//LLT
+	intermediary_string = intermediary_string.replace( _object['LLT'].from.serch_regex, from_object['LLT'].from.replace_string );
+	//LGT
+	intermediary_string = intermediary_string.replace( _object['LGT'].from.serch_regex, from_object['LGT'].from.replace_string );
+	//CHARACTER_CLASS_CODES
+	character_class_code_matches = Array.from( intermediary_string.matchAll( from_object['CHARACTER_CLASS_CODE'].from.search_regex ) );
+	for( var i = 0; i < character_class_code_matches.length; i++ ){
+		intermediary_string = intermediary_string.replace( from_object['CHARACTER_CLASS_CODE'].from.search_regex, `<CHARACTER_CLASS_START:${mediary_object.character_class_codes_array[character_class_codes_matches[i][1]]}:CHARACTER_CLASS_END>` );
+	}
+	for( var i = 3; i < from_values_array.length; i++ ){
+		intermediary_string = intermediary_string.replace( from_values_array[i].from.search_regex, from_values_array[i].from.replace_string );
+		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `intermediary_string at ${i}: ${intermediary_string}`});
+	}
+	_return = intermediary_string;
+
+	//Return
+	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `returned: ${_return}`});
+	return _return;
+}
+
 /**
 ### main_Async (private)
 > The main function when the script is run as an executable. Not exported and should never be manually called.
