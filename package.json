@@ -4,7 +4,7 @@
   "description": "Convert a Regular Expression from one flavour to another.",
   "main": "source/main.js",
   "scripts": {
-    "test": "ava -v ./source/main.test.js && bash cli_test.sh",
+    "test": "ava -v ./source/main.test.js && ./cli_test.sh",
     "lint": "eslint ./source/main.js",
     "generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
     "update-travis-config": "json2yaml --preserve-key-order ci/travis.json .travis.yml"
