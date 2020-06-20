@@ -96,7 +96,7 @@ var MetaRegexObject = {
 		},
 		"CHARACTER_CLASS": { 
 			to: {
-				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
+				search_regex: /([^\\])\[(([^\]]{1,2})|([^:\]]([^\]]*?)[^:]))\]/g,
 				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
 			}, 
 			from: {
@@ -628,7 +628,7 @@ var MetaRegexObject = {
 		},
 		"CHARACTER_CLASS": { 
 			to: {
-				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
+				search_regex: /([^\\])\[(([^\]]{1,2})|([^:\]]([^\]]*?)[^:]))\]/g,
 				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
 			}, 
 			from: {
@@ -1160,7 +1160,7 @@ var MetaRegexObject = {
 		},
 		"CHARACTER_CLASS": { 
 			to: {
-				search_regex: /([^\\])\[(([^\]]{1,2})|[^:]([^\]]*?)[^:])\]/g,
+				search_regex: /([^\\])\[(([^\]]{1,2})|([^:\]]([^\]]*?)[^:]))\]/g,
 				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
 			}, 
 			from: {
@@ -1873,7 +1873,7 @@ Parametres:
 | name | type | description |
 | --- | --- | --- |
 | regex_string | {string} | The regular expression string to be converted to a mediary object.  |
-| input_flavour | {string} | The flavour of the regex string. \[default: \] |
+| flavour_string | {string} | The flavour of the regex string. \[default: \] |
 | options | {?Object} | [Reserved] Additional run-time options. \[default: {}\] |
 
 Returns:
@@ -1891,15 +1891,17 @@ Status:
 | --- | --- |
 | 0.2.3 | Introduced: Breaking change; function now returns an object with an `intermediary_string` property and a `character_class_codes_array` property if necessary. |
 */
-function getMediaryObjectFromRegexString( regex_string, input_flavour = 'pcre', options = {},){
+function getMediaryObjectFromRegexString( regex_string, flavour_string = 'pcre', options = {},){
 	var arguments_array = Array.from(arguments);
 	var _return;
 	var return_error;
 	const FUNCTION_NAME = 'getMediaryObjectFromRegexString';
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `received: ${arguments_array}`});
 	//Variables
+	var length = 0;
 	var to_object = {};
 	var to_values_array = [];
+	var character_class_code_matches = null;
 	var character_classes_array = [];
 	var character_class_codes = [];
 	var intermediary_string = regex_string;
@@ -1909,27 +1911,38 @@ function getMediaryObjectFromRegexString( regex_string, input_flavour = 'pcre', 
 		return_error.code = 'ERR_INVALID_ARG_TYPE';
 		throw return_error;
 	}
-	if( typeof(input_flavour_string) !== 'string' ){
-		return_error = new TypeError('Param "input_flavour_string" is not string.');
+	if( typeof(flavour_string) !== 'string' ){
+		return_error = new TypeError('Param "flavour_string" is not string.');
 		return_error.code = 'ERR_INVALID_ARG_TYPE';
 		throw return_error;
 	}
 
 	//Function
-	to_object = MetaRegexObject[input_flavour_string];
+	to_object = MetaRegexObject[flavour_string];
+	//console.log('to_object: %o', to_object);
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `to_object: ${to_object}`});
 	to_values_array = Array.from(Object.values(to_object));
+	//console.log('to_values_array: %o', to_values_array);
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `to_values_array: ${to_values_array}`});
-	//LLT
-	intermediary_string = intermediary_string.replace( to_object['LLT'].to.serch_regex, to_object['LLT'].to.replace_string );
-	//LGT
-	intermediary_string = intermediary_string.replace( to_object['LGT'].to.serch_regex, to_object['LGT'].to.replace_string );
-	//CHARACTER_CLASS
-	intermediary_string = intermediary_string.replace( to_object['CHARACTER_CLASS'].to.serch_regex, to_object['CHARACTER_CLASS'].to.replace_string );
 	try{
-		character_classes_array = Array.from( intermediary_string.matchAll( to_object['CHARACTER_CLASS_CODE'].to.search_regex ) );
-		for( var i = 0; i < character_classes_array; i++ ){
-			character_class_codes.push( character_classes_array[i][1] );
+		//LLT
+		intermediary_string = intermediary_string.replace( to_object['LLT'].to.search_regex, to_object['LLT'].to.replace_string );
+		//LGT
+		intermediary_string = intermediary_string.replace( to_object['LGT'].to.search_regex, to_object['LGT'].to.replace_string );
+		//CHARACTER_CLASS
+		intermediary_string = intermediary_string.replace( to_object['CHARACTER_CLASS'].to.search_regex, to_object['CHARACTER_CLASS'].to.replace_string );
+	} catch(error){
+		return_error = new Error(`Caught an unexpected error processing the special meta-translational symbol: ${error}`);
+		throw return_error;
+	}
+	try{
+		character_class_code_matches = intermediary_string.matchAll( to_object['CHARACTER_CLASS_CODE'].to.search_regex );
+		//console.log('character_class_code_matches: %o', character_class_code_matches);
+		character_classes_array = Array.from( character_class_code_matches );
+		//console.log('character_classes_array: %o', character_classes_array);
+		for( var i = 0; i < character_classes_array.length; i++ ){
+			length = character_class_codes.push( character_classes_array[i][1] );
+			intermediary_string = intermediary_string.replace( to_object['CHARACTER_CLASS'].from.search_regex, `<CHARACTER_CLASS_CODE_START:${(length-1)}:CHARACTER_CLASS_CODE_END>` );
 		}
 	} catch(error){
 		return_error = new Error(`Caught an unexpected error when creating character classes code arrays: ${error}`);
@@ -1941,7 +1954,7 @@ function getMediaryObjectFromRegexString( regex_string, input_flavour = 'pcre', 
 	}
 	_return = {
 		mediary_string: intermediary_string,
-		character_class_codes_array: characer_class_codes
+		character_class_codes_array: character_class_codes
 	};	
 
 	//Return
@@ -2336,5 +2349,7 @@ if(require.main === module){
 	exports.getMediaryStringFromRegexString = getMediaryStringFromRegexString;
 	exports.getRegexStringFromMediaryString = getRegexStringFromMediaryString;
 	exports.getMultiPartObjectFromInputString = getMultiPartObjectFromInputString;
+	exports.getMediaryObjectFromRegexString = getMediaryObjectFromRegexString;
+	exports.getRegexStringFromMediaryObject = getRegexStringFromMediaryObject;
 }
 

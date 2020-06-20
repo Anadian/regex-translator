@@ -144,78 +144,30 @@ AVA('getMultiPartObjectFromInputString:MaximalInputString', function(t){
 	var actual_output = RegexTranslator.getMultiPartObjectFromInputString( input_string );
 	t.deepEqual( actual_output, expected_output );
 });
-AVA('CLI:HelpData', async function(t){
-	//t.log(process.cwd());
-	//t.log(process.env);
-	var return_error = null;
-	var process_object = ChildProcess.fork( 'source/main.js', ['-Vhc'], { silent: true } );
-	var promisified_process_object = Pify( process_object, { multiArgs: true, errorFirst: false } );
-	//t.log( process_object );
-	var results = await promisified_process_object.on( 'exit' );
-	t.log(results);
-	if( results[0] === 0 ){
-		t.pass();
-	} else{
-		return_error = new Error(`Erroneous exit code: ${results[0]}, signal: ${results[1]}`);
-		t.fail(return_error);
-	}
+AVA('getMediaryObjectFromRegexString:InvalidRegexString', function(t){
+	t.throws( RegexTranslator.getMediaryObjectFromRegexString.bind( null, {}, 'pcre' ), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' } );
 });
-AVA('CLI:INPUT-REGEX-STRING-to-STDOUT', async function(t){
-	//t.plan(2);
-	var return_error = null;
-	var process_object = ChildProcess.fork( 'source/main.js', ['--input-regex-string', '"pcre/(simple)? regex/replace/vim"', '-o'], { silent: true } );
-	var promisified_process_object = Pify( process_object, { multiArgs: true, errorFirst: false } );
-	//t.log(promisified_process_object);
-	var promisified_stdio_object = Pify( promisified_process_object.stdio );
-	var promisified_stdout_object = Pify( promisified_stdio_object[1] );
-	var stdout_data = await promisified_stdout_object.on( 'data' );
-	//var results = await promisified_process_object.on( 'exit' );
-	//t.log(results);
-	var expected_stdout_string = '\\(simple\\)\\= regex';
-	var stdout_string = stdout_data.toString( 'utf8' );
-	t.is(stdout_string,expected_stdout_string);
-	/*if( results[0] === 0 ){
-		t.pass();
-	} else{
-		return_error = new Error(`Erroneous exit code: ${results[0]}, signal: ${results[1]}`);
-		t.fail(return_error.message);
-	}*/
-});
-AVA.skip('CLI:INPUT-FILE-to-OUTPUT-FILE', function(t){
-	var process_object = null;
-	var exit_func = function( code, signal ){
-		var expected_stdout_string = '\\(simple\\)\\= regex';
-		var output_string = '';
-		if( code === 0 ){
-			try{
-				output_string = FileSystem.readFileSync( 'temp_out2.txt', 'utf8' );
-				try{
-					FileSystem.unlinkSync( 'temp_out2.txt' );
-					FileSystem.unlinkSync( 'temp_in.txt' );
-					t.is(output_string,expected_stdout_string);
-				} catch(error){
-					return_error = new Error(`FileSystem.unlinkSync threw an error: ${error}`);
-					t.fail(return_error);
-				}
-			} catch(error){
-				return_error = new Error(`FileSystem.readFileSync threw an error: ${error}`);
-				t.fail(return_error);
-			}
-		} else{
-			return_error = new Error(`Erroneous exit code: ${code} signal: ${signal}`);
-			t.fail(return_error);
-		}
-		t.end();
+AVA('getMediaryObjectFromRegexString:InvalidFlavourString', function(t){
+	var params = {
+		regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
+		flavour_string: {}
 	};
-	//var true_exit_func = exit_func.bind( t );
+	t.throws( RegexTranslator.getMediaryObjectFromRegexString.bind( null, params.regex_string, params.flavour_string ), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' } );
+});
+AVA('getMediaryObjectFromRegexString:SuccessPCRE', function(t){
+	var params = {
+		regex_string: '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?=$\\/\\{[:digit:] \\d \\D \\w \\W [:alnum:] [:graph:] [:lower:] [:punct:] [:upper:] [:xdigit:] \\N [:blank:] \\h \\H [:space:] \\s \\v \\S \\V [:R:]\\\\/',
+		flavour_string: 'pcre'
+	};
+	var expected = {
+		mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_CODE_START:0:CHARACTER_CLASS_CODE_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+		character_class_codes_array: [ 'a' ]
+	};
 	try{
-		FileSystem.writeFileSync( 'temp_in.txt', '(simple)? regex', 'utf8' );
-		process_object = ChildProcess.fork( 'source/main.js', ['-vx', '-I', 'temp_in.txt', '--input-flavour', 'pcre', '--output-flavour', 'vim', '-O', 'temp_out2.txt'], { silent: true } );
-		t.log(process_object);
-		exit_func.bind
-		process_object.on('exit', exit_func);
+		var mediary_object = RegexTranslator.getMediaryObjectFromRegexString( params.regex_string, params.flavour_string );
+		console.log('%o', mediary_object);
+		t.deepEqual( mediary_object, expected );
 	} catch(error){
-		return_error = new Error(`FileSystem.writeFileSync threw an error: ${error}`);
-		t.fail(return_error);
+		t.fail(`RegexTranslator.getMediaryObjectFromRegexString threw an unexpected error: ${error}`);
 	}
 });
