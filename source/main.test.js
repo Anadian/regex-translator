@@ -165,9 +165,16 @@ AVA('getMediaryObjectFromRegexString:SuccessPCRE', function(t){
 	};
 	try{
 		var mediary_object = RegexTranslator.getMediaryObjectFromRegexString( params.regex_string, params.flavour_string );
-		console.log('%o', mediary_object);
+		//console.log('%o', mediary_object);
 		t.deepEqual( mediary_object, expected );
 	} catch(error){
 		t.fail(`RegexTranslator.getMediaryObjectFromRegexString threw an unexpected error: ${error}`);
 	}
+});
+AVA.skip('CLI', function(t){
+	var process_object = ChildProcess.spawnSync('bash', ['cli_test.sh']);
+	if( process_object.status === 0 ){
+		t.pass(`CLI test passed with code: ${process_object.status} stdout: ${process_object.stdout} stderr: ${process_object.stderr}`);
+	} else
+		t.fail(`CLI test failed with code: ${process_object.status} stdout: ${process_object.stdout} stderr: ${process_object.stderr}`);
 });
