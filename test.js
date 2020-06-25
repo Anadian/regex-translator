@@ -1,5 +1,7 @@
+#!/usr/local/bin/node
 const ChildProcess = require('child_process');
 const Execa = require('execa');
+const Pify = require('pify');
 const FileSystem = require('fs');
 async function test(t){
 	var expected_stdout_string = '\\(simple\\)\\= regex';
@@ -88,4 +90,75 @@ async function test2(t){
 		console.log(return_error);
 	}
 }
-test2(null);
+async function test3(t){
+	/*var bash_spawn_sync_default = ChildProcess.spawnSync('bash', ['node', 'source/main.js', '-vVhc']);
+	console.log('bash_spawn_sync_default: %o', bash_spawn_sync_default);
+	var node_spawn_sync_default = ChildProcess.spawnSync('node', ['source/main.js', '-vVhc']);
+	console.log('node_spawn_sync_default: %o', node_spawn_sync_default);
+	try{ //execa
+		//var bash_execa_sync_default = Execa.sync('bash', ['node', 'source/main.js', '-vVhc'], { shell: '/bin/bash' });
+		//console.log('bash_execa_sync_default: %o', bash_execa_sync_default);
+		//var bash_command_sync_default = Execa.commandSync('bash node source/main.js -vVhc');
+		//console.log('bash_command_sync_default: %o', bash_command_sync_default);
+		var node_execa_sync_default = Execa.sync('node', ['source/main.js', '-vVhc'], { shell: '/bin/bash' });
+		console.log('node_execa_sync_default: %o', node_execa_sync_default);
+		var node_command_sync_default = Execa.commandSync('node source/main.js -vVhc');
+		console.log('node_command_sync_default: %o', node_command_sync_default);
+	} catch(error){
+		console.log(`An Execa call threw an error: ${error}`);
+	}
+	try{
+		node_execa_async = await Execa('node', ['source/main.js', '-vVhc']);
+		console.log('node_execa_async: %o');
+	} catch(error){
+		console.log(`Execa threw an error: ${error}`);
+	}
+	try{
+		node_execa_command_async = await Execa.command('node source/main.js -vVhc');
+		console.log('node_execa_command_async: %o');
+	} catch(error){
+		console.log(`Execa.command threw an error: ${error}`);
+	}
+	var node_fork_async_silent = ChildProcess.fork('source/main.js', ['-vVhc'], { silent: true });
+	node_fork_async_silent.stdio[1].on('data', function(chunk){
+		console.log('forked stdout: ', chunk.toString());
+	});
+	node_fork_async_silent.stdio[2].on('data', function(chunk){
+		console.log('forked stderr: ', chunk.toString());
+	});
+	var node_spawn_async = ChildProcess.spawn('node', ['source/main.js', '-vVhc']);
+	node_spawn_async.stdio[1].on('data', function(chunk){
+		console.log('spawned stdout: ', chunk.toString());
+	});
+	node_spawn_async.stdio[2].on('data', function(chunk){
+		console.log('spawned stderr: ', chunk.toString());
+	});
+	var bash_spawn_async = ChildProcess.spawn('bash', ['node', 'source/main.js', '-vVhc']);
+	bash_spawn_async.stdio[1].on('data', function(chunk){
+		console.log('bash spawn stdout: ', chunk.toString());
+	});
+	bash_spawn_async.stdio[2].on('data', function(chunk){
+		console.log('bash spawn stderr: ', chunk.toString());
+	});
+	var bash_spawn_cli_async = ChildProcess.spawn('./cli_test.sh');
+	bash_spawn_cli_async.stdio[1].on('data', function(chunk){
+		console.log('bash spawn cli stdout: ', chunk.toString());
+	});
+	bash_spawn_cli_async.stdio[2].on('data',function(chunk){
+		console.log('bash spawn cli stderr: ', chunk.toString());
+	});*/
+	var node_fork_irs_stdout_async = ChildProcess.fork('source/main.js', ['-v','--input-regex-string', 'pcre/(simple)? regex/replace/vim', '-o'], { silent: true });
+	node_fork_irs_stdout_async.stdio[1].on('data', function(chunk){
+		console.log('node fork irs-stdout stdio: ', chunk.toString());
+	});
+	node_fork_irs_stdout_async.stdio[2].on('data', function(chunk){
+		console.log('node fork irs-stdout stderr: ', chunk.toString());
+	});
+	var cli_test = ChildProcess.execFile('./cli_test.sh', null, null, function(error, stdout, stderr){
+		console.log('cli_test error: ', error);
+		console.log('cli_test stdout: ', stdout);
+		console.log('cli_test stderr: ', stderr);
+	});
+	//console.log('node_fork_async_silent: %o', node_fork_async_silent);
+}
+test3(null);
