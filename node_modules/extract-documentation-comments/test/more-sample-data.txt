@@ -1,0 +1,20 @@
+/**
+This should match.
+*/
+/*
+This shouldn't.
+*/
+/** This should match. */
+/**
+* This should match. 
+* And this.
+*/
+/**
+ * This should match
+*/
+/**
+ * This should */
+/** * This should match.
+*/
+/** * This should match. * */
+/**This should match.*/

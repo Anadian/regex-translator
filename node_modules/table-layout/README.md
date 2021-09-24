@@ -1,10 +1,13 @@
-[![view on npm](http://img.shields.io/npm/v/table-layout.svg)](https://www.npmjs.org/package/table-layout)
-[![npm module downloads](http://img.shields.io/npm/dt/table-layout.svg)](https://www.npmjs.org/package/table-layout)
+[![view on npm](https://badgen.net/npm/v/table-layout)](https://www.npmjs.org/package/table-layout)
+[![npm module downloads](https://badgen.net/npm/dt/table-layout)](https://www.npmjs.org/package/table-layout)
+[![Gihub repo dependents](https://badgen.net/github/dependents-repo/75lb/table-layout)](https://github.com/75lb/table-layout/network/dependents?dependent_type=REPOSITORY)
+[![Gihub package dependents](https://badgen.net/github/dependents-pkg/75lb/table-layout)](https://github.com/75lb/table-layout/network/dependents?dependent_type=PACKAGE)
 [![Build Status](https://travis-ci.org/75lb/table-layout.svg?branch=master)](https://travis-ci.org/75lb/table-layout)
-[![Dependency Status](https://badgen.net/david/dep/75lb/table-layout)](https://david-dm.org/75lb/table-layout)
+[![Coverage Status](https://coveralls.io/repos/github/75lb/table-layout/badge.svg)](https://coveralls.io/github/75lb/table-layout)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
 
 # table-layout
+
 Generates plain-text tables from JSON recordset input (array of objects). Useful for presenting text in column layout or data in table layout in text-based user interfaces. Also [available as a command-line tool](https://github.com/75lb/table-layout-cli).
 
 ## Synopsis
@@ -148,4 +151,4 @@ Returns the input data as a text table.
 
 * * *
 
-&copy; 2015-20 Lloyd Brookes \<75pound@gmail.com\>. Documented by [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown).
+&copy; 2015-21 Lloyd Brookes \<75pound@gmail.com\>. Documented by [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown).

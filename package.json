@@ -46,22 +46,23 @@
   },
   "homepage": "https://github.com/Anadian/regex-translator#readme",
   "devDependencies": {
-    "ava": "^3.8.2",
-    "coveralls": "^3.1.0",
-    "eslint": "^7.1.0",
-    "execa": "^4.0.2",
-    "extract-documentation-comments": "^0.1.2",
-    "nyc": "^15.0.1",
+    "ava": "^3.15.0",
+    "coveralls": "^3.1.1",
+    "eslint": "^7.32.0",
+    "execa": "^5.1.1",
+    "extract-documentation-comments": "^0.3.9",
+    "npm-check-updates": "^11.8.5",
+    "nyc": "^15.1.0",
     "pify": "^5.0.0",
-    "standard-version": "^8.0.0"
+    "standard-version": "^9.3.1"
   },
   "dependencies": {
-    "application-log-winston-interface": "^1.0.5",
+    "application-log-winston-interface": "^2.0.4",
     "clipboardy": "^2.3.0",
-    "command-line-args": "^5.1.1",
-    "command-line-usage": "^6.1.0",
+    "command-line-args": "^5.2.0",
+    "command-line-usage": "^6.1.1",
     "env-paths": "^2.2.0",
-    "get-stream": "^5.1.0",
+    "get-stream": "^6.0.1",
     "make-dir": "^3.1.0"
   },
   "bin": {

@@ -18,7 +18,9 @@ Got the idea from https://github.com/conventional-changelog/conventional-changel
       - [config](#config)
       - [whatBump](#whatbump)
       - [tagPrefix](#tagprefix)
+      - [skipUnstable](#skipunstable)
       - [lernaPackage](#lernapackage)
+      - [path](#path)
     - [parserOpts](#parseropts)
     - [callback](#callback)
 - [License](#license)
@@ -111,6 +113,12 @@ Specify a prefix for the git tag that will be taken into account during the comp
 
 For instance if your version tag is prefixed by `version/` instead of `v` you would specifying `--tagPrefix=version/` using the CLI, or `version/` as the value of the `tagPrefix` option.
 
+##### skipUnstable
+
+**Type:** `boolean`
+
+If true, unstable tags will be skipped, e.g., x.x.x-alpha.1, x.x.x-rc.2
+
 ##### lernaPackage
 
 **Type:** `string`
@@ -118,6 +126,12 @@ For instance if your version tag is prefixed by `version/` instead of `v` you wo
 Specify the name of a package in a [Lerna](https://lernajs.io/)-managed repository. The package name will be used when fetching all changes to a package since the last time that package was released.
 
 For instance if your project contained a package named `conventional-changelog`, you could have only commits that have happened since the last release of `conventional-changelog` was tagged by specifying `--lernaPackage=conventional-changelog` using the CLI, or `conventional-changelog` as the value of the `lernaPackage` option.
+
+##### path
+
+**Type:** `string`
+
+Specify the path to only calculate with git commits related to the path. If you want to calculate recommended bumps of packages in a [Lerna](https://lernajs.io/)-managed repository, `path` should be use along with `lernaPackage` for each of the package.
 
 #### parserOpts
 

@@ -82,7 +82,8 @@ module.exports = {
             description: "enforce the consistent use of the radix argument when using `parseInt()`",
             category: "Best Practices",
             recommended: false,
-            url: "https://eslint.org/docs/rules/radix"
+            url: "https://eslint.org/docs/rules/radix",
+            suggestion: true
         },
 
         schema: [
@@ -95,7 +96,8 @@ module.exports = {
             missingParameters: "Missing parameters.",
             redundantRadix: "Redundant radix parameter.",
             missingRadix: "Missing radix parameter.",
-            invalidRadix: "Invalid radix parameter, must be an integer between 2 and 36."
+            invalidRadix: "Invalid radix parameter, must be an integer between 2 and 36.",
+            addRadixParameter10: "Add radix parameter `10` for parsing decimal numbers."
         }
     },
 
@@ -123,7 +125,21 @@ module.exports = {
                     if (mode === MODE_ALWAYS) {
                         context.report({
                             node,
-                            messageId: "missingRadix"
+                            messageId: "missingRadix",
+                            suggest: [
+                                {
+                                    messageId: "addRadixParameter10",
+                                    fix(fixer) {
+                                        const sourceCode = context.getSourceCode();
+                                        const tokens = sourceCode.getTokens(node);
+                                        const lastToken = tokens[tokens.length - 1]; // Parenthesis.
+                                        const secondToLastToken = tokens[tokens.length - 2]; // May or may not be a comma.
+                                        const hasTrailingComma = secondToLastToken.type === "Punctuator" && secondToLastToken.value === ",";
+
+                                        return fixer.insertTextBefore(lastToken, hasTrailingComma ? " 10," : ", 10");
+                                    }
+                                }
+                            ]
                         });
                     }
                     break;
@@ -166,9 +182,12 @@ module.exports = {
                 if (variable && !isShadowed(variable)) {
                     variable.references.forEach(reference => {
                         const node = reference.identifier.parent;
+                        const maybeCallee = node.parent.type === "ChainExpression"
+                            ? node.parent
+                            : node;
 
-                        if (isParseIntMethod(node) && astUtils.isCallee(node)) {
-                            checkArguments(node.parent);
+                        if (isParseIntMethod(node) && astUtils.isCallee(maybeCallee)) {
+                            checkArguments(maybeCallee.parent);
                         }
                     });
                 }

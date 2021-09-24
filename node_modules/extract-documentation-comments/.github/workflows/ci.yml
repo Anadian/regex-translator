@@ -1,0 +1,40 @@
+name: ci
+'on':
+- push
+- pull_request
+jobs:
+  source:
+    strategy:
+      matrix:
+        os:
+        - ubuntu-16.04
+        - ubuntu-latest
+        - macos-10.15
+        - macos-latest
+        - windows-2016
+        - windows-latest
+        node:
+        - 12
+        - 13
+        - 14
+    name: source-${{ matrix.os }}-node-${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node }}
+    - run: npm install
+    - run: npm test
+  coverage:
+    runs-on: ubuntu-latest
+    needs: source
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+    - run: npm install
+    - run: npx nyc npm test && npx nyc report --reporter=text-lcov > lcov.txt
+    - uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: lcov.txt
