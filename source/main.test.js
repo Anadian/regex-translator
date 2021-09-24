@@ -198,8 +198,9 @@ AVA.cb('CLI:STDIOToSTDOUT', function(t){
 	var test_name = 'CLI:STDIOToSTDOUT';
 	var stdout_string = '';
 	var stderr_string = '';
-	var expected_stdout = '
+	var expected_stdout = '';
 	var process_object = ChildProcess.fork('source/main.js', ['-xio'], { silent: true });
+}
 AVA.cb('CLI:InputRegexStringToSTDOUT', function(t){
 	var process_object = ChildProcess.fork('source/main.js', ['-v', '--input-regex-string', 'pcre/(simple)? regex/replace/vim', '-o'], { silent: true });
 	var stdout_string = '';
@@ -224,3 +225,4 @@ AVA.cb('CLI:InputRegexStringToSTDOUT', function(t){
 		t.end();
 	});
 });
+
