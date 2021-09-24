@@ -1,6 +1,6 @@
 {
 	"name": "regex-translator",
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"description": "Convert a Regular Expression from one flavour to another.",
 	"main": "source/main.js",
 	"scripts": {
