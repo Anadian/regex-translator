@@ -636,6 +636,26 @@ var MetaRegexObject = {
 				replace_string: '[$1]' 
 			}
 		},
+		"NONCAPTURE_GROUP": { 
+			to: { 
+				search_regex: /([^\\])\(\?:/g,
+				replace_string: '$1<NONCAPTURE_GROUP>'
+			},
+			from: {
+				search_regex:  /<NONCAPTURE_GROUP>/g,
+				replace_search: '(?:'
+			}
+		},
+		"NAMED_CAPTURE_GROUP": {
+			to: {
+				search_regex: /([^\\])\(\?P?[<']([^>':]+)[>']/g,
+				replace_string: '$1<NAMED_CAPTURE_GROUP_START:$2:NAMED_CAPTURE_GROUP_END>'
+			},
+			from: {
+				search_regex: /<NAMED_CAPTURE_GROUP_START:([^:]):NAMED_CAPTURE_GROUP_END>/g,
+				replace_string: '(?<$1>'
+			}
+		},
 		"LVRQ": {
 			to: {
 				search_regex: /([^\\])\{(\d*),(\d*)\}\?/g,
@@ -1658,7 +1678,1111 @@ var MetaRegexObject = {
 				replace_string: '[\\r\\n\\f\\t\\v]'
 			}
 		}
-	}
+	},
+	"ecma": {
+		"LLT": {
+			to: {
+				search_regex: /<([^%])/g,
+				replace_string: '<%LLT%>$1'
+			}, 
+			from: {
+				search_regex: /<%LLT%>/g,
+				replace_string: '<' 
+			}
+		},
+		"LGT": {
+			to: {
+				search_regex: /([^%])>/g,
+				replace_string: '$1<%LGT%>'
+			}, 
+			from: {
+				search_regex: /<%LGT%>/g,
+				replace_string: '>' 
+			}
+		},
+		"CHARACTER_CLASS_CODE": {
+			to: {
+				search_regex: /<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>/g,
+				replace_string: null
+			},
+			from: {
+				search_regex: /<CHARACTER_CLASS_CODE_START:(\d+):CHARACTER_CLASS_CODE_END>/g,
+				replace_string: null
+			}
+		},
+		"CHARACTER_CLASS": { 
+			to: {
+				search_regex: /([^\\])\[(([^\]]{1,2})|([^:\]]([^\]]*?)[^:]))\]/g,
+				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
+			}, 
+			from: {
+				search_regex: /<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>/g,
+				replace_string: '[$1]' 
+			}
+		},
+		"NONCAPTURE_GROUP": { 
+			to: { 
+				search_regex: /([^\\])\(\?:/g,
+				replace_string: '$1<NONCAPTURE_GROUP>'
+			},
+			from: {
+				search_regex:  /<NONCAPTURE_GROUP>/g,
+				replace_search: '(?:'
+			}
+		},
+		"NAMED_CAPTURE_GROUP": {
+			to: {
+				search_regex: /([^\\])\(\?<([^>:]+)>/g,
+				replace_string: '$1<NAMED_CAPTURE_GROUP_START:$2:NAMED_CAPTURE_GROUP_END>'
+			},
+			from: {
+				search_regex: /<NAMED_CAPTURE_GROUP_START:([^:]):NAMED_CAPTURE_GROUP_END>/g,
+				replace_string: '(?<$1>'
+			}
+		},
+		"LVRQ": {
+			to: {
+				search_regex: /([^\\])\{(\d*),(\d*)\}\?/g,
+				replace_string: '$1<LVRQ_START:$2:$3:LVRQ_END>'
+			},
+			from: {
+				search_regex: /<LVRQ_START:(\d*):(\d*):LVRQ_END>/g,
+				replace_string: '{$1,$2}?'
+			}
+		},
+		"VRQ": {
+			to: {
+				search_regex: /([^\\])\{(\d*),(\d*)\}/g,
+				replace_string: '$1<VRQ_START:$2:$3:VRQ_END>'
+			},
+			from: {
+				search_regex: /<VRQ_START:(\d*):(\d*):VRQ_END>/g,
+				replace_string: '{$1,$2}'
+			}
+		},
+		"LOMQ": {
+			to: {
+				search_regex: /\+\?/g,
+				replace_string: '<LOMQ>'
+			},
+			from: {
+				search_regex: /<LOMQ>/g,
+				replace_string: '+?'
+			}
+		},
+		"LZMQ": {
+			to: {
+				search_regex: /\*\?/g,
+				replace_string: '<LZMQ>'
+			},
+			from: {
+				search_regex: /<LZMQ>/g,
+				replace_string: '*?'
+			}
+		},
+		"LOP": {
+			to: {
+				search_regex: /\\\(/g,
+				replace_string: '<LOP>'
+			},
+			from: {
+				search_regex: /<LOP>/g,
+				replace_string: '\\('
+			}
+		},
+		"LCP": {
+			to: {
+				search_regex: /\\\)/g,
+				replace_string: '<LCP>'
+			},
+			from: {
+				search_regex: /<LCP>/g,
+				replace_string: '\\)'
+			}
+		},
+		"LOB": {
+			to: {
+				search_regex: /\\\[/g,
+				replace_string: '<%LOB%>'
+			},
+			from: {
+				search_regex: /<%LOB%>/g,
+				replace_string: '\\['
+			}
+		},
+		"LCB": {
+			to: {
+				search_regex: /\\\]/g,
+				replace_string: '<%LCB%>'
+			},
+			from: {
+				search_regex: /<%LCB%>/g,
+				replace_string: '\\]'
+			}
+		},
+		"LOC": {
+			to: {
+				search_regex: /\\\{/g,
+				replace_string: '<%LOC%>'
+			},
+			from: {
+				search_regex: /<%LOC%>/g,
+				replace_string: '\\{'
+			}
+		},
+		"LCC": {
+			to: {
+				search_regex: /\\\}/g,
+				replace_string: '<%LCC%>'
+			},
+			from: {
+				search_regex: /<%LCC%>/g,
+				replace_string: '\\}'
+			}
+		},
+		"MOP": {
+			to: {
+				search_regex: /\(/g,
+				replace_string: '<MOP>'
+			},
+			from: {
+				search_regex: /<MOP>/g,
+				replace_string: '('
+			}
+		},
+		"MCP": {
+			to: {
+				search_regex: /\)/g,
+				replace_string: '<MCP>'
+			},
+			from: {
+				search_regex: /<MCP>/g,
+				replace_string: ')'
+			}
+		},
+		"LB": {
+			to: {
+				search_regex: /\n/g,
+				replace_string: '<LB>'
+			},
+			from: {
+				search_regex: /<LB>/g,
+				replace_string: '\\n'
+			}
+		},
+		"LBS": {
+			to: {
+				search_regex: /\\\\/g,
+				replace_string: '<LBS>'
+			},
+			from: {
+				search_regex: /<LBS>/g,
+				replace_string: '\\\\'
+			}
+		},
+		"LPS": {
+			to: {
+				search_regex: /\\\+/g,
+				replace_string: '<LPS>'
+			},
+			from: {
+				search_regex: /<LPS>/g,
+				replace_string: '\\+'
+			}
+		},
+		"LP": {
+			to: {
+				search_regex: /\\\./g,
+				replace_string: '<LP>'
+			},
+			from: {
+				search_regex: /<LP>/g,
+				replace_string: '\\.'
+			}
+		},
+		"LCS": {
+			to: {
+				search_regex: /\\\^/g,
+				replace_string: '<LCS>'
+			},
+			from: {
+				search_regex: /<LCS>/g,
+				replace_string: '\\^'
+			}
+		},
+		"LDS": {
+			to: {
+				search_regex: /\\\$/g,
+				replace_string: '<LDS>'
+			},
+			from: {
+				search_regex: /<LDS>/g,
+				replace_string: '\\$'
+			}
+		},
+		"LES": {
+			to: {
+				search_regex: /\=/g,
+				replace_string: '<LES>'
+			},
+			from: {
+				search_regex: /<LES>/g,
+				replace_string: '\\='
+			}
+		},
+		"LQM": {
+			to: {
+				search_regex: /\\\?/g,
+				replace_string: '<LQM>'
+			},
+			from: {
+				search_regex: /<LQM>/g,
+				replace_string: '\\?'
+			}
+		},
+		"LAS": {
+			to: {
+				search_regex: /\\\*/g,
+				replace_string: '<LAS>'
+			},
+			from: {
+				search_regex: /<LAS>/g,
+				replace_string: '\\*'
+			}
+		},
+		"LPIPE": {
+			to: {
+				search_regex: /\\\|/g,
+				replace_string: '<LPIPE>'
+			},
+			from: {
+				search_regex: /<LPIPE>/g,
+				replace_string: '\\|'
+			}
+		},
+		"ORA": {
+			to: {
+				search_regex: /\|/g,
+				replace_string: '<ORA>'
+			},
+			from: {
+				search_regex: /<ORA>/g,
+				replace_string: '|'
+			}
+		},
+		"LFS": {
+			to: {
+				search_regex: /\\\//g,
+				replace_string: '<LFS>'
+			},
+			from: {
+				search_regex: /<LFS>/g,
+				replace_string: '\\/'
+			}
+		},
+		"OMQ": {
+			to: {
+				search_regex: /\+/g,
+				replace_string: '<OMQ>'
+			},
+			from: {
+				search_regex: /<OMQ>/g,
+				replace_string: '+'
+			}
+		},
+		"ZOQ": {
+			to: {
+				search_regex: /\?/g,
+				replace_string: '<ZOQ>'
+			},
+			from: {
+				search_regex: /<ZOQ>/g,
+				replace_string: '?'
+			}
+		},
+		"ZMQ": {
+			to: {
+				search_regex: /\*/g,
+				replace_string: '<ZMQ>'
+			},
+			from: {
+				search_regex: /<ZMQ>/g,
+				replace_string: '*'
+			}
+		},
+		"MAC": {
+			to: {
+				search_regex: /\./g,
+				replace_string: '<MAC>'
+			},
+			from: {
+				search_regex: /<MAC>/g,
+				replace_string: '.'
+			}
+		},
+		"SL": {
+			to: {
+				search_regex: /\^/g,
+				replace_string: '<SL>'
+			},
+			from: {
+				search_regex: /<SL>/g,
+				replace_string: '^'
+			}
+		},
+		"EL": {
+			to: {
+				search_regex: /\$/g,
+				replace_string: '<EL>'
+			},
+			from: {
+				search_regex: /<EL>/g,
+				replace_string: '$'
+			}
+		},
+		"RS": {
+			to: {
+				search_regex: /\//g,
+				replace_string: '<RS>'
+			},
+			from: {
+				search_regex: /<RS>/g,
+				replace_string: '/'
+			}
+		},
+		"CC_DIGIT": {
+			to: {
+				search_regex: /(\[:digit:\])|(\\d)/g,
+				replace_string: '<CC_DIGIT>'
+			},
+			from: {
+				search_regex: /<CC_DIGIT>/g,
+				replace_string: '[0-9]'
+			}
+		},
+		"CC_NOTDIGIT": {
+			to: {
+				search_regex: /\\D/g,
+				replace_string: '<CC_NOTDIGIT>'
+			},
+			from: {
+				search_regex: /<CC_NOTDIGIT>/g,
+				replace_string: '[^0-9]'
+			}
+		},
+		"CC_WORD": {
+			to: {
+				search_regex: /\\w/g,
+				replace_string: '<CC_WORD>'
+			},
+			from: {
+				search_regex: /<CC_WORD>/g,
+				replace_string: '[A-Za-z0-9_]'
+			}
+		},
+		"CC_NOTWORD": {
+			to: {
+				search_regex: /\\W/g,
+				replace_string: '<CC_NOTWORD>'
+			},
+			from: {
+				search_regex: /<CC_NOTWORD>/g,
+				replace_string: '[^A-Za-z0-9_]'
+			}
+		},
+		"CC_alnum": {
+			to: {
+				search_regex: /\[:alnum:\]/g,
+				replace_string: '<CC_alnum>'
+			},
+			from: {
+				search_regex: /<CC_alnum>/g,
+				replace_string: '[A-Za-z0-9]'
+			}
+		},
+		"CC_alpha": {
+			to: {
+				search_regex: /\[:alpha:\]/g,
+				replace_string: '<CC_alpha>'
+			},
+			from: {
+				search_regex: /<CC_alpha>/g,
+				replace_string: '[A-Za-z]'
+			}
+		},
+		"CC_graph": {
+			to: {
+				search_regex: /\[:graph:\]/g,
+				replace_string: '<CC_graph>'
+			},
+			from: {
+				search_regex: /<CC_graph>/g,
+				replace_string: '[!-~]'
+			}
+		},
+		"CC_lower": {
+			to: {
+				search_regex: /\[:lower:\]/g,
+				replace_string: '<CC_lower>'
+			},
+			from: {
+				search_regex: /<CC_lower>/g,
+				replace_string: '[a-z]'
+			}
+		},
+		"CC_print": {
+			to: {
+				search_regex: /\[:print:\]/g,
+				replace_string: '<CC_print>'
+			},
+			from: {
+				search_regex: /<CC_print>/g,
+				replace_string: '[ -~]'
+			}
+		},
+		"CC_punct": {
+			to: {
+				search_regex: /\[:punct:\]/g,
+				replace_string: '<CC_punct>'
+			},
+			from: {
+				search_regex: /<CC_punct>/g,
+				replace_string: '[!-\\/:-@[-`{-~]'
+			}
+		},
+		"CC_upper": {
+			to: {
+				search_regex: /\[:upper:\]/g,
+				replace_string: '<CC_upper>'
+			},
+			from: {
+				search_regex: /<CC_upper>/g,
+				replace_string: '[A-Z]'
+			}
+		},
+		"CC_xdigit": {
+			to: {
+				search_regex: /\[:xdigit:\]/g,
+				replace_string: '<CC_xdigit>'
+			},
+			from: {
+				search_regex: /<CC_xdigit>/g,
+				replace_string: '[0-9A-Fa-f]'
+			}
+		},
+		"CC_NOTNEWLINE": {
+			to: {
+				search_regex: /\\N/g,
+				replace_string: '<CC_NOTNEWLINE>'
+			},
+			from: {
+				search_regex: /<CC_NOTNEWLINE>/g,
+				replace_string: '[^\\r\\n]'
+			}
+		},
+		"CC_HORIZONTALSPACE": {
+			to: {
+				search_regex: /(\[:blank:\])|(\\h)/g,
+				replace_string: '<CC_HORIZONTALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_HORIZONTALSPACE>/g,
+				replace_string: '[ \\t]'
+			}
+		},
+		"CC_NOTHORIZONTALSPACE": {
+			to: {
+				search_regex: /\\H/g,
+				replace_string: '<CC_NOTHORIZONTALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_NOTHORIZONTALSPACE>/g,
+				replace_string: '[^ \\t]'
+			}
+		},
+		"CC_VERTICALSPACE": {
+			to: {
+				search_regex: /(\[:space:\])|(\\s)|(\\v)/g,
+				replace_string: '<CC_VERTICALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_VERTICALSPACE>/g,
+				replace_string: '[\\f\\n\\r\\t\\v]'
+			}
+		},
+		"CC_NOTVERTICALSPACE": {
+			to: {
+				search_regex: /(\\S)|(\\V)/g,
+				replace_string: '<CC_NOTVERTICALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_NOTVERTICALSPACE>/g,
+				replace_string: '[^\\f\\n\\r\\t\\v]'
+			}
+		},
+		"CC_R": {
+			to: {
+				search_regex: /\[:R:\]/g,
+				replace_string: '<CC_R>'
+			},
+			from: {
+				search_regex: /<CC_R>/g,
+				replace_string: '[\\r\\n\\f\\t\\v]'
+			}
+		}
+	},
+	"re2": {
+		"LLT": {
+			to: {
+				search_regex: /<([^%])/g,
+				replace_string: '<%LLT%>$1'
+			}, 
+			from: {
+				search_regex: /<%LLT%>/g,
+				replace_string: '<' 
+			}
+		},
+		"LGT": {
+			to: {
+				search_regex: /([^%])>/g,
+				replace_string: '$1<%LGT%>'
+			}, 
+			from: {
+				search_regex: /<%LGT%>/g,
+				replace_string: '>' 
+			}
+		},
+		"CHARACTER_CLASS_CODE": {
+			to: {
+				search_regex: /<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>/g,
+				replace_string: null
+			},
+			from: {
+				search_regex: /<CHARACTER_CLASS_CODE_START:(\d+):CHARACTER_CLASS_CODE_END>/g,
+				replace_string: null
+			}
+		},
+		"CHARACTER_CLASS": { 
+			to: {
+				search_regex: /([^\\])\[(([^\]]{1,2})|([^:\]]([^\]]*?)[^:]))\]/g,
+				replace_string: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
+			}, 
+			from: {
+				search_regex: /<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>/g,
+				replace_string: '[$1]' 
+			}
+		},
+		"NONCAPTURE_GROUP": { 
+			to: { 
+				search_regex: /([^\\])\(\?:/g,
+				replace_string: '$1<NONCAPTURE_GROUP>'
+			},
+			from: {
+				search_regex:  /<NONCAPTURE_GROUP>/g,
+				replace_search: '(?:'
+			}
+		},
+		"NAMED_CAPTURE_GROUP": {
+			to: {
+				search_regex: /([^\\])\(\?P<([^>:]+)>/g,
+				replace_string: '$1<NAMED_CAPTURE_GROUP_START:$2:NAMED_CAPTURE_GROUP_END>'
+			},
+			from: {
+				search_regex: /<NAMED_CAPTURE_GROUP_START:([^:]):NAMED_CAPTURE_GROUP_END>/g,
+				replace_string: '(?P<$1>'
+			}
+		},
+		"LVRQ": {
+			to: {
+				search_regex: /([^\\])\{(\d*),(\d*)\}\?/g,
+				replace_string: '$1<LVRQ_START:$2:$3:LVRQ_END>'
+			},
+			from: {
+				search_regex: /<LVRQ_START:(\d*):(\d*):LVRQ_END>/g,
+				replace_string: '{$1,$2}?'
+			}
+		},
+		"VRQ": {
+			to: {
+				search_regex: /([^\\])\{(\d*),(\d*)\}/g,
+				replace_string: '$1<VRQ_START:$2:$3:VRQ_END>'
+			},
+			from: {
+				search_regex: /<VRQ_START:(\d*):(\d*):VRQ_END>/g,
+				replace_string: '{$1,$2}'
+			}
+		},
+		"LOMQ": {
+			to: {
+				search_regex: /\+\?/g,
+				replace_string: '<LOMQ>'
+			},
+			from: {
+				search_regex: /<LOMQ>/g,
+				replace_string: '+?'
+			}
+		},
+		"LZMQ": {
+			to: {
+				search_regex: /\*\?/g,
+				replace_string: '<LZMQ>'
+			},
+			from: {
+				search_regex: /<LZMQ>/g,
+				replace_string: '*?'
+			}
+		},
+		"LOP": {
+			to: {
+				search_regex: /\\\(/g,
+				replace_string: '<LOP>'
+			},
+			from: {
+				search_regex: /<LOP>/g,
+				replace_string: '\\('
+			}
+		},
+		"LCP": {
+			to: {
+				search_regex: /\\\)/g,
+				replace_string: '<LCP>'
+			},
+			from: {
+				search_regex: /<LCP>/g,
+				replace_string: '\\)'
+			}
+		},
+		"LOB": {
+			to: {
+				search_regex: /\\\[/g,
+				replace_string: '<%LOB%>'
+			},
+			from: {
+				search_regex: /<%LOB%>/g,
+				replace_string: '\\['
+			}
+		},
+		"LCB": {
+			to: {
+				search_regex: /\\\]/g,
+				replace_string: '<%LCB%>'
+			},
+			from: {
+				search_regex: /<%LCB%>/g,
+				replace_string: '\\]'
+			}
+		},
+		"LOC": {
+			to: {
+				search_regex: /\\\{/g,
+				replace_string: '<%LOC%>'
+			},
+			from: {
+				search_regex: /<%LOC%>/g,
+				replace_string: '\\{'
+			}
+		},
+		"LCC": {
+			to: {
+				search_regex: /\\\}/g,
+				replace_string: '<%LCC%>'
+			},
+			from: {
+				search_regex: /<%LCC%>/g,
+				replace_string: '\\}'
+			}
+		},
+		"MOP": {
+			to: {
+				search_regex: /\(/g,
+				replace_string: '<MOP>'
+			},
+			from: {
+				search_regex: /<MOP>/g,
+				replace_string: '('
+			}
+		},
+		"MCP": {
+			to: {
+				search_regex: /\)/g,
+				replace_string: '<MCP>'
+			},
+			from: {
+				search_regex: /<MCP>/g,
+				replace_string: ')'
+			}
+		},
+		"LB": {
+			to: {
+				search_regex: /\n/g,
+				replace_string: '<LB>'
+			},
+			from: {
+				search_regex: /<LB>/g,
+				replace_string: '\\n'
+			}
+		},
+		"LBS": {
+			to: {
+				search_regex: /\\\\/g,
+				replace_string: '<LBS>'
+			},
+			from: {
+				search_regex: /<LBS>/g,
+				replace_string: '\\\\'
+			}
+		},
+		"LPS": {
+			to: {
+				search_regex: /\\\+/g,
+				replace_string: '<LPS>'
+			},
+			from: {
+				search_regex: /<LPS>/g,
+				replace_string: '\\+'
+			}
+		},
+		"LP": {
+			to: {
+				search_regex: /\\\./g,
+				replace_string: '<LP>'
+			},
+			from: {
+				search_regex: /<LP>/g,
+				replace_string: '\\.'
+			}
+		},
+		"LCS": {
+			to: {
+				search_regex: /\\\^/g,
+				replace_string: '<LCS>'
+			},
+			from: {
+				search_regex: /<LCS>/g,
+				replace_string: '\\^'
+			}
+		},
+		"LDS": {
+			to: {
+				search_regex: /\\\$/g,
+				replace_string: '<LDS>'
+			},
+			from: {
+				search_regex: /<LDS>/g,
+				replace_string: '\\$'
+			}
+		},
+		"LES": {
+			to: {
+				search_regex: /\=/g,
+				replace_string: '<LES>'
+			},
+			from: {
+				search_regex: /<LES>/g,
+				replace_string: '\\='
+			}
+		},
+		"LQM": {
+			to: {
+				search_regex: /\\\?/g,
+				replace_string: '<LQM>'
+			},
+			from: {
+				search_regex: /<LQM>/g,
+				replace_string: '\\?'
+			}
+		},
+		"LAS": {
+			to: {
+				search_regex: /\\\*/g,
+				replace_string: '<LAS>'
+			},
+			from: {
+				search_regex: /<LAS>/g,
+				replace_string: '\\*'
+			}
+		},
+		"LPIPE": {
+			to: {
+				search_regex: /\\\|/g,
+				replace_string: '<LPIPE>'
+			},
+			from: {
+				search_regex: /<LPIPE>/g,
+				replace_string: '\\|'
+			}
+		},
+		"ORA": {
+			to: {
+				search_regex: /\|/g,
+				replace_string: '<ORA>'
+			},
+			from: {
+				search_regex: /<ORA>/g,
+				replace_string: '|'
+			}
+		},
+		"LFS": {
+			to: {
+				search_regex: /\\\//g,
+				replace_string: '<LFS>'
+			},
+			from: {
+				search_regex: /<LFS>/g,
+				replace_string: '\\/'
+			}
+		},
+		"OMQ": {
+			to: {
+				search_regex: /\+/g,
+				replace_string: '<OMQ>'
+			},
+			from: {
+				search_regex: /<OMQ>/g,
+				replace_string: '+'
+			}
+		},
+		"ZOQ": {
+			to: {
+				search_regex: /\?/g,
+				replace_string: '<ZOQ>'
+			},
+			from: {
+				search_regex: /<ZOQ>/g,
+				replace_string: '?'
+			}
+		},
+		"ZMQ": {
+			to: {
+				search_regex: /\*/g,
+				replace_string: '<ZMQ>'
+			},
+			from: {
+				search_regex: /<ZMQ>/g,
+				replace_string: '*'
+			}
+		},
+		"MAC": {
+			to: {
+				search_regex: /\./g,
+				replace_string: '<MAC>'
+			},
+			from: {
+				search_regex: /<MAC>/g,
+				replace_string: '.'
+			}
+		},
+		"SL": {
+			to: {
+				search_regex: /\^/g,
+				replace_string: '<SL>'
+			},
+			from: {
+				search_regex: /<SL>/g,
+				replace_string: '^'
+			}
+		},
+		"EL": {
+			to: {
+				search_regex: /\$/g,
+				replace_string: '<EL>'
+			},
+			from: {
+				search_regex: /<EL>/g,
+				replace_string: '$'
+			}
+		},
+		"RS": {
+			to: {
+				search_regex: /\//g,
+				replace_string: '<RS>'
+			},
+			from: {
+				search_regex: /<RS>/g,
+				replace_string: '/'
+			}
+		},
+		"CC_DIGIT": {
+			to: {
+				search_regex: /(\[:digit:\])|(\\d)/g,
+				replace_string: '<CC_DIGIT>'
+			},
+			from: {
+				search_regex: /<CC_DIGIT>/g,
+				replace_string: '[0-9]'
+			}
+		},
+		"CC_NOTDIGIT": {
+			to: {
+				search_regex: /\\D/g,
+				replace_string: '<CC_NOTDIGIT>'
+			},
+			from: {
+				search_regex: /<CC_NOTDIGIT>/g,
+				replace_string: '[^0-9]'
+			}
+		},
+		"CC_WORD": {
+			to: {
+				search_regex: /\\w/g,
+				replace_string: '<CC_WORD>'
+			},
+			from: {
+				search_regex: /<CC_WORD>/g,
+				replace_string: '[A-Za-z0-9_]'
+			}
+		},
+		"CC_NOTWORD": {
+			to: {
+				search_regex: /\\W/g,
+				replace_string: '<CC_NOTWORD>'
+			},
+			from: {
+				search_regex: /<CC_NOTWORD>/g,
+				replace_string: '[^A-Za-z0-9_]'
+			}
+		},
+		"CC_alnum": {
+			to: {
+				search_regex: /\[:alnum:\]/g,
+				replace_string: '<CC_alnum>'
+			},
+			from: {
+				search_regex: /<CC_alnum>/g,
+				replace_string: '[A-Za-z0-9]'
+			}
+		},
+		"CC_alpha": {
+			to: {
+				search_regex: /\[:alpha:\]/g,
+				replace_string: '<CC_alpha>'
+			},
+			from: {
+				search_regex: /<CC_alpha>/g,
+				replace_string: '[A-Za-z]'
+			}
+		},
+		"CC_graph": {
+			to: {
+				search_regex: /\[:graph:\]/g,
+				replace_string: '<CC_graph>'
+			},
+			from: {
+				search_regex: /<CC_graph>/g,
+				replace_string: '[!-~]'
+			}
+		},
+		"CC_lower": {
+			to: {
+				search_regex: /\[:lower:\]/g,
+				replace_string: '<CC_lower>'
+			},
+			from: {
+				search_regex: /<CC_lower>/g,
+				replace_string: '[a-z]'
+			}
+		},
+		"CC_print": {
+			to: {
+				search_regex: /\[:print:\]/g,
+				replace_string: '<CC_print>'
+			},
+			from: {
+				search_regex: /<CC_print>/g,
+				replace_string: '[ -~]'
+			}
+		},
+		"CC_punct": {
+			to: {
+				search_regex: /\[:punct:\]/g,
+				replace_string: '<CC_punct>'
+			},
+			from: {
+				search_regex: /<CC_punct>/g,
+				replace_string: '[!-\\/:-@[-`{-~]'
+			}
+		},
+		"CC_upper": {
+			to: {
+				search_regex: /\[:upper:\]/g,
+				replace_string: '<CC_upper>'
+			},
+			from: {
+				search_regex: /<CC_upper>/g,
+				replace_string: '[A-Z]'
+			}
+		},
+		"CC_xdigit": {
+			to: {
+				search_regex: /\[:xdigit:\]/g,
+				replace_string: '<CC_xdigit>'
+			},
+			from: {
+				search_regex: /<CC_xdigit>/g,
+				replace_string: '[0-9A-Fa-f]'
+			}
+		},
+		"CC_NOTNEWLINE": {
+			to: {
+				search_regex: /\\N/g,
+				replace_string: '<CC_NOTNEWLINE>'
+			},
+			from: {
+				search_regex: /<CC_NOTNEWLINE>/g,
+				replace_string: '[^\\r\\n]'
+			}
+		},
+		"CC_HORIZONTALSPACE": {
+			to: {
+				search_regex: /(\[:blank:\])|(\\h)/g,
+				replace_string: '<CC_HORIZONTALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_HORIZONTALSPACE>/g,
+				replace_string: '[ \\t]'
+			}
+		},
+		"CC_NOTHORIZONTALSPACE": {
+			to: {
+				search_regex: /\\H/g,
+				replace_string: '<CC_NOTHORIZONTALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_NOTHORIZONTALSPACE>/g,
+				replace_string: '[^ \\t]'
+			}
+		},
+		"CC_VERTICALSPACE": {
+			to: {
+				search_regex: /(\[:space:\])|(\\s)|(\\v)/g,
+				replace_string: '<CC_VERTICALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_VERTICALSPACE>/g,
+				replace_string: '[\\f\\n\\r\\t\\v]'
+			}
+		},
+		"CC_NOTVERTICALSPACE": {
+			to: {
+				search_regex: /(\\S)|(\\V)/g,
+				replace_string: '<CC_NOTVERTICALSPACE>'
+			},
+			from: {
+				search_regex: /<CC_NOTVERTICALSPACE>/g,
+				replace_string: '[^\\f\\n\\r\\t\\v]'
+			}
+		},
+		"CC_R": {
+			to: {
+				search_regex: /\[:R:\]/g,
+				replace_string: '<CC_R>'
+			},
+			from: {
+				search_regex: /<CC_R>/g,
+				replace_string: '[\\r\\n\\f\\t\\v]'
+			}
+		}
+	},
 };
 //#Functions
 /**
@@ -1761,18 +2885,22 @@ function getMultiPartObjectFromInputString( input_string, options = {},){
 			matches = super_string.match( /^((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))\// );
 			if( matches != null ){
 				input_flavour = matches[1];
+				//Removes input flavour from super_string
 				super_string = super_string.replace( /^((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))\//, '' );
 			}
 			matches = super_string.match( /([^\\])\/((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))$/ );
 			if( matches != null ){
 				output_flavour = matches[2];
+				//Removes output falvour from super_string
 				super_string = super_string.replace( /([^\\])\/((default)|(posix)|(extended)|(pcre)|(vim)|(ecma)|(re2))$/, '$1' );
 			}
+			//Gets the regex string and the replace string.
 			matches = super_string.match( /([^\/]+?)([^\\])\/(.*)/ );
 			if( matches != null ){
 				regex_string = matches[1] + matches[2];
 				replace_string = matches[3];
 			}
+			//Sets return object
 			_return = {
 				input_flavour: input_flavour,
 				regex_string: regex_string,
@@ -1826,7 +2954,7 @@ Status:
 | 0.2.1 | Stable |
 | 0.0.1 | Introduced |
 */
-function getMediaryStringFromRegexString( regex_string, input_flavour_string = 'pcre', options = {},){
+function getMediaryStringFromRegexString( regex_string, input_flavour_string = 'pcre', options = {} ){
 	var arguments_array = Array.from(arguments);
 	var _return;
 	var return_error;

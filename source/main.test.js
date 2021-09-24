@@ -171,10 +171,56 @@ AVA('getMediaryObjectFromRegexString:SuccessPCRE', function(t){
 		t.fail(`RegexTranslator.getMediaryObjectFromRegexString threw an unexpected error: ${error}`);
 	}
 });
-AVA.skip('CLI', function(t){
-	var process_object = ChildProcess.spawnSync('bash', ['cli_test.sh']);
-	if( process_object.status === 0 ){
-		t.pass(`CLI test passed with code: ${process_object.status} stdout: ${process_object.stdout} stderr: ${process_object.stderr}`);
-	} else
-		t.fail(`CLI test failed with code: ${process_object.status} stdout: ${process_object.stdout} stderr: ${process_object.stderr}`);
+AVA.cb('CLI:HelpData', function(t){
+	var process_object = ChildProcess.fork('source/main.js', ['-vVhc'], { silent: true });
+	var stdout_string = '';
+	var stderr_string = '';
+	process_object.stdio[1].on('data', function(chunk){
+		console.log('stdout chunk: ', chunk.toString());
+		stdout_string += chunk.toString();
+	});
+	process_object.stdio[2].on('data', function(chunk){
+		console.log('stderr chunk: ', chunk.toString());
+		stderr_string += chunk.toString();
+	});
+	process_object.on('exit', function(code, signal){
+		console.log(`code: ${code} signal: ${signal}`);
+		console.log(`stdout_string: ${stdout_string} stderr_string: ${stderr_string}`);
+		if( code === 0 ){
+			t.pass();
+		} else{
+			t.fail();
+		}
+		t.end();
+	});
+});
+AVA.cb('CLI:STDIOToSTDOUT', function(t){
+	var test_name = 'CLI:STDIOToSTDOUT';
+	var stdout_string = '';
+	var stderr_string = '';
+	var expected_stdout = '
+	var process_object = ChildProcess.fork('source/main.js', ['-xio'], { silent: true });
+AVA.cb('CLI:InputRegexStringToSTDOUT', function(t){
+	var process_object = ChildProcess.fork('source/main.js', ['-v', '--input-regex-string', 'pcre/(simple)? regex/replace/vim', '-o'], { silent: true });
+	var stdout_string = '';
+	var stderr_string = '';
+	var expected_stdout = '\\(simple\\)\\= regex\n';
+	process_object.stdio[1].on('data', function(chunk){
+		console.log('stdout chunk: ', chunk.toString());
+		stdout_string += chunk.toString();
+	});
+	process_object.stdio[2].on('data', function(chunk){
+		console.log('stderr chunk: ', chunk.toString());
+		stderr_string += chunk.toString();
+	});
+	process_object.on('exit', function(code, signal){
+		console.log(`code: ${code} signal: ${signal}`);
+		console.log(`stdout_string: ${stdout_string} stderr_string: ${stderr_string}`);
+		if( code === 0 ){
+			t.is(stdout_string,expected_stdout);
+		} else{
+			t.fail();
+		}
+		t.end();
+	});
 });
