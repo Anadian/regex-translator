@@ -1,137 +1,153 @@
 {
-  "name": "regex-translator",
-  "version": "0.2.3",
-  "description": "Convert a Regular Expression from one flavour to another.",
-  "main": "source/main.js",
-  "scripts": {
-    "test": "ava -v ./source/main.test.js && node test.js",
-    "lint": "eslint ./source/main.js",
-    "generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
-    "update-travis-config": "json2yaml --preserve-key-order ci/travis.json .travis.yml"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Anadian/regex-translator.git"
-  },
-  "keywords": [
-    "re",
-    "regex",
-    "regexp",
-    "regular",
-    "expressions",
-    "translator",
-    "converter",
-    "format",
-    "posix",
-    "pcre",
-    "vim",
-    "re2",
-    "ecma",
-    "javascript",
-    "grep",
-    "egrep",
-    "tool",
-    "cli",
-    "command",
-    "line",
-    "free",
-    "libre",
-    "open",
-    "mit"
-  ],
-  "author": "Anadian",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Anadian/regex-translator/issues"
-  },
-  "homepage": "https://github.com/Anadian/regex-translator#readme",
-  "devDependencies": {
-    "ava": "^3.15.0",
-    "coveralls": "^3.1.1",
-    "eslint": "^7.32.0",
-    "execa": "^5.1.1",
-    "extract-documentation-comments": "^0.3.9",
-    "npm-check-updates": "^11.8.5",
-    "nyc": "^15.1.0",
-    "pify": "^5.0.0",
-    "standard-version": "^9.3.1"
-  },
-  "dependencies": {
-    "application-log-winston-interface": "^2.0.4",
-    "clipboardy": "^2.3.0",
-    "command-line-args": "^5.2.0",
-    "command-line-usage": "^6.1.1",
-    "env-paths": "^2.2.0",
-    "get-stream": "^6.0.1",
-    "make-dir": "^3.1.0"
-  },
-  "bin": {
-    "regex-translator": "./source/main.js"
-  },
-  "eslintConfig": {
-    "env": {
-      "commonjs": true,
-      "es6": true,
-      "node": true
-    },
-    "extends": "eslint:recommended",
-    "globals": {
-      "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-      "ecmaVersion": 11
-    },
-    "rules": {
-      "no-unused-vars": [
-        "warn"
-      ],
-      "no-useless-escape": "off",
-      "no-empty": "warn"
-    }
-  },
-  "standard-version": {
-    "types": [
-      {
-        "type": "feat",
-        "section": "Features",
-        "hidden": false
-      },
-      {
-        "type": "fix",
-        "section": "Bug Fixes",
-        "hidden": false
-      },
-      {
-        "type": "chore",
-        "section": "Chores",
-        "hidden": false
-      },
-      {
-        "type": "docs",
-        "section": "Documentation",
-        "hidden": false
-      },
-      {
-        "type": "style",
-        "section": "Code Style",
-        "hidden": false
-      },
-      {
-        "type": "refactor",
-        "section": "Refactoring",
-        "hidden": false
-      },
-      {
-        "type": "perf",
-        "section": "Performance",
-        "hidden": false
-      },
-      {
-        "type": "test",
-        "section": "Tests",
-        "hidden": false
-      }
-    ]
-  }
+	"name": "regex-translator",
+	"version": "0.2.3",
+	"description": "Convert a Regular Expression from one flavour to another.",
+	"main": "source/main.js",
+	"scripts": {
+		"test": "ava -v ./source/main.test.js",
+		"lint": "eslint ./source/main.js",
+		"generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
+		"update-config": "hjson -j ci/github-actions.hjson | json2yaml --preserve-key-order -o .github/workflows/ci.yml",
+		"update-deps": "npm-check-updates -ux env-paths",
+		"release": "standard-version",
+		"publish-release": "git push --follow-tags origin main && npm publish"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Anadian/regex-translator.git"
+	},
+	"keywords": [
+		"re",
+		"regex",
+		"regexp",
+		"regular",
+		"expressions",
+		"translator",
+		"converter",
+		"format",
+		"posix",
+		"pcre",
+		"vim",
+		"re2",
+		"ecma",
+		"javascript",
+		"grep",
+		"egrep",
+		"tool",
+		"cli",
+		"command",
+		"line",
+		"free",
+		"libre",
+		"open",
+		"mit"
+	],
+	"author": "Anadian",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Anadian/regex-translator/issues"
+	},
+	"homepage": "https://github.com/Anadian/regex-translator#readme",
+	"devDependencies": {
+		"ava": "^3.15.0",
+		"coveralls": "^3.1.1",
+		"eslint": "^7.32.0",
+		"execa": "^5.1.1",
+		"extract-documentation-comments": "^0.3.9",
+		"npm-check-updates": "^11.8.5",
+		"nyc": "^15.1.0",
+		"pify": "^5.0.0",
+		"standard-version": "^9.3.1"
+	},
+	"dependencies": {
+		"application-log-winston-interface": "^2.0.4",
+		"clipboardy": "^2.3.0",
+		"command-line-args": "^5.2.0",
+		"command-line-usage": "^6.1.1",
+		"env-paths": "^2.2.0",
+		"get-stream": "^6.0.1",
+		"make-dir": "^3.1.0"
+	},
+	"bin": {
+		"regex-translator": "./source/main.js"
+	},
+	"eslintConfig": {
+		"env": {
+			"commonjs": true,
+			"es6": true,
+			"node": true
+		},
+		"extends": "eslint:recommended",
+		"globals": {
+			"Atomics": "readonly",
+			"SharedArrayBuffer": "readonly"
+		},
+		"parserOptions": {
+			"ecmaVersion": 11
+		},
+		"rules": {
+			"no-unused-vars": [
+				"warn"
+			],
+			"no-useless-escape": "off",
+			"no-empty": "warn"
+		}
+	},
+	"standard-version": {
+		"types": [
+			{
+				"type": "build",
+				"section": "Build",
+				"hidden": false
+			},
+			{
+				"type": "ci",
+				"section": "Continuous Integration",
+				"hidden": false
+			},
+			{
+				"type": "chore",
+				"section": "Chores",
+				"hidden": false
+			},
+			{
+				"type": "docs",
+				"section": "Documentation",
+				"hidden": false
+			},
+			{
+				"type": "feat",
+				"section": "Features",
+				"hidden": false
+			},
+			{
+				"type": "fix",
+				"section": "Bug Fixes",
+				"hidden": false
+			},
+			{
+				"type": "perf",
+				"section": "Performance",
+				"hidden": false
+			},
+			{
+				"type": "refactor",
+				"section": "Refactoring",
+				"hidden": false
+			},
+			{
+				"type": "style",
+				"section": "Code Style",
+				"hidden": false
+			},
+			{
+				"type": "test",
+				"section": "Tests",
+				"hidden": false
+			}
+		]
+	},
+	"engines": {
+		"node": ">=12"
+	}
 }
