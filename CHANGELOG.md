@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/Anadian/regex-translator/compare/v0.2.3...v0.2.4) (2021-09-24)
+
+
+### Features
+
+* Added more flavour support. ([be55ac0](https://github.com/Anadian/regex-translator/commit/be55ac0b5d93d2fd1da3c3b94851ddf8dbcafd92))
+* **README.md:** Further modernised README. ([ba5d0e3](https://github.com/Anadian/regex-translator/commit/ba5d0e37113069361ba2bfef8bd071c62389a236))
+* **source/main.js:** Added getMediaryObjectFromRegexString and getRegexStringFromMediaryObject. ([834d96d](https://github.com/Anadian/regex-translator/commit/834d96d00f4d3f5380dcf38a09566b50d0735907))
+
+
+### Documentation
+
+* **README.md:** Added CLI section to the TOC. ([8d31e24](https://github.com/Anadian/regex-translator/commit/8d31e2447b8c300eaa409441cc4fa23454377aef))
+
+
+### Tests
+
+* **CLI:** Trying to rewrite the cli test script in AVA. ([256abb2](https://github.com/Anadian/regex-translator/commit/256abb2276cc559ce6bda6cb43c4f56c152b069f))
+* **CLI:** Updated cli_test.sh to be much more comprehensive. ([dcc01e7](https://github.com/Anadian/regex-translator/commit/dcc01e7a807cab5866d5636dad8cdd141d55b216))
+* Committing before attempting to switch to node-tap for my testing framework. ([53fb6ff](https://github.com/Anadian/regex-translator/commit/53fb6ff85ace6b0eabc93c0a00dcdf62f562b606))
+* Dying inside. ([7051a5e](https://github.com/Anadian/regex-translator/commit/7051a5e33d9c7efe59c8f2173aa130e620e21fd4))
+* Giving up on CLI testing in Javascript itself. Nodes child process module is to unpredictable. ([3672007](https://github.com/Anadian/regex-translator/commit/36720075a3faa756af80ac3c041fdd3ba10adb70))
+* stdio hell but there's light a the end of the tunnel maybe, possibly, probably not. ([9c374da](https://github.com/Anadian/regex-translator/commit/9c374da5aae1d2e909e3c3e8824dc2c17e2421ee))
+
+
+### Chores
+
+* Can confirm the npm is swallowing standard streams in test scripts. ([5f1e432](https://github.com/Anadian/regex-translator/commit/5f1e4324a34b9e34526b035452ad783b248151a4))
+* Dying inside two. ([cd2eec7](https://github.com/Anadian/regex-translator/commit/cd2eec79aa947a281466384ee26a8afc386240c8))
+* Repo maintenance. ([321fd10](https://github.com/Anadian/regex-translator/commit/321fd10b88524d97199432ddcd5bdd27d7bf0cdd))
+
 ### [0.2.3](https://github.com/Anadian/regex-translator/compare/v0.2.2...v0.2.3) (2020-06-07)
 
 
