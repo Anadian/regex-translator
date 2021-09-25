@@ -1,6 +1,6 @@
 {
 	"name": "regex-translator",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"description": "Convert a Regular Expression from one flavour to another.",
 	"main": "source/main.js",
 	"scripts": {
@@ -10,7 +10,8 @@
 		"update-config": "hjson -j ci/github-actions.hjson | json2yaml --preserve-key-order -o .github/workflows/ci.yml",
 		"update-deps": "npm-check-updates -ux env-paths",
 		"release": "standard-version",
-		"publish-release": "git push --follow-tags origin main && npm publish"
+		"publish-release": "git push --follow-tags origin main && npm publish",
+		"sucks": "./npm_sucks.sh"
 	},
 	"repository": {
 		"type": "git",
@@ -53,14 +54,14 @@
 		"coveralls": "^3.1.1",
 		"eslint": "^7.32.0",
 		"execa": "^5.1.1",
-		"extract-documentation-comments": "^0.3.9",
+		"extract-documentation-comments": "^0.3.10",
 		"npm-check-updates": "^11.8.5",
 		"nyc": "^15.1.0",
 		"pify": "^5.0.0",
 		"standard-version": "^9.3.1"
 	},
 	"dependencies": {
-		"application-log-winston-interface": "^2.0.4",
+		"application-log-winston-interface": "^2.0.5",
 		"clipboardy": "^2.3.0",
 		"command-line-args": "^5.2.0",
 		"command-line-usage": "^6.1.1",
