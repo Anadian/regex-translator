@@ -8,7 +8,7 @@
 		"lint": "eslint ./source/main.js",
 		"generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
 		"update-config": "hjson -j ci/github-actions.hjson | json2yaml --preserve-key-order -o .github/workflows/ci.yml",
-		"update-deps": "npm-check-updates -ux env-paths",
+		"update-deps": "npm-check-updates -ux env-paths clipboardy",
 		"release": "standard-version",
 		"publish-release": "git push --follow-tags origin main && npm publish"
 	},
@@ -63,7 +63,7 @@
 	"dependencies": {
 		"ansi-regex": "^6.0.1",
 		"application-log-winston-interface": "^2.0.5",
-		"clipboardy": "^3.0.0",
+		"clipboardy": "^2.3.0",
 		"command-line-args": "^5.2.0",
 		"command-line-usage": "^6.1.1",
 		"env-paths": "^2.2.0",
