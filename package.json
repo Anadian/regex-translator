@@ -10,8 +10,7 @@
 		"update-config": "hjson -j ci/github-actions.hjson | json2yaml --preserve-key-order -o .github/workflows/ci.yml",
 		"update-deps": "npm-check-updates -ux env-paths",
 		"release": "standard-version",
-		"publish-release": "git push --follow-tags origin main && npm publish",
-		"sucks": "./npm_sucks.sh"
+		"publish-release": "git push --follow-tags origin main && npm publish"
 	},
 	"repository": {
 		"type": "git",
@@ -52,17 +51,19 @@
 	"devDependencies": {
 		"ava": "^3.15.0",
 		"coveralls": "^3.1.1",
-		"eslint": "^7.32.0",
+		"eslint": "^8.1.0",
 		"execa": "^5.1.1",
-		"extract-documentation-comments": "^0.3.10",
+		"extract-documentation-comments": "^0.3.11",
+		"hjson": "^3.2.2",
 		"npm-check-updates": "^11.8.5",
 		"nyc": "^15.1.0",
 		"pify": "^5.0.0",
-		"standard-version": "^9.3.1"
+		"standard-version": "^9.3.2"
 	},
 	"dependencies": {
+		"ansi-regex": "^6.0.1",
 		"application-log-winston-interface": "^2.0.5",
-		"clipboardy": "^2.3.0",
+		"clipboardy": "^3.0.0",
 		"command-line-args": "^5.2.0",
 		"command-line-usage": "^6.1.1",
 		"env-paths": "^2.2.0",

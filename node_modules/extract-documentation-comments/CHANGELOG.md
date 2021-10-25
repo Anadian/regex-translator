@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.11](https://github.com/Anadian/extract-documentation-comments/compare/v0.3.10...v0.3.11) (2021-10-02)
+
+
+### Continuous Integration
+
+* Updated the list runners in GHA to be the latest machine only. ([e29440b](https://github.com/Anadian/extract-documentation-comments/commit/e29440bedf12d2d9245e0bb0aeaed18aa9757cf2))
+
 ### [0.3.10](https://github.com/Anadian/extract-documentation-comments/compare/v0.3.9...v0.3.10) (2021-09-25)
 
 
