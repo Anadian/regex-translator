@@ -196,10 +196,14 @@ AVA.cb('CLI:HelpData', function(t){
 });
 AVA.cb('CLI:STDIOToSTDOUT', function(t){
 	var test_name = 'CLI:STDIOToSTDOUT';
+	var stdin_string = '^(?<protocol>[A-Za-z+]{3,11}):\\/\\/(?<host>(?<login>(?<username>[A-Za-z0-9_-]+)(?::(?<password>[A-Za-z0-9_-]+))?@)?(?<address>[A-Za-z0-9._-]+)(?::(?<port>\\d+))?)?(?<path>\\/[A-Za-z0-9%:+\\/._-]*)?(?<query>\\?[!"$-~]+)?(?<section>#[A-Za-z0-9_-]+)?';
 	var stdout_string = '';
 	var stderr_string = '';
-	var expected_stdout = '';
-	var process_object = ChildProcess.fork('source/main.js', ['-xio'], { silent: true });
+	var expected_stdout = '^(?P<protocol>[A-Za-z+]{3,11}):\\/\\/(?P<host>(?<login>(?P<username>[A-Za-z0-9_-]+)(?::(?P<password>[A-Za-z0-9_-]+))?@)?(?P<address>[A-Za-z0-9._-]+)(?::(?P<port>[0-9]+))?)?(?P<path>\\/[A-Za-z0-9%:+\\/._-]*)?(?P<query>\\?[!"$-~]+)?(?P<section>#[A-Za-z0-9_-]+)?\n';
+	var process_object = ChildProcess.fork('source/main.js', ['-xio', '-F', 'pcre', '-T', 're2'], { silent: true });
+	process_object.stdio[0].write( stdin_string, 'utf8', () => {
+		process_object.stdio[0].end();
+	} );
 	process_object.stdio[1].on('data', function(chunk){
 		console.log('stdout chunk: ', chunk.toString());
 		stdout_string += chunk.toString();
@@ -218,7 +222,7 @@ AVA.cb('CLI:STDIOToSTDOUT', function(t){
 		}
 		t.end();
 	});
-}
+} );
 AVA.cb('CLI:InputRegexStringToSTDOUT', function(t){
 	var process_object = ChildProcess.fork('source/main.js', ['-v', '--input-regex-string', 'pcre/(simple)? regex/replace/vim', '-o'], { silent: true });
 	var stdout_string = '';
