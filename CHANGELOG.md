@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.6](https://github.com/Anadian/regex-translator/compare/v0.2.5...v0.2.6) (2021-10-25)
+
+
+### Documentation
+
+* **README:** Added more information to the standards table. ([2e36c85](https://github.com/Anadian/regex-translator/commit/2e36c85f326bec17f58f6261b191bc7a54d72b4d))
+
+
+### Tests
+
+* Full CLI testing now functional. ([568c399](https://github.com/Anadian/regex-translator/commit/568c399dbcb31a9a371ed98ae6d9ec9c218195ab))
+* Significantly improved CLI testing. ([f370c33](https://github.com/Anadian/regex-translator/commit/f370c33c53b605020a1ad6e33a55adb5eba2235b))
+
+
+### Continuous Integration
+
+* Added basic CI support. ([e611c42](https://github.com/Anadian/regex-translator/commit/e611c425a090043ec027fb1b6943837e3bd4eb1b))
+
 ### [0.2.5](https://github.com/Anadian/regex-translator/compare/v0.2.4...v0.2.5) (2021-09-25)
 
 ### [0.2.4](https://github.com/Anadian/regex-translator/compare/v0.2.3...v0.2.4) (2021-09-24)
