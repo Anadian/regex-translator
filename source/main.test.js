@@ -224,6 +224,7 @@ AVA.cb('CLI:STDIOToSTDOUT', function(t){
 	});
 } );
 AVA.cb('CLI:InputRegexStringToSTDOUT', function(t){
+	const test_name = 'CLI:InputRegexStringToSTDOUT';
 	var process_object = ChildProcess.fork('source/main.js', ['-v', '--input-regex-string', 'pcre/(simple)? regex/replace/vim', '-o'], { silent: true });
 	var stdout_string = '';
 	var stderr_string = '';
@@ -248,3 +249,21 @@ AVA.cb('CLI:InputRegexStringToSTDOUT', function(t){
 	});
 });
 
+AVA.cb( 'CLI:InputFileToOutputFile', function(t){
+	const test_name = 'CLI:InputFileToOutputFile';
+	var process_object = ChildProcess.fork('source/main.js', [ '-I', 'test/input/semver_regex.txt', '-F', 'pcre', '-T', 'ecma', '-O', 'temp_out.txt' ], { silent: true });
+	var stdout_string = '';
+	var stderr_string = '';
+	var expected_output_buffer = FileSystem.readFileSync( 'test/DATA/EXPECTED/semver_regex.txt' );
+	process_object.on( 'exit', function( code, signal ){
+		console.log(`code: ${code} signal: ${signal}`);
+		var actual_output_buffer = FileSystem.readFileSync( 'temp_out.txt' );
+		FileSystem.unlinkSync( 'temp_out.txt' );
+		if( code === 0 ){
+			t.deepEqual( actual_output_buffer, expected_output_buffer );
+		} else{
+			t.fail();
+		}
+		t.end();
+	} );
+} );
