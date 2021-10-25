@@ -20,7 +20,7 @@ I love [regex](https://en.wikipedia.org/wiki/Regular_expression)! It's extremely
 ID | "Standard" | Uses
 --- | --- | ---
 `basic` | [Posix.2 "Basic Regular Expression" (BRE)](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html#tag_09_03) | `grep`, `ed` and C (`<regex.h>`)
-`extended` | [Posix.2 "Extended Regular Expressions" (ERE)](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html#tag_09_04) | `egrep` and C (`<regex.h>`)
+`extended` | [Posix.2 "Extended Regular Expressions" (ERE)](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html#tag_09_04) | `egrep`, BASH and C (`<regex.h>`)
 `pcre` | [Perl Compatible Regular Expressions (PCRE)](https://www.pcre.org/) | PCRE library, Perl, PHP, and many others.
 `vim` | [Vim Pattern](https://vimhelp.org/pattern.txt.html) | Vim
 `ecma` | [ECMAscript RegExp](https://262.ecma-international.org/12.0/#sec-regexp-regular-expression-objects) | Javascript, Web Browsers, ~Java
