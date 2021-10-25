@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.10](https://github.com/Anadian/extract-documentation-comments/compare/v0.3.9...v0.3.10) (2021-09-25)
+
+
+### Chores
+
+* **deps:** Updated dependencies. ([c639e42](https://github.com/Anadian/extract-documentation-comments/commit/c639e4202269f8dcb31d176bb712f39c6f82f5db))
+
 ### [0.3.9](https://github.com/Anadian/extract-documentation-comments/compare/v0.3.8...v0.3.9) (2021-09-15)
 
 

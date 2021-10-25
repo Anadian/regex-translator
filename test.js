@@ -161,4 +161,5 @@ async function test3(t){
 	});
 	//console.log('node_fork_async_silent: %o', node_fork_async_silent);
 }
-test3(null);
+test().then(test2().then(test3()));
+//test3(null);
