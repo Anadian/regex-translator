@@ -30,6 +30,7 @@
 						"node-version": "${{ matrix.node }}"
 					}
 				},
+				{ "run": "npm config list -l" },
 				{ "run": "npm install" },
 				{ "run": "npm test" }
 			]
