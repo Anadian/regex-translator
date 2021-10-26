@@ -4,6 +4,7 @@
 	"description": "Convert a Regular Expression from one flavour to another.",
 	"main": "source/main.js",
 	"scripts": {
+		"pretest": "npm i -g ava",
 		"test": "ava -v ./source/main.test.js",
 		"lint": "eslint ./source/main.js",
 		"generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
