@@ -52,12 +52,10 @@
 		"ava": "^3.15.0",
 		"coveralls": "^3.1.1",
 		"eslint": "^8.1.0",
-		"execa": "^5.1.1",
 		"extract-documentation-comments": "^0.3.11",
 		"hjson": "^3.2.2",
 		"npm-check-updates": "^11.8.5",
 		"nyc": "^15.1.0",
-		"pify": "^5.0.0",
 		"standard-version": "^9.3.2"
 	},
 	"dependencies": {
