@@ -42,7 +42,6 @@ Documentation License: [![Creative Commons License](https://i.creativecommons.or
 	const ChildProcess = require('child_process');
 	//##External
 	const AVA = require('ava');
-	const Pify = require('pify');
 //#Constants
 const FILENAME = 'main.test.js';
 const MODULE_NAME = 'RegexTranslatorTest';
