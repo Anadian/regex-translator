@@ -30,7 +30,10 @@
 						"node-version": "${{ matrix.node }}"
 					}
 				},
-				{ "run": "npm config list -l" },
+				{
+					"run": "npm install --global .",
+					"if": "${{ matrix.os == 'windows-latest' }}"
+				},
 				{ "run": "npm install" },
 				{ "run": "npm test" }
 			]
