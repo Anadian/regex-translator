@@ -253,13 +253,13 @@ AVA.cb( 'CLI:InputFileToOutputFile', function(t){
 	var process_object = ChildProcess.fork('source/main.js', [ '-I', 'test/input/semver_regex.txt', '-F', 'pcre', '-T', 'ecma', '-O', 'temp_out.txt' ], { silent: true });
 	var stdout_string = '';
 	var stderr_string = '';
-	var expected_output_buffer = FileSystem.readFileSync( 'test/DATA/EXPECTED/semver_regex.txt' );
+	var expected_output_string = FileSystem.readFileSync( 'test/DATA/EXPECTED/semver_regex.txt', 'utf8' ).replace( /\r\n/g, '\n' );
 	process_object.on( 'exit', function( code, signal ){
 		console.log(`code: ${code} signal: ${signal}`);
-		var actual_output_buffer = FileSystem.readFileSync( 'temp_out.txt' );
+		var actual_output_string = FileSystem.readFileSync( 'temp_out.txt', 'utf8' ).replace( /\r\n/g, '\n' );
 		FileSystem.unlinkSync( 'temp_out.txt' );
 		if( code === 0 ){
-			t.deepEqual( actual_output_buffer, expected_output_buffer );
+			t.is( actual_output_string, expected_output_string );
 		} else{
 			t.fail();
 		}
