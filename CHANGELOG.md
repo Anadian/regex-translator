@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](https://github.com/Anadian/regex-translator/compare/v0.2.6...v0.2.7) (2021-10-27)
+
+
+### Continuous Integration
+
+* Rebuilt package-lock.json ([91f0b65](https://github.com/Anadian/regex-translator/commit/91f0b6595fef9990d5eb56de7c5be3faf320f5b2))
+* Should probably work. ([c68a418](https://github.com/Anadian/regex-translator/commit/c68a418be7f8af99ab081d201e718c6c04b9c93f))
+* Trying to install ava globally to get Windows CI working. ([1478ed8](https://github.com/Anadian/regex-translator/commit/1478ed8348cdd0bb3cd05997194f1fd5654b36dd))
+* Updated to install things globally on Windows. ([4feb185](https://github.com/Anadian/regex-translator/commit/4feb185d53cc33c1a795489637680901eed120ad))
+* Updating to collect more data for windowsci. ([294b87d](https://github.com/Anadian/regex-translator/commit/294b87d3b826f811dd81941809100f08b76a86cb))
+
+
+### Tests
+
+* Fully functional testing for getRegexStringFromMediaryObject. ([524addf](https://github.com/Anadian/regex-translator/commit/524addf105933da9c51c7abbc57abe300fc74024))
+* Wrote tests for "getRegexStringFromMediaryObject". ([07c1f86](https://github.com/Anadian/regex-translator/commit/07c1f863ac5d37997dc1487249e3f24e2db5793a))
+
+
+### Code Style
+
+* Fixed linting errors. ([9607932](https://github.com/Anadian/regex-translator/commit/9607932ec7a02a5d1d48908d76fec7e72fb3f4e2))
+
+
+### Chores
+
+* Added latest package-lock.json ([580d4db](https://github.com/Anadian/regex-translator/commit/580d4dbc1d90389aaca44f3de560d7adb24d470e))
+* **deps:** Removed unused dependencies. ([e1a0636](https://github.com/Anadian/regex-translator/commit/e1a0636cac95d5b9e4b982a7b45ca23c7782fd54))
+* **deps:** Rolling back to a working version of clipboardy. ([9b26502](https://github.com/Anadian/regex-translator/commit/9b26502f7cd48ec3232f6f621c7d5cb3bd69614f))
+* **deps:** Rolling back to a working version of clipboardy. ([9fdb812](https://github.com/Anadian/regex-translator/commit/9fdb812b5f881262ba6bb54dcf5d7a6c56fdb8df))
+* Updated .gitignore. ([19b512b](https://github.com/Anadian/regex-translator/commit/19b512bee600ab4a2c5884f33106284797ecaa06))
+
+
+### Documentation
+
+* Added more README badges. ([61f2149](https://github.com/Anadian/regex-translator/commit/61f2149d2cb9f0f38e1f10de1776a37c27fe4295))
+* Updated. ([2cc39cb](https://github.com/Anadian/regex-translator/commit/2cc39cb51b5b73f21f9dd51903b57f73322a9afa))
+
 ### [0.2.6](https://github.com/Anadian/regex-translator/compare/v0.2.5...v0.2.6) (2021-10-25)
 
 
