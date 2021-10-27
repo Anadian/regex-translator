@@ -38,7 +38,7 @@ Documentation License: [![Creative Commons License](https://i.creativecommons.or
 	//##Internal
 	//##Standard
 	const FileSystem = require('fs');
-	const Utility = require('util');
+	//const Utility = require('util');
 	//##External
 	const GetStream = require('get-stream');
 	const ClipBoardy = require('clipboardy');
@@ -4170,6 +4170,7 @@ function getMediaryObjectFromRegexString( regex_string, flavour_string = 'pcre',
 	const FUNCTION_NAME = 'getMediaryObjectFromRegexString';
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `received: ${arguments_array}`});
 	//Variables
+	var i = 0;
 	var length = 0;
 	var to_object = {};
 	var to_values_array = [];
@@ -4212,7 +4213,7 @@ function getMediaryObjectFromRegexString( regex_string, flavour_string = 'pcre',
 		//console.log('character_class_code_matches: %o', character_class_code_matches);
 		character_classes_array = Array.from( character_class_code_matches );
 		//console.log('character_classes_array: %o', character_classes_array);
-		for( var i = 0; i < character_classes_array.length; i++ ){
+		for( i = 0; i < character_classes_array.length; i++ ){
 			length = character_class_codes.push( character_classes_array[i][1] );
 			intermediary_string = intermediary_string.replace( to_object['CHARACTER_CLASS'].from.search_regex, `<CHARACTER_CLASS_CODE_START:${(length-1)}:CHARACTER_CLASS_CODE_END>` );
 		}
@@ -4220,7 +4221,7 @@ function getMediaryObjectFromRegexString( regex_string, flavour_string = 'pcre',
 		return_error = new Error(`Caught an unexpected error when creating character classes code arrays: ${error}`);
 		throw return_error;
 	}
-	for( var i = 4; i < to_values_array.length; i++ ){
+	for( i = 4; i < to_values_array.length; i++ ){
 		intermediary_string = intermediary_string.replace( to_values_array[i].to.search_regex, to_values_array[i].to.replace_string );
 		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `intermediary string at ${i}: ${intermediary_string}`});
 	}
@@ -4377,7 +4378,7 @@ function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre
 	for( var i = 0; i < character_class_code_matches.length; i++ ){
 		intermediary_string = intermediary_string.replace( from_object['CHARACTER_CLASS_CODE'].from.search_regex, `<CHARACTER_CLASS_START:${mediary_object.character_class_codes_array[character_class_code_matches[i][1]]}:CHARACTER_CLASS_END>` );
 	}
-	for( var i = 5; i < from_values_array.length; i++ ){
+	for( i = 5; i < from_values_array.length; i++ ){
 		intermediary_string = intermediary_string.replace( from_values_array[i].from.search_regex, from_values_array[i].from.replace_string );
 		Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `intermediary_string at ${i}: ${intermediary_string}`});
 	}
@@ -4525,7 +4526,7 @@ async function main_Async( options = {} ){
 
 //#Exports and Execution
 if(require.main === module){
-	var _return = [1,null];
+	//var _return = [1,null];
 	const FUNCTION_NAME = 'MainExecutionFunction';
 	//##Dependencies
 		//###Internal
@@ -4561,6 +4562,7 @@ if(require.main === module){
 		{ name: 'config-file', alias: 'C', type: String, description: '[Resevred] Use the given config file instead of the default.' },
 	];
 	//Variables
+	var return_error = null;
 	var function_return = [1,null];
 	var quick_exit = false;
 	var source_dirname = '';
@@ -4577,7 +4579,8 @@ if(require.main === module){
 		setLogger( function_return );
 	} catch(error){
 		return_error = new Error(`ApplicationLogWinstonInterface.InitLogger threw an error: ${error}`);
-		throw return_error;
+		console.error( return_error );
+		//throw return_error;
 	}
 
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: 'Start of execution block.'});
