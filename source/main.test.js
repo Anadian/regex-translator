@@ -166,16 +166,13 @@ AVA('getRegexStringFromMediaryObject:SuccessPCRE', function(t){
 AVA('getRegexStringFromMediaryObject:SuccessVim', function(t){
 	var params = {
 		mediary_object: {
-			mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+			mediary_string: '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>',
 			character_class_codes_array: [ 'a' ]
 		},
 		flavour_string: 'vim'
 	};
 	var expected = '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{-,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$';
 	t.is( RegexTranslator.getRegexStringFromMediaryObject(params.mediary_object, params.flavour_string), expected);
-});
-AVA('getMultiPartObjectFromInputString:InvalidInputString', function(t){
-	t.throws( RegexTranslator.getMultiPartObjectFromInputString.bind( null, {} ), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' } );
 });
 AVA('getMultiPartObjectFromInputString:InvalidInputString', function(t){
 	t.throws( RegexTranslator.getMultiPartObjectFromInputString.bind( null, {} ), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' } );

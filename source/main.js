@@ -4319,6 +4319,7 @@ Throws:
 Status:
 | version | change |
 | --- | --- |
+| 0.2.5 | Updated to add improved error handling. |
 | 0.2.3 | Introduced |
 */
 function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre', options = {} ){
@@ -4330,6 +4331,7 @@ function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre
 	//Variables
 	var from_object = {};
 	var from_values_array = [];
+	var character_class_code_matches = [];
 	//Parametre checks
 	if( typeof(mediary_object) !== 'object' ){
 		return_error = new TypeError('Param "mediary_object" is not object.');
@@ -4373,7 +4375,7 @@ function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre
 	//CHARACTER_CLASS_CODES
 	character_class_code_matches = Array.from( intermediary_string.matchAll( from_object['CHARACTER_CLASS_CODE'].from.search_regex ) );
 	for( var i = 0; i < character_class_code_matches.length; i++ ){
-		intermediary_string = intermediary_string.replace( from_object['CHARACTER_CLASS_CODE'].from.search_regex, `<CHARACTER_CLASS_START:${mediary_object.character_class_codes_array[character_class_codes_matches[i][1]]}:CHARACTER_CLASS_END>` );
+		intermediary_string = intermediary_string.replace( from_object['CHARACTER_CLASS_CODE'].from.search_regex, `<CHARACTER_CLASS_START:${mediary_object.character_class_codes_array[character_class_code_matches[i][1]]}:CHARACTER_CLASS_END>` );
 	}
 	for( var i = 5; i < from_values_array.length; i++ ){
 		intermediary_string = intermediary_string.replace( from_values_array[i].from.search_regex, from_values_array[i].from.replace_string );
