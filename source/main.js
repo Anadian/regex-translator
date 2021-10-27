@@ -4330,11 +4330,20 @@ function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre
 	//Variables
 	var from_object = {};
 	var from_values_array = [];
-	var intermediary_string = mediary_object.mediary_string;
 	//Parametre checks
 	if( typeof(mediary_object) !== 'object' ){
 		return_error = new TypeError('Param "mediary_object" is not object.');
 		return_error.code = 'ERR_INVALID_ARG_TYPE';
+		throw return_error;
+	}
+	if( typeof(mediary_object.mediary_string) !== 'string' ){
+		return_error = new TypeError('Property "mediary_string" of "mediary_object" is not a string.');
+		return_error.code = 'ERR_INVALID_ARG_VALUE';
+		throw return_error;
+	}
+	if( Array.isArray(mediary_object.character_class_codes_array) !== true ){
+		return_error = new TypeError('Property "character_class_codes_array" of "mediary_object" is not an array.');
+		return_error.code = 'ERR_INVALID_ARG_VALUE';
 		throw return_error;
 	}
 	if( typeof(flavour_string) !== 'string' ){
@@ -4347,7 +4356,7 @@ function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre
 		return_error.code = 'ERR_INVALID_ARG_TYPE';
 		throw return_error;
 	}
-
+	var intermediary_string = mediary_object.mediary_string;
 	//Function
 	from_object = MetaRegexObject[flavour_string];
 	Logger.log({process: PROCESS_NAME, module: MODULE_NAME, file: FILENAME, function: FUNCTION_NAME, level: 'debug', message: `from_object: ${from_object}`});
