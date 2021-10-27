@@ -4319,7 +4319,7 @@ Throws:
 Status:
 | version | change |
 | --- | --- |
-| 0.2.5 | Updated to add improved error handling. |
+| 0.2.7 | Updated to add improved error handling. |
 | 0.2.3 | Introduced |
 */
 function getRegexStringFromMediaryObject( mediary_object, flavour_string = 'pcre', options = {} ){
