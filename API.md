@@ -1,3 +1,4 @@
+
 # [regex-translator.js](source/regex-translator.js)
 > Convert a Regular Expression from one flavour to another.
 
@@ -29,7 +30,11 @@ Documentation License: [![Creative Commons License](https://i.creativecommons.or
 > The type notation used in this documentation is based off of the [Google Closure type system](https://github.com/google/closure-compiler/wiki/Types-in-the-Closure-Type-System).
 
 > The status and feature lifecycle keywords used in this documentation are based off of my own standard [defined here](https://github.com/Anadian/FeatureLifeCycleStateStandard).
+
+
 ## Functions
+
+
 ### setLogger
 > Allows this module's functions to log the given logger object.
 
@@ -47,6 +52,8 @@ Status:
 | version | change |
 | --- | --- |
 | 0.0.0 | Introduced |
+
+
 ### getMultiPartObjectFromInputString
 > Parses the given input string to identify its individual parts and returns said parts as an object.
 
@@ -71,6 +78,8 @@ Status:
 | version | change |
 | --- | --- |
 | 0.0.1 | Introduced |
+
+
 ### getMediaryStringFromRegexString
 > Returns an intermediary string with special characters converted to a flavour-agnostic syntax.
 
@@ -96,6 +105,34 @@ Status:
 | --- | --- |
 | 0.2.1 | Stable |
 | 0.0.1 | Introduced |
+
+
+### getMediaryObjectFromRegexString
+> Returns a mediary object from the given regular expression string. This function should be used instead of `getMediaryStringFromRegexString` as this properly handles chracter classes in a "round-trip" fashion.
+
+Parametres:
+| name | type | description |
+| --- | --- | --- |
+| regex_string | {string} | The regular expression string to be converted to a mediary object.  |
+| flavour_string | {string} | The flavour of the regex string. \[default: \] |
+| options | {?Object} | [Reserved] Additional run-time options. \[default: {}\] |
+
+Returns:
+| type | description |
+| --- | --- |
+| {object} | A mediary object with the property `mediary_string` and, if necessary, a property `character_class_codes_array`. |
+
+Throws:
+| code | type | condition |
+| --- | --- | --- |
+| 'ERR_INVALID_ARG_TYPE' | {TypeError} | Thrown if a given argument isn't of the correct type. |
+
+Status:
+| version | change |
+| --- | --- |
+| 0.2.3 | Introduced: Breaking change; function now returns an object with an `intermediary_string` property and a `character_class_codes_array` property if necessary. |
+
+
 ### getRegexStringFromMediaryString
 > Returns the given mediary string reformatted to the given regex flavour.
 
@@ -121,6 +158,35 @@ Status:
 | --- | --- |
 | 0.2.1 | Stable |
 | 0.0.1 | Introduced |
+
+
+### getRegexStringFromMediaryObject
+> Returns a regex string from the given mediary object formatted to the given regex flavour.
+
+Parametres:
+| name | type | description |
+| --- | --- | --- |
+| mediary_object | {object} | A mediary object with a `mediary_string` and `character_class_codes_array` properties.  |
+| flavour_string | {string} | A string repesenting the Regular Expression flavour to return the string in. \[default: 'pcre'\] |
+| options | {?Object} | [Reserved] Additional run-time options. \[default: {}\] |
+
+Returns:
+| type | description |
+| --- | --- |
+| {string} | The regex string translated from the mediary obejct. |
+
+Throws:
+| code | type | condition |
+| --- | --- | --- |
+| 'ERR_INVALID_ARG_TYPE' | {TypeError} | Thrown if a given argument isn't of the correct type. |
+
+Status:
+| version | change |
+| --- | --- |
+| 0.2.7 | Updated to add improved error handling. |
+| 0.2.3 | Introduced |
+
+
 ### main_Async (private)
 > The main function when the script is run as an executable. Not exported and should never be manually called.
 
@@ -134,3 +200,4 @@ Status:
 | --- | --- |
 | 0.2.1 | Stable |
 | 0.0.1 | Introduced |
+

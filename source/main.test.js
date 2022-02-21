@@ -115,6 +115,65 @@ AVA('getRegexStringFromMediaryString:SuccessVim', function(t){
 	var expected = '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{-,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$';
 	t.is( RegexTranslator.getRegexStringFromMediaryString(params.mediary_string, params.flavour_string), expected);
 });
+AVA('getRegexStringFromMediaryObject:InvalidMediaryObject', function(t){
+	var params = {
+		mediary_object: '',
+		flavour_string: 'pcre'
+	};
+	var error = t.throws( RegexTranslator.getRegexStringFromMediaryObject.bind(null, params.mediary_object, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' }, 'Is this shown?' );
+});
+AVA('getRegexStringFromMediaryObject:InvalidFlavourString', function(t){
+	var params = {
+		mediary_object: {
+			mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+			character_class_codes_array: [ 'a' ]
+		},
+		flavour_string: {}
+	};
+	var error = t.throws( RegexTranslator.getRegexStringFromMediaryObject.bind(null, params.mediary_object, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' });
+});
+AVA('getRegexStringFromMediaryObject:InvalidMediaryObjectValue', function(t){
+	var params = {
+		mediary_object: {
+			mediary_string: {},
+			character_class_codes_array: [ 'a' ]
+		},
+		flavour_string: 'pcre'
+	};
+	var error = t.throws( RegexTranslator.getRegexStringFromMediaryObject.bind(null, params.mediary_object, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_VALUE' });
+});
+AVA('getRegexStringFromMediaryObject:InvalidCharacterClassCodesArray', function(t){
+	var params = {
+		mediary_object: {
+			mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+			character_class_codes_array: 'a'
+		},
+		flavour_string: 'pcre'
+	};
+	var error = t.throws( RegexTranslator.getRegexStringFromMediaryObject.bind(null, params.mediary_object, params.flavour_string), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_VALUE' });
+});
+AVA('getRegexStringFromMediaryObject:SuccessPCRE', function(t){
+	var params = {
+		mediary_object: {
+			mediary_string: '<SL>t<ZMQ>h<OMQ>i<ZOQ>s<VRQ_START:5:10:VRQ_END> <LOP>is<LCP> <CHARACTER_CLASS_START:a:CHARACTER_CLASS_END> <LDS><LOMQ>i<LZMQ><%LOC%>m<%LCC%><%LOB%>p<%LCB%><MAC>e<LCS> <LPIPE> <%LLT%>pcre<%LGT%> <MOP>r<ORA>R<MCP>e<LVRQ_START:1:3:LVRQ_END><%LOC%>gex<%LCC%><LP><LPS><LAS><LQM><LES><EL><LFS><%LOC%><CC_DIGIT> <CC_DIGIT> <CC_NOTDIGIT> <CC_WORD> <CC_NOTWORD> <CC_alnum> <CC_graph> <CC_lower> <CC_punct> <CC_upper> <CC_xdigit> <CC_NOTNEWLINE> <CC_HORIZONTALSPACE> <CC_HORIZONTALSPACE> <CC_NOTHORIZONTALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_VERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_NOTVERTICALSPACE> <CC_R><LBS><RS>',
+			character_class_codes_array: [ 'a' ]
+		},
+		flavour_string: 'pcre'
+	};
+	var expected = '^t*h+i?s{5,10} \\(is\\) [a] \\$+?i*?\\{m\\}\\[p\\].e\\^ \\| <pcre> (r|R)e{1,3}?\\{gex\\}\\.\\+\\*\\?\\=$\\/\\{[0-9] [0-9] [^0-9] [A-Za-z0-9_] [^A-Za-z0-9_] [A-Za-z0-9] [!-~] [a-z] [!-\\/:-@[-`{-~] [A-Z] [0-9A-Fa-f] [^\\r\\n] [ \\t] [ \\t] [^ \\t] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [^\\f\\n\\r\\t\\v] [\\r\\n\\f\\t\\v]\\\\/';
+	t.is( RegexTranslator.getRegexStringFromMediaryObject(params.mediary_object, params.flavour_string), expected);
+});
+AVA('getRegexStringFromMediaryObject:SuccessVim', function(t){
+	var params = {
+		mediary_object: {
+			mediary_string: '<SL><MOP>\\t<ZMQ><MCP>js<LBS>tc<LOP><MOP><CHARACTER_CLASS_START:A-Za-z0-9_:CHARACTER_CLASS_END><OMQ> <LES> <MCP><LVRQ_START::1:LVRQ_END><MOP><CHARACTER_CLASS_START:A-Za-z0-9_<MAC>:CHARACTER_CLASS_END><OMQ><MCP><LOP><MOP><CHARACTER_CLASS_START:<SL><LCP>:CHARACTER_CLASS_END><ZMQ><MCP><LCP><LCP><EL>',
+			character_class_codes_array: [ 'a' ]
+		},
+		flavour_string: 'vim'
+	};
+	var expected = '^\\(\\t*\\)js\\\\tc(\\([A-Za-z0-9_]\\+ = \\)\\{-,1}\\([A-Za-z0-9_.]\\+\\)(\\([^)]*\\)))$';
+	t.is( RegexTranslator.getRegexStringFromMediaryObject(params.mediary_object, params.flavour_string), expected);
+});
 AVA('getMultiPartObjectFromInputString:InvalidInputString', function(t){
 	t.throws( RegexTranslator.getMultiPartObjectFromInputString.bind( null, {} ), { instanceOf: TypeError, code: 'ERR_INVALID_ARG_TYPE' } );
 });
@@ -253,13 +312,13 @@ AVA.cb( 'CLI:InputFileToOutputFile', function(t){
 	var process_object = ChildProcess.fork('source/main.js', [ '-I', 'test/input/semver_regex.txt', '-F', 'pcre', '-T', 'ecma', '-O', 'temp_out.txt' ], { silent: true });
 	var stdout_string = '';
 	var stderr_string = '';
-	var expected_output_buffer = FileSystem.readFileSync( 'test/DATA/EXPECTED/semver_regex.txt' );
+	var expected_output_string = FileSystem.readFileSync( 'test/DATA/EXPECTED/semver_regex.txt', 'utf8' ).replace( /\r/g, '' );
 	process_object.on( 'exit', function( code, signal ){
 		console.log(`code: ${code} signal: ${signal}`);
-		var actual_output_buffer = FileSystem.readFileSync( 'temp_out.txt' );
+		var actual_output_string = FileSystem.readFileSync( 'temp_out.txt', 'utf8' ).replace( /\r/g, '' );
 		FileSystem.unlinkSync( 'temp_out.txt' );
 		if( code === 0 ){
-			t.deepEqual( actual_output_buffer, expected_output_buffer );
+			t.is( actual_output_string, expected_output_string );
 		} else{
 			t.fail();
 		}
