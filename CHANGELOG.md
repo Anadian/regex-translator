@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.8](https://github.com/Anadian/regex-translator/compare/v0.2.7...v0.2.8) (2022-02-21)
+
+
+### Documentation
+
+* Overhauled docs. ([4211e9e](https://github.com/Anadian/regex-translator/commit/4211e9e85cd47fe79a1636a07ab6c30b9e06e5da))
+
 ### [0.2.7](https://github.com/Anadian/regex-translator/compare/v0.2.6...v0.2.7) (2021-10-27)
 
 
