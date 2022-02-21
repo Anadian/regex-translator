@@ -4,8 +4,8 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=flat-square)](https://conventionalcommits.org)
 [![License](https://img.shields.io/github/license/Anadian/regex-translator)](https://github.com/Anadian/regex-translator/LICENSE)
 [![npm](https://img.shields.io/npm/v/regex-translator)](https://www.npmjs.com/package/regex-translator)
+[![ci](https://github.com/Anadian/regex-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Anadian/regex-translator/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Anadian/regex-translator/badge.svg?branch=main)](https://coveralls.io/github/Anadian/regex-translator?branch=main)
-![David](https://img.shields.io/david/Anadian/regex-translator)
 
 > Convert a Regular Expression from one flavour to another.
 # Table of Contents
