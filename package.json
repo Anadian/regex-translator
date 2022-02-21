@@ -8,7 +8,7 @@
 		"lint": "eslint ./source/main.js",
 		"generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
 		"update-config": "hjson -j ci/github-actions.hjson | json2yaml --preserve-key-order -o .github/workflows/ci.yml",
-		"update-deps": "npm-check-updates -ux env-paths clipboardy",
+		"update-deps": "npm-check-updates -ux env-paths,clipboardy",
 		"release": "standard-version",
 		"publish-release": "git push --follow-tags origin main && npm publish"
 	},
