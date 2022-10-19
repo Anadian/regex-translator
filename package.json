@@ -5,12 +5,15 @@
 	"main": "source/main.js",
 	"scripts": {
 		"test": "ava -v ./source/main.test.js",
+		"coverage": "c8 pnpm test",
+		"coverage-report": "c8 report -r=text-lcov > coverage/lcov.txt",
+		"ci": "pnpm coverage && pnpm coverage-report",
 		"lint": "eslint ./source/main.js",
 		"generate-docs": "extract-documentation-comments -I source/main.js -O API.md",
 		"update-config": "hjson -j ci/github-actions.hjson | json2yaml --preserve-key-order -o .github/workflows/ci.yml",
-		"update-deps": "npm-check-updates -ux env-paths,clipboardy,ava",
+		"update-deps": "npm-check-updates -u",
 		"release": "standard-version",
-		"publish-release": "git push --follow-tags origin main && npm publish"
+		"publish-release": "git push --follow-tags origin main && pnpm publish"
 	},
 	"repository": {
 		"type": "git",
@@ -50,13 +53,13 @@
 	"homepage": "https://github.com/Anadian/regex-translator#readme",
 	"devDependencies": {
 		"ava": "^3.15.0",
+		"c8": "^7.12.0",
 		"coveralls": "^3.1.1",
 		"eslint": "^8.9.0",
 		"extract-documentation-comments": "^0.3.12",
 		"hjson": "^3.2.2",
-		"npm-check-updates": "^12.4.0",
-		"nyc": "^15.1.0",
-		"standard-version": "^9.3.2"
+		"npm-check-updates": "^12.5.12",
+		"standard-version": "^9.5.0"
 	},
 	"dependencies": {
 		"ansi-regex": "^6.0.1",
@@ -64,9 +67,7 @@
 		"clipboardy": "^2.3.0",
 		"command-line-args": "^5.2.1",
 		"command-line-usage": "^6.1.1",
-		"env-paths": "^2.2.0",
-		"get-stream": "^6.0.1",
-		"make-dir": "^3.1.0"
+		"get-stream": "^6.0.1"
 	},
 	"bin": {
 		"regex-translator": "./source/main.js"
@@ -148,6 +149,8 @@
 		]
 	},
 	"engines": {
-		"node": ">=12"
-	}
+		"node": ">=14.8.0"
+	},
+	"type": "module",
+	"exports": "./source/main.js"
 }
