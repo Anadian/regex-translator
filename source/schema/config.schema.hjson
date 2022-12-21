@@ -1,0 +1,464 @@
+{
+	title: 'regex-translator-config',
+	description: 'A schema defining the structure of regex-translator\'s config file.',
+	type: 'object',
+	properties: {
+		codecs: {
+			description: 'A array of objects defining available regex codecs.',
+			type: 'array',
+			items: {
+				jsc\ref(codecInfo)
+			}
+		}
+	},
+	"$defs": {
+		urlSafeString: {
+			description: 'A string of URL-safe characters as defined by [RFC 4648 Section 5](https://datatracker.ietf.org/doc/html/rfc4648#section-5)',
+			type: "string",
+			pattern: "^[A-Za-z0-9_-]+$"
+		},
+		semverString: {
+			description: 'A Semantic Versioning string as defined by the [semver standard](https://semver.org/).'
+			type: 'string',
+			pattern: "^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+		},
+		URL: {
+			description: 'A string representation of a URL as defined by [WHATWG URL Living standard](https://url.spec.whatwg.org/).',
+			type: 'string',
+			pattern: '^(?<protocol>[A-Za-z+]{3,11}):\/\/(?<host>(?<login>(?<username>[A-Za-z0-9_-]+)(?::(?<password>[A-Za-z0-9_-]+))?@)?(?<address>[A-Za-z0-9._-]+)(?::(?<port>\d+))?)?(?<path>\/[A-Za-z0-9%:+\/._-]*)?(?<query>\?[!"$-~]+)?(?<section>#[A-Za-z0-9_-]+)?$'
+		},
+		fileURL: {
+			description: 'A subset of [URL](#/$defs/URL) specifically for file:// URLs. [WHATWG',
+			type: 'string',
+			pattern: '^file://(?<path>\/[A-Za-z0-9%:+\/._-]*)$'
+		},
+		isoDatetime: {
+			description: 'An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) full date-time string.',
+			type: 'string',
+			pattern: '^(?<year>\d{4,5})-(?<month>[01]?\d)-(?<dayofmonth>[0-3]?\d)T(?<hour>[0-2]?\d):(?<minute>[0-5]\d):(?<second>[0-5]\d)(?<timezone>Z|(?<offset>[+-][0-2]?\d:[0-5]\d))$'
+		},
+		rfcDatetime: {
+			description: 'An [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339) full datetime string representation.',
+			type: 'string',
+			pattern: '^(?<datetime>(?<date>(?<year>\d{4})-(?<month>[01]\d)-(?<day>[0-3]\d))[Tt](?<fulltime>(?<time>(?<hour>[0-2]\d):(?<minute>[0-5]\d):(?<second>[0-5]\d(?<fractionsecond>\.\d+)?))(?<offset>[Zz]|(?<timeoffset>[+-](?<offsethour>[0-2]\d):(?<offsetminute>[0-5]\d))))$)$'
+		},
+		unicodeHexString: {
+			type: 'string',
+			maxLength: 4
+			pattern: '[0-9A-Fa-f]+'
+		},
+		codepoint: {
+			type: 'object',
+			properties: {
+				character: {
+					type: 'string',
+					maxLength: 1
+				},
+				unicode: {
+					jsc\ref(unicodeHexString)
+				}
+			}
+			required: [ 'unicode' ]
+		},
+		class: {
+			description: 'A set of codepoints.',
+			type: 'object',
+			properties: {
+				inverted: {
+					type: 'boolean',
+					default: false,
+				},
+				codepoints: {
+					type: 'object',
+					patternPropeties: {
+						'[0-9A-Fa-f]+': {
+							type: 'boolean'
+						}
+					}
+				}
+			}
+		},
+		quantifier: {
+			type: 'object',
+			properties: {
+				minQuantity: {
+					type: 'integer',
+					minimum: 0
+				},
+				maxQuantity: {
+					type: 'integer'
+				},
+				greedy: {
+					type: 'boolean',
+					default: true
+				},
+				possesive: {
+					type: 'boolean',
+					default: false
+				}
+			},
+			required: [ 'minQuantity', 'maxQuantity' ]
+		},
+		anchor: {
+			type: 'object',
+			properties: {
+				anchorType: {
+					enum: [
+						'START_OF_STRING',
+						'END_OF_STRING',
+						'WORD_BOUNDRY',
+						'NON_WORD_BOUNDRY',
+						'START_OF_MATCH',
+						'ABSOLUTE_END_OF_STRING'
+					]
+				}
+			},
+			required: [ 'anchorType' ]
+		},
+		lookahead: {
+			type: 'object',
+			properties: {
+				lookaroundType: {
+					const: 'lookahead'
+				},
+				inverted: {
+					type: 'boolean',
+					default: false
+				},
+				scope: {
+					jsc\ref(scope)
+				}
+			},
+			required: [ 'lookaroundType', 'inverted', 'scope' ]
+		},
+		lookbehind: {
+			type: 'object',
+			properties: {
+				lookaroundType: {
+					const: 'lookbehind'
+				},
+				inverted: {
+					type: 'boolean',
+					default: false
+				},
+				scope: {
+					jsc\ref(scope)
+				}
+			},
+			required: [ 'lookaroundType', 'inverted', 'scope' ]
+		},
+		alternative: {
+			type: 'object',
+			properties: {
+				aScope: {
+					jsc\ref(scope)
+				},
+				bScope: {
+					jsc\ref(scope)
+				}
+			},
+			required: [ 'aScope', 'bScope' ]
+		},
+		assertion: {
+			type: 'object',
+			properties: {
+				assertionType: {
+					enum: [ 'lookbehind', 'lookahead', 'backreference', 'recursion' ]
+				},
+				assertion: {
+					anyOf: [
+						jsc\ref(lookbehind),
+						jsc\ref(lookahead),
+						jsc\ref(backreference),
+						jsc\ref(recursion)
+					]
+				}
+			},
+			required: [ 'assertionType', 'assertion' ]
+		},
+		searchSequence:{
+			description: 'An ordered array series of classes and assertions unparsed.',
+			type: 'array',
+			items: {
+				anyOf: [
+					jsc\ref(combo),
+					jsc\ref(alternative),
+					jsc\ref(anchor)
+				]
+			}
+		},
+		combo: {
+			description: 'A class or group with any quantifiers and lookarounds parsed with values.',
+			type: 'object',
+			properties: {
+				valueType: {
+					enum: [
+						'class',
+						'group'
+					]
+				},
+				value: {
+					oneOf: [
+						jsc\ref(class),
+						jsc\ref(group)
+					]
+				},
+				/*assertions: {
+					type: 'array',
+					items: {
+						jsc\ref(assertion)
+					}
+				}*/
+				lookbehind: {
+					jsc\ref(lookbehind)
+				},
+				lookahead: {
+					jsc\ref(lookahead)
+				},
+				quantifier: {
+					jsc\ref(quantifier)
+				}
+			},
+			required: [ 'valueType', 'value', 'quantifier' ]
+		},
+		metaSequence:
+			pattern: \\
+				CLASSES
+				resetMatch \K
+				unicode properties (\p \P \p{} \P{}
+				matchCaptureGroupValue \# \g# \g{[+-]#}
+				matchRelativeExpression \g[<'][+-]?\d[>']
+				matchNameExpression \g[<']name[>']
+				matchPreviouslyNamedExpression \g{name}
+				quote \Q \E
+				hex \xEF \x{CDEF} \uCDEF
+				octal \\\d{3}
+		replaceSequences
+			numberCGValue $1 \1 \g<1>
+			namedCGValue ${name} \g<name>
+			wholeMatch $& \0 \g<0>
+			textPrecedingMatch $`
+			textFollowingMatch $'
+			transformations \U \L \E
+			lastCaptureGroup $+
+			inputString $_
+
+
+		scope: {
+			description: 'A scope or subpattern in the regex.',
+			type: 'object',
+			properties: {
+				contents: {
+					jsc\ref(searchSequence)
+				}
+			},
+			required: [ 'contents' ]
+		},
+		directive: {
+			description: 'Zero-width tokens that modify the parsing logic itself.',
+			type: 'object',
+			anyOf: [
+				jsc\ref(controlVerb),
+				jsc\ref(modifier),
+				jsc\ref(
+
+		modifier: {
+			description: 'A single modifier.',
+			type: 'object',
+			properties: {
+				modifierType: {
+					enum: [
+						'CASE_INSENSITIVE',
+						'CASE_SENSITIVE',
+						'GLOBAL',
+						'MULTILINE',
+						'SINGLELINE',
+						'UNGREEDY',
+						'UNICODE',
+						'SUPPRESS_ERRORS',
+						'IGNORE_WHITESPACE',
+						'IGNORE_ALL_WHITESPACE',
+						'ANCHOR',
+						'DUPLICATE_GROUP_NAMES',
+						'STICKY',
+						'ASCII_ONLY',
+						'NO_CAPTURE_GROUPS
+					]
+				},
+		modifiers: {
+			description: 'An inline regex modifier.',
+			properties: {
+
+		controlVerb: {
+			description: 'A PCRE controlVerb.',
+			type: 'object',
+			form: '\\(\\*(ACCEPT|FAIL|(?MARK)?:[A-Za-z0-9_-]+|COMMIT|PRUNE|SKIP|THEN|UTF|UTF8|UTF16|UTF32|UCP|CR|LF|CRLF|ANYCRLF|ANY|NOTEMPTY|NOTEMPTY_ATSTART|NO_JIT|\\R|BSR_ANYCRLF|BSR_UNICODE|LIMIT_MATCH=\\d+|LIMIT_RECURSION=\\d+|NO_AUTO_POSSESS|NO_START_OPT'
+		},
+		nonCaptureGroup: {
+			modified, (?some:
+			atomic, (?>
+			branchReset, (?|
+			conditional
+				condition:
+					numberedConditional (?(1)true|false)
+					wholePattern (?(R)
+					subcall (?(R&name)
+					previousCallToCaptureGroup (?(R1)
+					lookaroundAssertion
+				trueExpression: expression
+				falseExpression: expression
+			recursiveExpression
+			reuseCaptureGroupExpression (?&name)
+			matchPreviousCaptureGroupValue (?P=name) \k<name>
+			reusePreviousCaptureGroupExpression (?P>name)
+			reuseNumberedCaptureGroupExpression (?1)
+			reuseRelativeCaptureGroupExpression (?[-+]\d)
+			nameACaptureGroupWithoutActuallyMatchingAnything with the definition: (?(DEFINE)(?<namedGroup>expression)	can later be re invoked (?&nameGroup)
+			lookaround
+				ahead: (?=
+				not ahead: (?!
+				behind: (?<=
+				not behind (?<!
+			comment (?#
+			pattern: '
+		group: {
+			description: 'A sequence with captures and modifiers.',
+			type: 'object',
+			properties: {
+				groupType: {
+					enum: [
+						'NUMBERED_CAPTURE',
+						'NAMED_CAPTURE',
+						'NON_CAPTURE',
+						'COMMENT',
+						'ATOMIC_NON_CAPTURE',
+						'BRANCH_RESET',
+						'BACKREFERENCE',
+						'CONTROL_VERB',
+						'LOOKAHEAD',
+						'LOOKBEHIND',
+				capture: {
+					type: [ 'string', 'integer', 'boolean', 'null' ],
+					description: 'The identifier for the capture group, whether a string or an integer, or false or null to indicate no capture.'
+				},
+				modifiers,
+				scope: {
+					jsc\ref(scope)
+				},
+			},
+			required: [ 'capture', 'scope' ]
+		},
+		comment: {
+			description: 'A regex comment.',
+			type: 'object',
+			properties: {
+				text: {
+					description: 'The comment text.',
+					type: 'string'
+				}
+			}
+		},
+		captureID: {
+			description: 'A number or a &something string.',
+			type: [ 'integer', 'string' ],
+		},	
+		conditional: {
+			description: 'A conditional construct.',
+			type: 'object',
+			properties: {
+				conditionType: {
+					enum: [
+						'CAPTURE_NUMBER',
+						'WHOLE_MATCH',
+						'CALLED_BEFORE',
+					]
+				},
+				condition: {
+					jsc\ref(assertion),
+				},
+				alternative: {
+					jsc\ref(alternative)
+				},
+				required: [ 'conditionType' ]
+			}
+		},
+		recursion: {
+			subpattern backreference (?#), (?+-#), (?&name) same as (?P>name), (?P=name) exclusively previously defined
+		pattern: {
+			description: 'A group with a specific regex codec.',
+			type: 'object',
+			properties: {
+				codec: {
+					jsc\ref(codecInfo)
+				},
+				searchSequence: {
+					jsc\ref(searchSequence)
+				},
+				replaceSequence: {
+					jsc\ref(sequence)
+				},
+				flags: {
+					jsc\ref(regexFlags)
+				}
+			},
+			required: [ 'codec', 'searchSequence', 'replaceSequence', 'flags' ]
+		}
+		regexAST: {
+			description: 'An object representing a parsed regex AST.',
+			type: 'object',
+			properties: {
+				source: {
+					description: The original string parsed.
+					type: string
+				},
+				codec: string,
+				flags: array,
+				tokens: array
+					{
+						construct: atom|class|quantifier|sequence|operator|anchor|group
+							group:
+								capture: name or number or null
+								modifiers: array
+								quantifier:
+									minimum
+									maximum
+								
+								alternative:
+									group|sequence
+								sequences:
+									anchor|class|metasequence|atom
+							class:
+								characters: metasequence|atom
+								inverted: bool
+							sequence:
+								anchors|classes|metasequence|atoms
+							atom:
+								a literal codepoint
+							metasequence:
+								an special character expanding to a class or an atom
+							anchor:
+								type: startOfString, endOfString, word boundries, lookahead and lookbehind
+								searchSequence: for lookarounds
+
+									
+		codecInfo: {
+			description: 'Information on the where and how of a known regex codec.',
+			type: 'object',
+			properties: {
+				name: {
+					jsc\ref(urlSafeString),
+					description: 'The canonical name of the codec.'
+				},
+				aliases: {
+					type: 'array',
+					description: 'Aliases that can also be used to refer to this codec.',
+					items: {
+						jsc\ref(urlSafeString)
+					}
+				},
+				fileURL: {
+					jsc\ref(fileURL),
+					description: 'The absolute path to the codec as a WHATWG file URL.'
+				}
+			}
+

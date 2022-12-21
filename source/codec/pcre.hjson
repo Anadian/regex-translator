@@ -1,0 +1,705 @@
+{
+	name: 'pcre',
+	version: '2.0.0',
+	constructs: [
+		{
+			id: 'NONCAPTURE_GROUP',
+			desc: 'Start of a non-capturing group.', 
+			decode: { 
+				search: "([^\\\\])\\(\\?:",
+				replace: '$1<%NONCAPTURE_GROUP%>'
+			},
+			encode: {
+				search: "<%NONCAPTURE_GROUP%>",
+				replace: '(?:'
+			}
+		},
+		{
+			id: 'NAMED_CAPTURE_GROUP',
+			desc: 'Start of a named capture group.',
+			decode: {
+				search: "([^\\\\])\\(\\?P?[<']([^>':]+)[>']",
+				replace: '$1<%NAMED_CAPTURE_GROUP_START:$2:NAMED_CAPTURE_GROUP_END%>'
+			},
+			encode: {
+				search: "<%NAMED_CAPTURE_GROUP_START:([^:]+):NAMED_CAPTURE_GROUP_END%>",
+				replace: '(?<$1>'
+			}
+		},
+		{
+			id: 'LLT',
+			desc: 'A literal less-than sign.',
+			decode: {
+				search: "<([^%])",
+				replace: '<%LLT%>$1'
+			}, 
+			encode: {
+				search: "<%LLT%>",
+				replace: '<'
+			}
+		},
+		{
+			id: 'LGT',
+			desc: 'A literal greater-than sign.',
+			decode: {
+				search: "([^%])>",
+				replace: '$1<%LGT%>'
+			}, 
+			encode: {
+				search: "<%LGT%>",
+				replace: '>'
+			}
+		},
+		{
+			id: 'CHARACTER_CLASS_CODE',
+			desc: 'A character class code: requires special logic.',
+			decode: {
+				search: "<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>",
+				replace_string: null
+			},
+			encode: {
+				search: "<CHARACTER_CLASS_CODE_START:(\d+):CHARACTER_CLASS_CODE_END>",
+				replace_string: null
+			}
+		},
+		{
+			id: 'CHARACTER_CLASS',
+			desc: 'A character class.', 
+			decode: {
+				search: "([^\\\\])\\[(([^\\]]{1,2})|([^:\\]]([^\\]]*?)[^:]))\\]",
+				replace: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
+			}, 
+			encode: {
+				search: "<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>",
+				replace: '[$1]'
+			}
+		},
+		{
+			id: 'LVRQ',
+			desc: 'A non-greedy/lazy variable-range quantifier.',
+			decode: {
+				search: "([^\\\\])\\{(\\d*),(\\d*)\\}\\?",
+				replace: '$1<LVRQ_START:$2:$3:LVRQ_END>'
+			},
+			encode: {
+				search: "<LVRQ_START:(\\d*):(\\d*):LVRQ_END>",
+				replace: '{$1,$2}?'
+			}
+		},
+		{
+			id: 'VRQ',
+			desc: 'A variable-range quantifier.',
+			decode: {
+				search: "([^\\\\])\\{(\\d*),(\\d*)\\}",
+				replace: '$1<VRQ_START:$2:$3:VRQ_END>'
+			},
+			encode: {
+				search: "<VRQ_START:(\\d*):(\\d*):VRQ_END>",
+				replace: '{$1,$2}'
+			}
+		},
+		{
+			id: 'LOMQ',
+			desc: 'Non-greedy/lazy one or more quantifier.',
+			decode: {
+				search: "\\+\\?",
+				replace: '<LOMQ>'
+			},
+			encode: {
+				search: "<LOMQ>",
+				replace: '+?'
+			}
+		},
+		{
+			id: 'LZMQ',
+			desc: 'Non-greedy/lazy zero or more quantifier.',
+			decode: {
+				search: "\\*\\?",
+				replace: '<LZMQ>'
+			},
+			encode: {
+				search: "<LZMQ>",
+				replace: '*?'
+			}
+		},
+		{
+			id: 'LOP',
+			desc: 'A literal opening parenthesis.',
+			decode: {
+				search: "\\\\\\(",
+				replace: '<LOP>'
+			},
+			encode: {
+				search: "<LOP>",
+				replace: '\\('
+			}
+		},
+		{
+			id: 'LCP',
+			desc: 'A literal closing parenthesis.',
+			decode: {
+				search: "\\\\\\)",
+				replace: '<LCP>'
+			},
+			encode: {
+				search: "<LCP>",
+				replace: '\\)'
+			}
+		},
+		{
+			id: 'LOB',
+			desc: 'A literal opening bracket.',
+			decode: {
+				search: "\\\\\\[",
+				replace: '<%LOB%>'
+			},
+			encode: {
+				search: "<%LOB%>",
+				replace: '\\['
+			}
+		},
+		{
+			id: 'LCB',
+			desc: 'A literal closing bracket.',
+			decode: {
+				search: "\\\\\\]",
+				replace: '<%LCB%>'
+			},
+			encode: {
+				search: "<%LCB%>",
+				replace: '\\]'
+			}
+		},
+		{
+			id: 'LOC',
+			desc: 'A literal opening curly brace.',
+			decode: {
+				search: "\\\\\\{",
+				replace: '<%LOC%>'
+			},
+			encode: {
+				search: "<%LOC%>",
+				replace: '\\{'
+			}
+		},
+		{
+			id: 'LCC',
+			desc: 'A literal closing curly brace.',
+			decode: {
+				search: "\\\\\\}",
+				replace: '<%LCC%>'
+			},
+			encode: {
+				search: "<%LCC%>",
+				replace: '\\}'
+			}
+		},
+		{
+			id: 'MOP',
+			desc: 'A magic opening parenthesis.',
+			decode: {
+				search: "\\(",
+				replace: '<MOP>'
+			},
+			encode: {
+				search: "<MOP>",
+				replace: '('
+			}
+		},
+		{
+			id: 'MCP',
+			desc: 'A magic closing parenthesis.',
+			decode: {
+				search: "\\)",
+				replace: '<MCP>'
+			},
+			encode: {
+				search: "<MCP>",
+				replace: ')'
+			}
+		},
+		{
+			id: 'LB',
+			desc: 'A line break/new line.',
+			decode: {
+				search: "\\n",
+				replace: '<LB>'
+			},
+			encode: {
+				search: "<LB>",
+				replace: '\\n'
+			}
+		},
+		{
+			id: 'LBS',
+			desc: 'A literal backslash.',
+			decode: {
+				search: "\\\\\\\\",
+				replace: '<LBS>'
+			},
+			encode: {
+				search: "<LBS>",
+				replace: '\\\\'
+			}
+		},
+		{
+			id: 'LPS',
+			desc: 'A literal plus sign.',
+			decode: {
+				search: "\\\\\\+",
+				replace: '<LPS>'
+			},
+			encode: {
+				search: "<LPS>",
+				replace: '\\+'
+			}
+		},
+		{
+			id: 'LP',
+			desc: 'A literal period.',
+			decode: {
+				search: "\\\\\\.",
+				replace: '<LP>'
+			},
+			encode: {
+				search: "<LP>",
+				replace: '\\.'
+			}
+		},
+		{
+			id: 'LCS',
+			desc: 'A literal carrot sign.',
+			decode: {
+				search: "\\\\\\^",
+				replace: '<LCS>'
+			},
+			encode: {
+				search: "<LCS>",
+				replace: '\\^'
+			}
+		},
+		{
+			id: 'LDS',
+			desc: 'A literal dollar sign.',
+			decode: {
+				search: "\\\\\\$",
+				replace: '<LDS>'
+			},
+			encode: {
+				search: "<LDS>",
+				replace: '\\$'
+			}
+		},
+		{
+			id: 'LES',
+			desc: 'A literal equal sign.',
+			decode: {
+				search: "\\=",
+				replace: '<LES>'
+			},
+			encode: {
+				search: "<LES>",
+				replace: '\\='
+			}
+		},
+		{
+			id: 'LQM',
+			desc: 'A literal question mark.',
+			decode: {
+				search: "\\\\\\?",
+				replace: '<LQM>'
+			},
+			encode: {
+				search: "<LQM>",
+				replace: '\\?'
+			}
+		},
+		{
+			id: 'LAS',
+			desc: 'A literal asterisk.',
+			decode: {
+				search: "\\\\\\*",
+				replace: '<LAS>'
+			},
+			encode: {
+				search: "<LAS>",
+				replace: '\\*'
+			}
+		},
+		{
+			id: 'LPIPE',
+			desc: 'A literal pipe.',
+			decode: {
+				search: "\\\\\\|",
+				replace: '<LPIPE>'
+			},
+			encode: {
+				search: "<LPIPE>",
+				replace: '\\|'
+			}
+		},
+		{
+			id: 'ORA',
+			desc: 'Or atom.',
+			decode: {
+				search: "\\|",
+				replace: '<ORA>'
+			},
+			encode: {
+				search: "<ORA>",
+				replace: '|'
+			}
+		},
+		{
+			id: 'LFS',
+			desc: 'A literal forward slash.',
+			decode: {
+				search: "\\\\\\/",
+				replace: '<LFS>'
+			},
+			encode: {
+				search: "<LFS>",
+				replace: '\\/'
+			}
+		},
+		{
+			id: 'OMQ',
+			desc: 'One or more quantifier.',
+			decode: {
+				search: "\\+",
+				replace: '<OMQ>'
+			},
+			encode: {
+				search: "<OMQ>",
+				replace: '+'
+			}
+		},
+		{
+			id: 'ZOQ',
+			desc: 'Zeror or one quantifier.',
+			decode: {
+				search: "\\?",
+				replace: '<ZOQ>'
+			},
+			encode: {
+				search: "<ZOQ>",
+				replace: '?'
+			}
+		},
+		{
+			id: 'ZMQ',
+			desc: 'Zero or more quantifier.',
+			decode: {
+				search: "\\*",
+				replace: '<ZMQ>'
+			},
+			encode: {
+				search: "<ZMQ>",
+				replace: '*'
+			}
+		},
+		{
+			id: 'MAC',
+			desc: 'Match any character.',
+			decode: {
+				search: "\\.",
+				replace: '<MAC>'
+			},
+			encode: {
+				search: "<MAC>",
+				replace: '.'
+			}
+		},
+		{
+			id: 'SL',
+			desc: 'Start of line.',
+			decode: {
+				search: "\\^",
+				replace: '<SL>'
+			},
+			encode: {
+				search: "<SL>",
+				replace: '^'
+			}
+		},
+		{
+			id: 'EL',
+			desc: 'End of line.',
+			decode: {
+				search: "\\$",
+				replace: '<EL>'
+			},
+			encode: {
+				search: "<EL>",
+				replace: '$'
+			}
+		},
+		{
+			id: 'RS',
+			desc: 'Regex separator.',
+			decode: {
+				search: "\\/",
+				replace: '<RS>'
+			},
+			encode: {
+				search: "<RS>",
+				replace: '/'
+			}
+		},
+		{
+			id: 'CC_DIGIT',
+			desc: 'Character class: digit.',
+			decode: {
+				search: "(\\[:digit:\\])|(\\\\d)",
+				replace: '<CC_DIGIT>'
+			},
+			encode: {
+				search: "<CC_DIGIT>",
+				replace: '[0-9]'
+			}
+		},
+		{
+			id: 'CC_NOTDIGIT',
+			desc: 'Character class: not digit.',
+			decode: {
+				search: "\\\\D",
+				replace: '<CC_NOTDIGIT>'
+			},
+			encode: {
+				search: "<CC_NOTDIGIT>",
+				replace: '[^0-9]'
+			}
+		},
+		{
+			id: 'CC_WORD',
+			desc: 'CC: word.',
+			decode: {
+				search: "\\\\w|[[:word:]]",
+				replace: '<CC_WORD>'
+			},
+			encode: {
+				search: "<CC_WORD>",
+				replace: '[A-Za-z0-9_]'
+			}
+		},
+		{
+			id: 'CC_NOTWORD',
+			desc: 'CC: not word.',
+			decode: {
+				search: "\\\\W",
+				replace: '<CC_NOTWORD>'
+			},
+			encode: {
+				search: "<CC_NOTWORD>",
+				replace: '[^A-Za-z0-9_]'
+			}
+		},
+		{
+			id: 'CC_alnum',
+			desc: 'CC: alphanumeric.',
+			decode: {
+				search: "\\[:alnum:\\]",
+				replace: '<CC_alnum>'
+			},
+			encode: {
+				search: "<CC_alnum>",
+				replace: '[A-Za-z0-9]'
+			}
+		},
+		{
+			id: 'CC_alpha',
+			desc: 'CC: alphabet.',
+			decode: {
+				search: "\\[:alpha:\\]",
+				replace: '<CC_alpha>'
+			},
+			encode: {
+				search: "<CC_alpha>",
+				replace: '[A-Za-z]'
+			}
+		},
+		{
+			id: 'CC_ascii',
+			desc: 'Codepoints from 0 to 127',
+		},
+		{
+			id: 'CC_blank',
+			desc: 'Just ASCII space and tab',
+		},
+		{
+			id: 'CC_cntrl',
+			desc: 'Just ASCII control characters.',
+			decode: {
+				search: '\\[:cntrl:\\]',
+				replace: '<%CC_cntrl%>'
+			},
+			encode: {
+				search: '<%CC_cntrl%>',
+				replace: '[\\x00-\\x1F\\x7F]'
+			}
+		},
+		{
+		{
+			id: 'CC_graph',
+			desc: 'CC: graphic.',
+			decode: {
+				search: "\\[:graph:\\]",
+				replace: '<CC_graph>'
+			},
+			encode: {
+				search: "<CC_graph>",
+				replace: '[!-~]'
+			}
+		},
+		{
+			id: 'CC_lower',
+			desc: 'CC: lower alphabet.',
+			decode: {
+				search: "\\[:lower:\\]",
+				replace: '<CC_lower>'
+			},
+			encode: {
+				search: "<CC_lower>",
+				replace: '[a-z]'
+			}
+		},
+		{
+			id: 'CC_print',
+			desc: 'CC: printing.',
+			decode: {
+				search: "\\[:print:\\]",
+				replace: '<CC_print>'
+			},
+			encode: {
+				search: "<CC_print>",
+				replace: '[ -~]'
+			}
+		},
+		{
+			id: 'CC_punct',
+			desc: 'CC: punctuation.',
+			decode: {
+				search: "\\[:punct:\\]",
+				replace: '<CC_punct>'
+			},
+			encode: {
+				search: "<CC_punct>",
+				replace: '[!-\\/:-@[-`{-~]'
+			}
+		},
+		{
+			id: 'CC_upper',
+			desc: 'CC: upper alphabet.',
+			decode: {
+				search: "\\[:upper:\\]",
+				replace: '<CC_upper>'
+			},
+			encode: {
+				search: "<CC_upper>",
+				replace: '[A-Z]'
+			}
+		},
+		{
+			id: 'CC_xdigit',
+			desc: 'CC: hexadecimal.',
+			decode: {
+				search: "\\[:xdigit:\\]",
+				replace: '<CC_xdigit>'
+			},
+			encode: {
+				search: "<CC_xdigit>",
+				replace: '[0-9A-Fa-f]'
+			}
+		},
+		{
+			id: 'CC_NOTNEWLINE',
+			desc: 'CC: Not new line.',
+			decode: {
+				search: "\\\\N",
+				replace: '<CC_NOTNEWLINE>'
+			},
+			encode: {
+				search: "<CC_NOTNEWLINE>",
+				replace: '[^\\r\\n]'
+			}
+		},
+		{
+			id: 'CC_HORIZONTALSPACE',
+			desc: 'CC: horizontal space.',
+			decode: {
+				search: "(\\[:blank:\\])|(\\\\h)",
+				replace: '<CC_HORIZONTALSPACE>'
+			},
+			encode: {
+				search: "<CC_HORIZONTALSPACE>",
+				replace: '[ \\t]'
+			}
+		},
+		{
+			id: 'CC_NOTHORIZONTALSPACE',
+			desc: 'CC: not horizontal space.',
+			decode: {
+				search: "\\\\H",
+				replace: '<CC_NOTHORIZONTALSPACE>'
+			},
+			encode: {
+				search: "<CC_NOTHORIZONTALSPACE>",
+				replace: '[^ \\t]'
+			}
+		},
+		{
+			id: 'CC_VERTICALSPACE',
+			desc: 'CC: vertical space.',
+			decode: {
+				search: "(\\[:space:\\])|(\\\\s)|(\\\\v)",
+				replace: '<CC_VERTICALSPACE>'
+			},
+			encode: {
+				search: "<CC_VERTICALSPACE>",
+				replace: '[\\f\\n\\r\\t\\v]'
+			}
+		},
+		{
+			id: 'CC_NOTVERTICALSPACE',
+			desc: 'CC: not vertical space.',
+			decode: {
+				search: "(\\\\S)|(\\\\V)",
+				replace: '<CC_NOTVERTICALSPACE>'
+			},
+			encode: {
+				search: "<CC_NOTVERTICALSPACE>",
+				replace: '[^\\f\\n\\r\\t\\v]'
+			}
+		},
+		{
+			id: 'CC_ASCII_R',
+			desc: 'CC: R. ASCII newline',
+			decode: {
+				search: "\\[:R:\\]|\\R",
+				replace: '<CC_R>'
+			},
+			encode: {
+				search: "<CC_R>",
+				replace: '\r\n|[\\r\\n\\f\\t\\v]'
+			}
+		},
+		{
+			id: 'CC_UNICODE_R',
+			desc: 'CC: R. unicode newline',
+			decode: {
+				search: "\\[:R:\\]|\\R",
+				replace: '<CC_R>'
+			},
+			encode: {
+				search: "<CC_R>",
+				replace: '(?\\r\\n|\\n|\\u0b|\\f|\\r|\\u85)'
+			}
+		},
+		{
+			id: 'CC_START_OF_WORD', '[[:<:]]|\\b(?=\\w)'
+			'CC_END_OF_WORD', '[[:>:]]|\\b(?<=\\w)'
+			'CC_UNICODE_ANY_WITH_LINEBREAK', '\\X|(?s:.)'
+			'CC_DATA_UNIT', '\\C'
+
+	]
+}

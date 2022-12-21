@@ -65,9 +65,11 @@
 		"ansi-regex": "^6.0.1",
 		"application-log-winston-interface": "^2.0.6",
 		"clipboardy": "^2.3.0",
+		"cno-config-manager": "^0.1.0",
 		"command-line-args": "^5.2.1",
 		"command-line-usage": "^6.1.1",
-		"get-stream": "^6.0.1"
+		"get-stream": "^6.0.1",
+		"simple-package-meta": "^0.0.3"
 	},
 	"bin": {
 		"regex-translator": "./source/main.js"

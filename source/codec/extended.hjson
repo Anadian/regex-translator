@@ -1,0 +1,666 @@
+{
+	name: 'extended',
+	version: '2.0.0',
+	constructs: [
+		{
+			id: 'NONCAPTURE_GROUP',
+			desc: '', 
+			decode: { 
+				search: "([^\\\\])\\(\\?:",
+				replace: '$1<%NONCAPTURE_GROUP%>'
+			},
+			encode: {
+				search: "<%NONCAPTURE_GROUP%>",
+				replace: '(?:'
+			}
+		},
+		{
+			id: 'NAMED_CAPTURE_GROUP',
+			desc: '',
+			decode: {
+				search: "([^\\\\])\\(\\?P?[<']([^>':]+)[>']",
+				replace: '$1<%NAMED_CAPTURE_GROUP_START:$2:NAMED_CAPTURE_GROUP_END%>'
+			},
+			encode: {
+				search: "<%NAMED_CAPTURE_GROUP_START:([^:]+):NAMED_CAPTURE_GROUP_END%>",
+				replace: '(?<$1>'
+			}
+		},
+		{
+			id: 'LLT',
+			desc: '',
+			decode: {
+				search: "<([^%])",
+				replace: '<%LLT%>$1'
+			}, 
+			encode: {
+				search: "<%LLT%>",
+				replace: '<'
+			}
+		},
+		{
+			id: 'LGT',
+			desc: '',
+			decode: {
+				search: "([^%])>",
+				replace: '$1<%LGT%>'
+			}, 
+			encode: {
+				search: "<%LGT%>",
+				replace: '>'
+			}
+		},
+		{
+			id: 'CHARACTER_CLASS_CODE',
+			desc: '',
+			decode: {
+				search: "<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>",
+				replace_string: null
+			},
+			encode: {
+				search: "<CHARACTER_CLASS_CODE_START:(\\d+):CHARACTER_CLASS_CODE_END>",
+				replace_string: null
+			}
+		},
+		{
+			id: 'CHARACTER_CLASS',
+			desc: '', 
+			decode: {
+				search: "([^\\\\])\\[(([^\\]]{1,2})|([^:\\]]([^\\]]*?)[^:]))\\]",
+				replace: '$1<CHARACTER_CLASS_START:$2:CHARACTER_CLASS_END>'
+			}, 
+			encode: {
+				search: "<CHARACTER_CLASS_START:(.*?):CHARACTER_CLASS_END>",
+				replace: '[$1]'
+			}
+		},
+		{
+			id: 'LVRQ',
+			desc: '',
+			decode: {
+				search: "([^\\\\])\\{(\\d*),(\\d*)\\}\\?",
+				replace: '$1<LVRQ_START:$2:$3:LVRQ_END>'
+			},
+			encode: {
+				search: "<LVRQ_START:(\\d*):(\\d*):LVRQ_END>",
+				replace: '{$1,$2}?'
+			}
+		},
+		{
+			id: 'VRQ',
+			desc: '',
+			decode: {
+				search: "([^\\\\])\\{(\\d*),(\\d*)\\}",
+				replace: '$1<VRQ_START:$2:$3:VRQ_END>'
+			},
+			encode: {
+				search: "<VRQ_START:(\\d*):(\\d*):VRQ_END>",
+				replace: '{$1,$2}'
+			}
+		},
+		{
+			id: 'LOMQ',
+			desc: '',
+			decode: {
+				search: "\\+\\?",
+				replace: '<LOMQ>'
+			},
+			encode: {
+				search: "<LOMQ>",
+				replace: '+?'
+			}
+		},
+		{
+			id: 'LZMQ',
+			desc: '',
+			decode: {
+				search: "\\*\\?",
+				replace: '<LZMQ>'
+			},
+			encode: {
+				search: "<LZMQ>",
+				replace: '*?'
+			}
+		},
+		{
+			id: 'LOP',
+			desc: '',
+			decode: {
+				search: "\\\\\\(",
+				replace: '<LOP>'
+			},
+			encode: {
+				search: "<LOP>",
+				replace: '\\('
+			}
+		},
+		{
+			id: 'LCP',
+			desc: '',
+			decode: {
+				search: "\\\\\\)",
+				replace: '<LCP>'
+			},
+			encode: {
+				search: "<LCP>",
+				replace: '\\)'
+			}
+		},
+		{
+			id: 'LOB',
+			desc: '',
+			decode: {
+				search: "\\\\\\[",
+				replace: '<%LOB%>'
+			},
+			encode: {
+				search: "<%LOB%>",
+				replace: '\\['
+			}
+		},
+		{
+			id: 'LCB',
+			desc: '',
+			decode: {
+				search: "\\\\\\]",
+				replace: '<%LCB%>'
+			},
+			encode: {
+				search: "<%LCB%>",
+				replace: '\\]'
+			}
+		},
+		{
+			id: 'LOC',
+			desc: '',
+			decode: {
+				search: "\\\\\\{",
+				replace: '<%LOC%>'
+			},
+			encode: {
+				search: "<%LOC%>",
+				replace: '\\{'
+			}
+		},
+		{
+			id: 'LCC',
+			desc: '',
+			decode: {
+				search: "\\\\\\}",
+				replace: '<%LCC%>'
+			},
+			encode: {
+				search: "<%LCC%>",
+				replace: '\\}'
+			}
+		},
+		{
+			id: 'MOP',
+			desc: '',
+			decode: {
+				search: "\\(",
+				replace: '<MOP>'
+			},
+			encode: {
+				search: "<MOP>",
+				replace: '('
+			}
+		},
+		{
+			id: 'MCP',
+			desc: '',
+			decode: {
+				search: "\\)",
+				replace: '<MCP>'
+			},
+			encode: {
+				search: "<MCP>",
+				replace: ')'
+			}
+		},
+		{
+			id: 'LB',
+			desc: '',
+			decode: {
+				search: "\\n",
+				replace: '<LB>'
+			},
+			encode: {
+				search: "<LB>",
+				replace: '\\n'
+			}
+		},
+		{
+			id: 'LBS',
+			desc: '',
+			decode: {
+				search: "\\\\\\\\",
+				replace: '<LBS>'
+			},
+			encode: {
+				search: "<LBS>",
+				replace: '\\\\'
+			}
+		},
+		{
+			id: 'LPS',
+			desc: '',
+			decode: {
+				search: "\\\\\\+",
+				replace: '<LPS>'
+			},
+			encode: {
+				search: "<LPS>",
+				replace: '\\+'
+			}
+		},
+		{
+			id: 'LP',
+			desc: '',
+			decode: {
+				search: "\\\\\\.",
+				replace: '<LP>'
+			},
+			encode: {
+				search: "<LP>",
+				replace: '\\.'
+			}
+		},
+		{
+			id: 'LCS',
+			desc: '',
+			decode: {
+				search: "\\\\\\^",
+				replace: '<LCS>'
+			},
+			encode: {
+				search: "<LCS>",
+				replace: '\\^'
+			}
+		},
+		{
+			id: 'LDS',
+			desc: '',
+			decode: {
+				search: "\\\\\\$",
+				replace: '<LDS>'
+			},
+			encode: {
+				search: "<LDS>",
+				replace: '\\$'
+			}
+		},
+		{
+			id: 'LES',
+			desc: '',
+			decode: {
+				search: "\\=",
+				replace: '<LES>'
+			},
+			encode: {
+				search: "<LES>",
+				replace: '\\='
+			}
+		},
+		{
+			id: 'LQM',
+			desc: '',
+			decode: {
+				search: "\\\\\\?",
+				replace: '<LQM>'
+			},
+			encode: {
+				search: "<LQM>",
+				replace: '\\?'
+			}
+		},
+		{
+			id: 'LAS',
+			desc: '',
+			decode: {
+				search: "\\\\\\*",
+				replace: '<LAS>'
+			},
+			encode: {
+				search: "<LAS>",
+				replace: '\\*'
+			}
+		},
+		{
+			id: 'LPIPE',
+			desc: '',
+			decode: {
+				search: "\\\\\\|",
+				replace: '<LPIPE>'
+			},
+			encode: {
+				search: "<LPIPE>",
+				replace: '\\|'
+			}
+		},
+		{
+			id: 'ORA',
+			desc: '',
+			decode: {
+				search: "\\|",
+				replace: '<ORA>'
+			},
+			encode: {
+				search: "<ORA>",
+				replace: '|'
+			}
+		},
+		{
+			id: 'LFS',
+			desc: '',
+			decode: {
+				search: "\\\\\\/",
+				replace: '<LFS>'
+			},
+			encode: {
+				search: "<LFS>",
+				replace: '\\/'
+			}
+		},
+		{
+			id: 'OMQ',
+			desc: '',
+			decode: {
+				search: "\\+",
+				replace: '<OMQ>'
+			},
+			encode: {
+				search: "<OMQ>",
+				replace: '+'
+			}
+		},
+		{
+			id: 'ZOQ',
+			desc: '',
+			decode: {
+				search: "\\?",
+				replace: '<ZOQ>'
+			},
+			encode: {
+				search: "<ZOQ>",
+				replace: '?'
+			}
+		},
+		{
+			id: 'ZMQ',
+			desc: '',
+			decode: {
+				search: "\\*",
+				replace: '<ZMQ>'
+			},
+			encode: {
+				search: "<ZMQ>",
+				replace: '*'
+			}
+		},
+		{
+			id: 'MAC',
+			desc: '',
+			decode: {
+				search: "\\.",
+				replace: '<MAC>'
+			},
+			encode: {
+				search: "<MAC>",
+				replace: '.'
+			}
+		},
+		{
+			id: 'SL',
+			desc: '',
+			decode: {
+				search: "\\^",
+				replace: '<SL>'
+			},
+			encode: {
+				search: "<SL>",
+				replace: '^'
+			}
+		},
+		{
+			id: 'EL',
+			desc: '',
+			decode: {
+				search: "\\$",
+				replace: '<EL>'
+			},
+			encode: {
+				search: "<EL>",
+				replace: '$'
+			}
+		},
+		{
+			id: 'RS',
+			desc: '',
+			decode: {
+				search: "\\/",
+				replace: '<RS>'
+			},
+			encode: {
+				search: "<RS>",
+				replace: '/'
+			}
+		},
+		{
+			id: 'CC_DIGIT',
+			desc: '',
+			decode: {
+				search: "(\\[:digit:\\])|(\\\\d)",
+				replace: '<CC_DIGIT>'
+			},
+			encode: {
+				search: "<CC_DIGIT>",
+				replace: '[0-9]'
+			}
+		},
+		{
+			id: 'CC_NOTDIGIT',
+			desc: '',
+			decode: {
+				search: "\\\\D",
+				replace: '<CC_NOTDIGIT>'
+			},
+			encode: {
+				search: "<CC_NOTDIGIT>",
+				replace: '[^0-9]'
+			}
+		},
+		{
+			id: 'CC_WORD',
+			desc: '',
+			decode: {
+				search: "\\\\w",
+				replace: '<CC_WORD>'
+			},
+			encode: {
+				search: "<CC_WORD>",
+				replace: '[A-Za-z0-9_]'
+			}
+		},
+		{
+			id: 'CC_NOTWORD',
+			desc: '',
+			decode: {
+				search: "\\\\W",
+				replace: '<CC_NOTWORD>'
+			},
+			encode: {
+				search: "<CC_NOTWORD>",
+				replace: '[^A-Za-z0-9_]'
+			}
+		},
+		{
+			id: 'CC_alnum',
+			desc: '',
+			decode: {
+				search: "\\[:alnum:\\]",
+				replace: '<CC_alnum>'
+			},
+			encode: {
+				search: "<CC_alnum>",
+				replace: '[A-Za-z0-9]'
+			}
+		},
+		{
+			id: 'CC_alpha',
+			desc: '',
+			decode: {
+				search: "\\[:alpha:\\]",
+				replace: '<CC_alpha>'
+			},
+			encode: {
+				search: "<CC_alpha>",
+				replace: '[A-Za-z]'
+			}
+		},
+		{
+			id: 'CC_graph',
+			desc: '',
+			decode: {
+				search: "\\[:graph:\\]",
+				replace: '<CC_graph>'
+			},
+			encode: {
+				search: "<CC_graph>",
+				replace: '[!-~]'
+			}
+		},
+		{
+			id: 'CC_lower',
+			desc: '',
+			decode: {
+				search: "\\[:lower:\\]",
+				replace: '<CC_lower>'
+			},
+			encode: {
+				search: "<CC_lower>",
+				replace: '[a-z]'
+			}
+		},
+		{
+			id: 'CC_print',
+			desc: '',
+			decode: {
+				search: "\\[:print:\\]",
+				replace: '<CC_print>'
+			},
+			encode: {
+				search: "<CC_print>",
+				replace: '[ -~]'
+			}
+		},
+		{
+			id: 'CC_punct',
+			desc: '',
+			decode: {
+				search: "\\[:punct:\\]",
+				replace: '<CC_punct>'
+			},
+			encode: {
+				search: "<CC_punct>",
+				replace: '[!-\\/:-@[-`{-~]'
+			}
+		},
+		{
+			id: 'CC_upper',
+			desc: '',
+			decode: {
+				search: "\\[:upper:\\]",
+				replace: '<CC_upper>'
+			},
+			encode: {
+				search: "<CC_upper>",
+				replace: '[A-Z]'
+			}
+		},
+		{
+			id: 'CC_xdigit',
+			desc: '',
+			decode: {
+				search: "\\[:xdigit:\\]",
+				replace: '<CC_xdigit>'
+			},
+			encode: {
+				search: "<CC_xdigit>",
+				replace: '[0-9A-Fa-f]'
+			}
+		},
+		{
+			id: 'CC_NOTNEWLINE',
+			desc: '',
+			decode: {
+				search: "\\\\N",
+				replace: '<CC_NOTNEWLINE>'
+			},
+			encode: {
+				search: "<CC_NOTNEWLINE>",
+				replace: '[^\\r\\n]'
+			}
+		},
+		{
+			id: 'CC_HORIZONTALSPACE',
+			desc: '',
+			decode: {
+				search: "(\\[:blank:\\])|(\\\\h)",
+				replace: '<CC_HORIZONTALSPACE>'
+			},
+			encode: {
+				search: "<CC_HORIZONTALSPACE>",
+				replace: '[ \\t]'
+			}
+		},
+		{
+			id: 'CC_NOTHORIZONTALSPACE',
+			desc: '',
+			decode: {
+				search: "\\\\H",
+				replace: '<CC_NOTHORIZONTALSPACE>'
+			},
+			encode: {
+				search: "<CC_NOTHORIZONTALSPACE>",
+				replace: '[^ \\t]'
+			}
+		},
+		{
+			id: 'CC_VERTICALSPACE',
+			desc: '',
+			decode: {
+				search: "(\\[:space:\\])|(\\\\s)|(\\\\v)",
+				replace: '<CC_VERTICALSPACE>'
+			},
+			encode: {
+				search: "<CC_VERTICALSPACE>",
+				replace: '[\\f\\n\\r\\t\\v]'
+			}
+		},
+		{
+			id: 'CC_NOTVERTICALSPACE',
+			desc: '',
+			decode: {
+				search: "(\\\\S)|(\\\\V)",
+				replace: '<CC_NOTVERTICALSPACE>'
+			},
+			encode: {
+				search: "<CC_NOTVERTICALSPACE>",
+				replace: '[^\\f\\n\\r\\t\\v]'
+			}
+		},
+		{
+			id: 'CC_R',
+			desc: '',
+			decode: {
+				search: "\\[:R:\\]",
+				replace: '<CC_R>'
+			},
+			encode: {
+				search: "<CC_R>",
+				replace: '[\\r\\n\\f\\t\\v]'
+			}
+		}
+	]
+}

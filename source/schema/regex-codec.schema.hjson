@@ -1,0 +1,82 @@
+{
+	title: 'regex-codec',
+	description: 'A schema defining the structure of a regex codec in [regex-translator](https://github.com/Anadian/regex-translator).',
+	type: 'object'
+	properties: {
+		name: {
+			"$ref": "#/$defs/urlSafeString",
+			description: 'The name of this codec.'
+		},
+		version: {
+			"$ref": "#/$defs/semverString",
+			description: 'The version of this codec.'
+		},
+		constructs: {
+			description: 'An array of this codec\'s constructs.',
+			type: 'array',
+			items: {
+				"$ref": "#/$defs/construct"
+			}
+		}
+	},
+	required: [ 'name', 'version', 'constructs' ],
+	"$defs": {
+		urlSafeString: {
+			type: "string",
+			pattern: "^[A-Za-z0-9_-]+$"
+		},
+		semverString: {
+			type: 'string',
+			pattern: "^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+		},
+		construct: {
+			description: 'An individual part of a regex string which can be decoded to/encoded from a intermediary string.',
+			type: 'object',
+			properties: {
+				id: {
+					"$ref": "#/$defs/constructID"
+				},
+				desc: {
+					"$ref": "#/$defs/constructDescription"
+				},
+				encode: {
+					"$ref": "#/$defs/encodeRule"
+				},
+				decode: {
+					"$ref": "#/$defs/decodeRule"
+				}
+			}
+		},
+		constructID: {
+			description: 'A unique identifier for this construct.',
+			type: 'string'
+		},
+		constructDescription: {
+			description: 'A description pertinent to a single construct in this codec.',
+			type: 'string'
+		},
+		rule: {
+			description: 'A pair of search and replace values, in ECMA flavour, serialised as strings. Effectively, the actual logic in translating a regex.',
+			type: 'object',
+			properties: {
+				search: {
+					description: 'An ECMA regex string for which will be searched.',
+					type: 'string'
+				},
+				replace: {
+					description: 'A string to be as the replace value in a regex operation.',
+					type: 'string'
+				}
+			},
+			required: [ 'search', 'replace' ]
+		},
+		encodeRule: {
+			"$ref": "#/$defs/rule",
+			description: 'A rule which will be applied when converting from an intermediary string to the regex flavour defined in this codec.'
+		},
+		decodeRule: {
+			"$ref": "#/$defs/rule",
+			description: 'A rule which will be applied when converting to an intermediary string from the regex flavour defined in this codec.'
+		}
+	}
+}

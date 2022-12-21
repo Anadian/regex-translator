@@ -1,0 +1,8 @@
+[
+	{
+		id: 'OPT_CASE_INSENSITIVE',
+		forms: [
+			'i',
+			'\\c'
+		]
+	}

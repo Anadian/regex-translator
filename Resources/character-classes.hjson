@@ -1,0 +1,459 @@
+[
+	{
+		id: 'CC_DIGIT',
+		desc: 'Character class: digit.',
+		class: '[0-9]',
+		forms: [
+			'[:digit:]',
+			'\\d'
+		]
+	},
+	{
+		id: 'CC_NOT_DIGIT',
+		desc: 'Character class: not digit.',
+		class: '[^0-9]',
+		forms: [
+			'[:^digit:]',
+			'\\D'
+		]
+	},
+	{
+		id: 'CC_WORD',
+		desc: 'CC: word.',
+		class: '[A-Za-z0-9_]',
+		forms: [
+			'[:word:]',
+			'\\w'
+		]
+	},
+	{
+		id: 'CC_NOT_WORD',
+		desc: 'CC: not word.',
+		class: '[^A-Za-z0-9_]',
+		forms: [
+			'[:^word:]',
+			'\\w'
+		]
+	},
+	{
+		id: 'CC_ALNUM',
+		desc: 'CC: alphanumeric.',
+		class: '[A-Za-z0-9]',
+		forms: [
+			'[:alnum:]'
+		]
+	},
+	{
+		id: 'CC_NOT_ALNUM',
+		desc: 'CC: alphanumeric.',
+		class: '[^A-Za-z0-9]',
+		forms: [
+			'[:^alnum:]'
+		]
+	},
+	{
+		id: 'CC_ALPHA',
+		desc: 'CC: alphabet.',
+		class: '[A-Za-z]',
+		forms: [
+			'[:alpha:]'
+		}
+	},
+	{
+		id: 'CC_NOT_ALPHA',
+		desc: 'CC: alphabet.',
+		class: '[^A-Za-z]',
+		forms: [
+			'[:^alpha:]'
+		}
+	},
+	{
+		id: 'CC_ASCII',
+		desc: 'Codepoints from 0 to 127',
+		class: '[\\x00-\\x7F]',
+		forms: [
+			'[:ascii:]'
+		]
+	},
+	{
+		id: 'CC_NOT_ASCII',
+		desc: 'Codepoints from 0 to 127',
+		class: '[^\\x00-\\x7F]',
+		forms: [
+			'[:^ascii:]'
+		]
+	},
+	{
+		id: 'CC_CNTRL',
+		desc: 'Just ASCII control characters.',
+		class: '[\\x00-\\x1F\\x7F]',
+		forms: [
+			'[:cntrl:]'
+		]
+	},
+	{
+		id: 'CC_NOT_CNTRL',
+		desc: 'Just ASCII control characters.',
+		class: '[^\\x00-\\x1F\\x7F]',
+		forms: [
+			'[:^cntrl:]'
+		]
+	},
+	{
+		id: 'CC_GRAPH',
+		desc: 'CC: graphic.',
+		class: '[!-~]',
+		forms: [
+			'[:graph:]'
+		]
+	},
+	{
+		id: 'CC_NOT_GRAPH',
+		desc: 'CC: graphic.',
+		class: '[^!-~]',
+		forms: [
+			'[:^graph:]'
+		]
+	},
+	{
+		id: 'CC_LOWER',
+		desc: 'CC: lower alphabet.',
+		class: '[a-z]',
+		forms: [
+			'[:lower:]'
+		]
+	},
+	{
+		id: 'CC_NOT_LOWER',
+		desc: 'CC: lower alphabet.',
+		class: '[^a-z]',
+		forms: [
+			'[:^lower:]'
+		]
+	},
+	{
+		id: 'CC_PRINT',
+		desc: 'CC: printing.',
+		class: '[ -~]',
+		forms: [
+			'[:print:]'
+		]
+	},
+	{
+		id: 'CC_NOT_PRINT',
+		desc: 'CC: printing.',
+		class: '[^ -~]',
+		forms: [
+			'[:^print:]'
+		]
+	},
+	{
+		id: 'CC_PUNCT',
+		desc: 'CC: punctuation.',
+		class: '[!-\\/:-@\\[-`{-~]'
+		forms: [
+			'[:punct:]'
+		]
+	},
+	{
+		id: 'CC_NOT_PUNCT',
+		desc: 'CC: punctuation.',
+		class: '[^!-\\/:-@\\[-`{-~]'
+		forms: [
+			'[:^punct:]'
+		]
+	},
+	{
+		id: 'CC_UPPER',
+		desc: 'CC: upper alphabet.',
+		class: '[A-Z]',
+		forms: [
+			'[:upper:]'
+		]
+	},
+	{
+		id: 'CC_NOT_UPPER',
+		desc: 'CC: not upper alphabet.',
+		class: '[^A-Z]',
+		forms: [
+			'[:^upper:]'
+		]
+	},
+	{
+		id: 'CC_XDIGIT',
+		desc: 'CC: hexadecimal.',
+		class: '[0-9A-Fa-f]',
+		forms: [
+			'[:xdigit:]'
+		]
+	},
+	{
+		id: 'CC_NOT_XDIGIT',
+		desc: 'CC: not hexadecimal.',
+		class: '[^0-9A-Fa-f]',
+		forms: [
+			'[:^xdigit:]'
+		]
+	},
+	{
+		id: 'CC_HEAD_OF_WORD',
+		class: '[A-Za-z_]'
+	},
+	{
+		id: 'CC_NOT_HEAD_OF_WORD',
+		class: '[^A-Za-z_]'
+	},
+	{
+		id: 'CC_OCTAL_DIGIT',
+		class: '[0-7]'
+	},
+	{
+		id: 'CC_NOT_OCTAL_DIGIT',
+		class: '[^0-7]'
+	},
+	{
+		id: 'CC_BINARY_DIGIT',
+		class: '[01]'
+	},
+	{
+		id: 'CC_NOT_BINARY_DIGIT',
+		class: '[^01]'
+	},
+	{
+		id: 'CC_BASE64',
+		class: '[A-Za-z0-9+\/]'
+	},
+	{
+		id: 'CC_NOT_BASE64',
+		class: '[^A-Za-z0-9+\/]'
+	},
+	{
+		id: 'CC_BASE64_URL',
+		class: '[A-Za-z0-9_-]'
+	},
+	{
+		id: 'CC_NOT_BASE64_URL',
+		class: '[^A-Za-z0-9_-]'
+	},
+	{
+		id: 'CC_NOT_NEWLINE_ASCII',
+		desc: 'CC: Not new line.',
+		class: '[^\\r\\n]'
+	},
+	{
+		id: 'CC_NOT_NEWLINE_UNICODE,
+		class: '[\\u2028\\n\\r\\u000B\\f\\u2029\\u0085]',
+		forms: [
+			'\\N'
+		]
+	},
+	{
+		id: 'CC_HORIZONTALSPACE_ASCII',
+		desc: 'CC: horizontal space.',
+		class: '[ \\t]',
+		forms: [
+			'[:blank:]'
+		]
+	},
+	{
+		id: 'CC_NOT_HORIZONTALSPACE_ASCII',
+		desc: 'CC: not horizontal space.',
+		class: '[^ \\t]',
+		forms: [
+			'[:^blank:]',
+			'\\H'
+		]
+	},
+	{
+		id: 'CC_WHITESPACE_ASCII',
+		desc: 'CC: white space in ASCII.',
+		class: '[ \\f\\n\\r\\t\\v]',
+		forms: [
+			'[:space:]'
+		]
+	},
+	{
+		id: 'CC_NOT_WHITESPACE_ASCII',
+		desc: 'CC: not vertical space.',
+		class: '[^ \\f\\n\\r\\t\\v]',
+		forms: [
+			'[:^space:]',
+			'\\S',
+			'\\V'
+		]
+	},
+	{
+		id: 'CC_R_ASCII',
+		desc: 'CC: R. ASCII newline',
+		class: '\\r\\n|[\\r\\n\\f\\v]'
+	},
+	{
+		id: 'CC_R_UNICODE',
+		desc: 'CC: R. unicode newline',
+		class: '(?\\r\\n|\\n|\\x0b|\\f|\\r|\\x85)',
+		forms: [
+			'[:R:]',
+			'\\R'
+		]
+	},
+	{
+		id: 'CC_START_OF_WORD', 
+		class: '\\b(?=\\w)',
+		forms: [
+			'[:<:]'
+		]
+	},
+	{
+		id: 'CC_END_OF_WORD',
+		class: '\\b(?<=\\w)',
+		forms: [
+			'[:>:]'
+		]
+	},
+	{
+		id: 'CC_UNICODE_ANY_WITH_LINEBREAK',
+		forms: [
+			'\\X'
+		],
+		class: '(?s:.)'
+	},
+	{
+		id: 'CC_DATA_UNIT',
+		class: '\\C'
+	},
+	{
+		id: 'CC_WHITESPACE_UNICODE',
+		class: '[ \\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]',
+		forms: [
+			'\\s'
+		]
+	},
+	{
+		id: 'CC_NOT_WHITESPACE_UNICODE',
+		class: '[^ \\f\\n\\r\\t\\v\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]',
+		forms: [
+			'\\S'
+		]
+	},
+	{
+		id: 'CC_HORIZONTALSPACE_UNICODE',
+		class: '[ \\t\\u00A0\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000]',
+		forms: [
+			'\\h'
+		]
+	},
+	{
+		id: 'CC_NOT_HORIZONTALSPACE_UNICODE',
+		class: '[^ \\t\\u00A0\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000]',
+		forms: [
+			'\\H'
+		]
+	},
+	{
+		id: 'CC_IDENTIFIER_WINDOWS',
+		class: '[A-Za-z0-9_\\x80-\\xA7\\xE0-\\xEB]',
+		forms: [
+			'[:ident:]',
+			'\\i'
+		]
+	},
+	{
+		id: 'CC_INDENTIFIER',
+		class: '[A-Za-z0-9_\\xC0-\\xFF]'
+		forms: [
+			'[:ident:]',
+			'\\i'
+		]
+	},
+	{
+		id: 'CC_IDENTIFIER_NO_DIGITS_WINDOWS',
+		class: '[A-Za-z_\\x80-\\xA7\\xEO-\\xEB]'
+		forms: [
+			'\\I'
+		]
+	},
+	{
+		id: 'CC_IDENTIFIER_NO_DIGITS',
+		class: '[A-Za-z_\\xC0-\\xFF]'
+		forms: [
+			'\\I'
+		]
+	},
+	{
+		id: 'CC_FNAME_WINDOWS',
+		class: '[!#-%+-:=@-\\]_a-{}~]'
+		forms: [
+			'[:fname:]',
+			'\\f'
+		]
+	},
+	{
+		id: 'CC_FNAME',
+		class: '[#-%+-9=A-Z_a-z~]'
+		forms: [
+			'[:fname:]',
+			'\\f'
+		]
+	},
+	{
+		id: 'CC_FNAME_NO_DIGITS_WINDOWS',
+		class: '[!#-%+-\\/:=@-\\]_a-{}~]'
+		forms: [
+			'\\F'
+		]
+	},
+	{
+		id: 'CC_FNAME_NO_DIGITS',
+		class: '[#-%+-\\/=A-Z_a-z~]'
+		forms: [
+			'\\F'
+		]
+	},
+	{
+		id: 'CC_KEYWORD',
+		class: '[0-9A-Z_a-z\\xC0-\\xFF]'
+		forms: [
+			'[:keyword:]',
+			'\\k'
+		]
+	},
+	{
+		id: 'CC_KEYWORD_NO_DIGITS',
+		class: '[A-Z_a-z\\xC0-\\xFF]'
+		forms: [
+			'\\K'
+		]
+	},
+	{
+		id: 'CC_RETURN',
+		class: '[\\x0D]'
+		forms: [
+			'[:return:]',
+			'\\r'
+		]
+	},
+	{
+		id: 'CC_TAB',
+		class: '[\\x09]'
+		forms: [
+			'[:tab:]',
+			'\\t'
+		]
+	},
+	{
+		id: 'CC_ESCAPE',
+		class: '[\\x1B]'
+		forms: [
+			'[:escape:]',
+			'\\e'
+		]
+	},
+	{
+		id: 'CC_BACKSPACE',
+		class: '[\\x08]'
+		forms: [
+			'[:backspace:]',
+			'[\\b]'
+		]
+	},
+]

@@ -1,0 +1,367 @@
+//new name format? TokenID_ConstructType_Form
+token
+	construct
+		anchor
+		optionDirective
+		assertion
+			lookaround
+				lookahead
+				lookbehind
+			backreference
+				value
+				expression
+			quantifier
+	form
+		specialCharacter
+		MetaSequence
+		Expression
+expression: a scope in itself insulated from the outside pattern
+	alternative expression | directive | combo | expressions
+directive: a token which alters state
+	controlVerb | 
+combo:
+	lookbehind atom quantifier lookahead
+atom: something which can be matched and repeated
+	special class | backreference value | class expression | group expression | textLiteral
+// anchor, options, atom, 
+// construct types: quantifier, anchor, class, group, lookaround, backreference value, backreference expression, options
+// form types: special character, meta sequence, capture group expression, control verb, other expression 
+//Quantifier Expressions
+		zeroOrOneGreedyQuantifier:
+			pattern: '\?|\{0,1\}'
+		zeroOrOneLazyQuantifier:
+			pattern: '\?\?|\{0,1\}\?'
+		zeroOrOnePossesiveQuantifier:
+			pattern: '\?\+|\{0,1\}\+'
+		zeroOrOneQuantifier:
+			pattern: '\g<zeroOrOneGreedyQuantifier>|\g<zeroOrOneLazyQuantifier>|\g<zeroOrOnePossesiveQuantifier>'
+		oneOrMoreGreedyQuantifier:
+			pattern: '\+|\{1,\}'
+		oneOrMoreLazyQuantifier:
+			pattern: '\+\?|\{1,\}\?'
+		oneOrMorePossesiveQuantifier:
+			pattern: '\+\+|\{1,\}\+'
+		oneOrMoreQuantifier:
+			pattern: '\g<oneOrMoreGreedyQuantifier>|\g<oneOrMoreLazyQuantifier>|\g<oneOrMorePossesiveQuantifier>'
+		zeroOrMoreGreedyQuantifier:
+			pattern: '\*|\{0,\}'
+		zeroOrMoreLazyQuantifier:
+			pattern: '\*\?|\{0,\}\?'
+		zeroOrMorePossesiveQuantifier:
+			pattern: '\*\+|\{0,\}\+'
+		zeroOrMoreQuantifier:
+			pattern: '\g<zeroOrMoreGreedyQuantifier>|\g<zeroOrMoreLazyQuantifier>|\g<zeroOrMorePossesiveQuantifier>'
+		exactQuantifier:
+			pattern: '\{[0-9]+\}'
+		rangeGreedyQuantifier:
+			pattern: '\{[0-9]*,[0-9]*\}'
+		rangeLazyQuantifier:
+			pattern: '\{[0-9]*,[0-9]*\}\?'
+		rangePossesiveQuantifier:
+			pattern: '\{[0-9]*,[0-9]*\}\+'
+		rangeQuantifier:
+			pattern: '\g<rangeGreedyQuantifier>|\g<rangeLazyQuantifier>|\g<rangePossesiveQuantifier>'
+		quantifierExpression:
+			pattern: '\g<exactQuantifier>|\g<zeroOrOneQuantifier>|\g<oneOrMoreQuantifier>|\g<zeroOrMoreQuantifier>|\g<rangeQuantifier>'
+//Capture References
+		captureGroupNumberReferenceAbsolute:
+			pattern: '\d+'
+		relativeNumberQualifier:
+			pattern: '[+-]'
+		captureGroupNumberReferenceRelative:
+			pattern: '\g<relativeNumberQualifier>\g<captureGroupNumberReferenceAbsolute>'
+		captureGroupNumberReference:
+			pattern: '\g<captureGroupNumberReferenceRelative>|\g<captureGroupNumberReferenceAbsolute>'
+		captureGroupName:
+			pattern: '[A-Za-z0-9_]+'
+//Basic Group Expressions
+		numberedCaptureGroup:
+			pattern: '\(\g<expression>+\)'
+		namedCaptureGroup:
+			pattern: '\(\?(?:P<|[<'])\g<captureGroupName>[>']\g<expression>+\)
+		nonCaptureGroup:
+			pattern: '\(\?\g<modifierExpression>?:\g<expression>+\)'
+		atomicCaptureGroup:
+			pattern: '\(\?>\g<expression>+\)|\(\*atomic:\g<expression>+\)'
+		branchResetCaptureGroup:
+			pattern: '\(\?\|\g<expression>+\)'
+		captureGroupExpression:
+			pattern: '\g<numberedCaptureGroup>|\g<namedCaptureGroup>|\g<nonCaptureGroup>|\g<atomicCaptureGroup>|\g<branchResetCaptureGroup>'
+		removePreviousNamedCaptureGroup:
+			pattern: '\(?[<']-\g<captureGroupName>[>']\g<expression>*\)'
+		sinceCaptureGroup:
+			pattern: '\(?[<'](?<newGroupName>\g<captureGroupName>)-\g<captureGroupName>[>']\g<expression>*\)'
+
+		commentExpression:
+			pattern: '\(\?#\g<textLiteral>+\)
+		inlineModifierGroupExpression:
+			pattern: '\(\?\g<modifierExpression>\)'
+		groupExpression:
+			pattern: '\g<captureGroupExpression>|\g<captureExpressionGroupExpression>|\g<conditionalExpression>|\g<inlineModifierGroupExpression>|\g<commentExpression>'
+// Lookarounds
+		positiveLookaheadExpression:
+			pattern: '\(\?=\g<expression>+\)|\(\*pla:\g<expression>\)|\(\*positive_lookahead:\g<expression>\)'
+		negativeLookaheadExpression:
+			pattern: '\(\?!\g<expression>+\)|\(\*nla:\g<expression>\)|\(\*negative_lookahead:\g<expression>\)'
+		nonAtomicPositiveLookaheadExpression:
+			pattern: '\(\?\*\g<expression>+\)|\(\*napla:\g<expression>\)|\(\*non_atomic_positive_lookahead:\g<expression>\)'
+		positiveLookbehindExpression:
+			pattern: '\(\?<=\g<expression>+\)|\(\*plb:\g<expression>\)|\(\*positive_lookbehind:\g<expression>\)'
+		negativeLookbehindExpression:
+			pattern: '\(\?<!\g<expression>+\)|\(\*nlb:\g<expression>\)|\(\*negative_lookbehind:\g<expression>\)'
+		nonAtomicPositiveLookbehindExpression:
+			pattern: '\(\?<\*\g<expression>+\)|\(\*naplb:\g<expression>\)|\(\*non_atomic_positive_lookbehind:\g<expression>\)'
+		lookaheadExpression:
+			pattern: '\g<positiveLookaheadExpression>|\g<negativeLookaheadExpression>|\g<nonAtomicPositiveLookaheadExpression>'
+		lookbehindExpression:
+			pattern: '\g<positiveLookbehindExpression>|\g<negativeLookbehindExpression>|\g<nonAtomicPositiveLookbehindExpression>'
+		lookaroundExpression:
+			pattern: '\g<lookaheadExpression>|\g<lookbehindExpression>'
+// Capture Value Back References
+		numberedCaptureValueBackreferenceMetaSequence:
+			pattern: '\\g?\{?\g<captureGroupNumberReference>\}?'
+		namedCaptureValueBackreferenceMetaSequence:
+			pattern: '\\k['<{]\g<captureGroupName>['>}]|\\g\{\g<captureGroupName>\}'
+		namedCaptureValueBackreferenceGroupExpression:
+			pattern: '\(\?P=\g<captureGroupName>\)'
+		captureValueMetaSequence:
+			pattern: '\g<numberedCaptureValueBackreferenceMetaSequence>|\g<namedCaptureValueBackreferenceMetaSequence>'
+		numberedCaptureValue:
+			pattern: '\\\g<captureGroupNumberReference>|\\g\g<captureGroupNumberReference>|\\g\{\g<captureGroupNumberReference>\}'
+// Capture Expression Back References
+		recurseWholePatternExpressionGroupExpression:
+			pattern: '\(\?R\)'
+		numberedCaptureExpressionMetaSequence:
+			pattern: "\\g['<]\g<captureGroupNumberReference>['>]"
+		numberedCaptureExpressionGroupExpression:
+			pattern: '\(\?\g<captureGroupNumberReference>\)'
+		namedCaptureExpressionMetaSequence:
+			pattern: '\\g['<]\g<captureGroupName>['>]'
+		namedCaptureExpressionGroupExpression:
+			pattern: '\(\?(?:&|P>)\g<captureGroupName>\)'
+		captureExpressionMetaSequence:
+			pattern: '\g<numberedCaptureExpressionMetaSequence>|\g<namedCaptureExpressionMetaSequence>
+		captureExpressionGroupExpression:
+			pattern: '\g<recurseWholePatternExpressionGroupExpression>|\g<numberedCaptureExpressionGroupExpression>|\g<namedCaptureExpressionGroupExpression>'
+//Conditonal Expressions
+		numberedCaptureCondition:
+			pattern: '\(\g<captureGroupNumberReference>\)'
+		wholePatternMatchCondition:
+			pattern: '\(R\)'
+		previousCallToNumberedCaptureCondition:
+			pattern: '\(R\g<captureGroupNumberReferenceAbsolute>\)'
+		previousCallToNamedCaptureCondition:
+			pattern: '\(R&\g<captureGroupName>\)
+		conditionExpression:
+			pattern: '\g<numberedCaptureCondition>|\g<wholePatternMatchCondition>|\g<previousCallToNumberedCaptureCondition>|\g<previousCallToNamedCaptureCondition>|\g<lookaroundExpression>'
+		conditionalExpression:
+			'\(\?\g<conditionExpression>(?<trueExpression>\g<expression>)(?:\|(?<falseExpression>\g<expression>))?\)'
+//Other MetaSequences
+		quoteMetaSequence:
+			pattern: '\\Q\g<textLiteral>*\\E'
+		resetMatchMetaSequence:
+			pattern: '\\K'
+		matchUnicodePropertyMetaSequence:
+			pattern: '\\p\{[A-Za-z0-9_= ]+\}|\\p[A-Za-z][A-Za-z]'
+		invertedUnicodePropertyMetaSequence:
+			pattern: '\\P\{[A-Za-z0-9_= ]}\}'
+		unicodePropertyMetaSequence:
+			pattern: '\g<matchUnicodePropertyMetaSequence>|\g<invertedUnicodePropertyMetaSequence>'
+		caretNotationMetaSequence:
+			pattern: '\\c[ -~]'
+// Escape MetaSequences
+		hexEscapeMetaSequence:
+			pattern: '\\x\{[0-9A-Fa-f]{1,4}\}|\\x[0-9A-Fa-f]{1,2}'
+		octalEscapeMetaSequence:
+			pattern: '\\o\{[0-7]{1,3}\}|\\[0-7]{1,3}'
+		unicodeEscapeMetaSequence:
+			pattern: '\\u\{?[0-9A-Fa-f]{1,6}\}?|\\N\{U\+[0-9A-Fa-f]{1,6}\}'
+		escapeMetaSequence:
+			pattern: '\g<hexEscapeMetaSequence>|\g<unicodeEscapeMetaSequence>|\g<octalEscapeMetaSequence>'
+// Special Character MetaSequences
+		nullCharacterMetaSequence:
+			pattern: '\\o?0{1,3}|\\x0{1,2}|\\u\{?0{1,4}\}?'
+		bellCharacterMetaSequence:
+			pattern: '\\a|\\x0?7|\\o?0{0,2}7|\\u\{?0{0,3}7\}?'
+		backspaceCharacterMetaSequenc:
+			pattern: '\\b|\x0?8|\\o?0?10|\\u\{?0{0,3}8\}?'
+		tabCharacterMetaSequence:
+			pattern: '\\t|\\x0?9|\\o?0?11|\\u\{?0{0,3}9\}?'
+		linefeedCharacterMetaSequence:
+			pattern: '\\n|\\x0?[Aa]|\\o?0?12|\\u\{?0{0,3}[Aa]\}?'
+		formfeedCharacterMetaSequence:
+			pattern: '\\f|\\x0?[Cc]|\\o?0?14|\\u\{?0{0,3}[Cc]\}?'
+		carriageReturnCharacterMetaSequence:
+			pattern: '\\r|\\x0?[Dd]|\\o?0?15|\\u\{?0{0,3}[Dd]\}?'
+		escapeCharacterMetaSequence:
+			pattern: '\\e|\\x1[Bb]|\\o?0?33|\\u\{?0{0,2}1[Bb]\}?'
+		backslashCharacterMetaSequence:
+			pattern: '\\'
+		specialCharacterMetaSequence:
+			pattern: '\g<nullCharacterMetaSequence>|\g<bellCharacterMetaSequence>|\g<backspaceCharacterMetaSequenc>|\g<tabCharacterMetaSequence>|\g<linefeedCharacterMetaSequence>|\g<formfeedCharacterMetaSequence>|\g<carriageReturnCharacterMetaSequence>|\g<escapeCharacterMetaSequence>'
+// Anchors
+		startOfLineAnchorMetaSequence:
+			pattern: '\^'
+		endOfLineAnchorMetaSequence:
+			pattern: '\$'
+		startOfStringAnchorMetaSequence:
+			pattern: '\\A'
+		endOfStringAnchorMetaSequence:
+			pattern: '\\Z'
+		wordBoundryAnchorMetaSequence:
+			pattern: '\\b'
+		nonWordBoundryAnchorMetaSequence:
+			pattern: '\\B'
+		startOfMatchAnchorMetaSequence:
+			pattern: '\\G'
+		absoluteEndOfStringAnchorMetaSequence:
+			pattern: '\\z'
+		anchorExpression:
+			pattern: '\g<startOfLineAnchorMetaSequence>|\g<endOfLineAnchorMetaSequence>|\g<startOfStringAnchorMetaSequence>|\g<endOfStringAnchorMetaSequence>|\g<wordBoundryAnchorMetaSequence>|\g<nonWordBoundryAnchorMetaSequence>|\g<startOfMatchAnchorMetaSequence>|\g<absoluteEndOfStringAnchorMetaSequence>'
+// Backtracking Control Verbs
+		forceSuccessfulMatchControlVerb:
+			pattern: '\(\*ACCEPT(?<tag>:[A-Za-z0-9_-]+)?\)'
+		forceBacktrackControlVerb:
+			pattern: '\(\*F(?:AIL)?(?<tag>:[A-Za-z0-9_-]+)?\)'
+		markNameControlVerb:
+			pattern: '\(\*(?:MARK)?:[A-Za-z0-9_-]+\)'
+		failureNoAdvanceControlVerb:
+			pattern: '\(\*COMMIT(?<tag>:[A-Za-z0-9_-]+)?\)'
+		advanceToNextStartingCharacterControlVerb:
+			pattern: '\(\*PRUNE(?<tag>:[A-Za-z0-9_-]+)?\)'
+		advanceToCurrentMatchControlVerb:
+			pattern: '\(\*SKIP\)'
+		advanceToMarkControlVerb:
+			pattern: '\(\*SKIP:[A-Za-z0-9_-]+\)'
+		localFailureNextAlterationControlVerb:
+			pattern: '\(\*THEN(?<tag>:[A-Za-z0-9_-]+)?\)'
+		backtrackingControlVerb:
+			pattern: '\g<forceSuccessfulMatchControlVerb>|\g<forceBacktrackControlVerb>|\g<markNameControlVerb>|\g<failureNoAdvanceControlVerb>|\g<advanceToNextStartingCharacterControlVerb>|\g<advanceToCurrentMatchControlVerb>|\g<localFailureNextAlterationControlVerb>'
+// Newline Convention Control Verbs
+		carriageReturnNewLineControlVerb:
+			pattern: '\(\*CR\)'
+		linefeedNewLineControlVerb:
+			pattern: '\(\*LF\)'
+		carriageReturnLinefeedNewLineControlVerb:
+			pattern: '\(\*CRLF\)'
+		carriageReturnOrLinefeedNewLineControlVerb:
+			pattern: '\(\*ANYCRLF\)'
+		anyUnicodeNewLineControlVerb:
+			pattern: '\(\*ANY\)'
+		nullCharacterNewLineControlVerb:
+			pattern: '\(\*NUL\)'
+		newLineControlVerb:
+			pattern: '\g<carriageReturnNewLineControlVerb>|\g<linefeedNewLineControlVerb>|\g<carriageReturnLinefeedNewLineControlVerb>|\g<carriageReturnOrLinefeedNewLineControlVerb>|\g<anyUnicodeNewLineControlVerb>|\g<nullCharacterNewLineControlVerb>'
+// Encoding Control Verbs
+		utfEncodingControlVerb:
+			pattern: '\(\*UTF\)'
+		utf8EncodingControlVerb:
+			pattern: '\(\*UTF8\)'
+		utf16EncodingControlVerb:
+			pattern: '\(\*UTF16\)'
+		utf32EncodingControlVerb:
+			pattern: '\(\*UTF32\)'
+		encodingControlVerb:
+			pattern: '\g<utfEncodingControlVerb>|\g<utf8EncodingControlVerb>|\g<utf16EncodingControlVerb>|\g<utf32EncodingControlVerb>'
+// Back-slash R
+		newLineMetaSequence:
+			pattern: '\R'
+		anyASCIIBSRControlVerb:
+			pattern: '\(\*BSR_ANYCRLF\)'
+		anyUnicodeBSRControlVerb:
+			pattern: '\(\*BSR_UNICODE\)'
+		backslashRControlVerb:
+			pattern: '\g<anyASCIIBSRControlVerb>|\g<anyUnicodeBSRControlVerb>'
+// Engine Options Control Verbs
+		unicodeCharacterPropertiesOptionControlVerb:
+			pattern: '\(\*UCP\)'
+		notEmptyOptionControlVerb:
+			pattern: '\(\*NOTEMPTY\)'
+		notEmptyAtStartOptionControlVerb:
+			pattern: '\(\*NOTEMPTY_ATSTART\)'
+		noJITOptionControlVerb:
+			pattern: '\(\*NO_JIT\)'
+		noAutoPossessOptionControlVerb:
+			pattern: '\(\*NO_AUTO_POSSESS\)'
+		noDotStarAnchorOptionControlVerb:
+			pattern: '\(\*NO_DOTSTAR_ANCHOR\)'
+		noStartOptimizationOptionControlVerb:
+			pattern: '\(\*NO_START_OPT\)'
+		optionControlVerb: '\g<unicodeCharacterPropertiesOptionControlVerb>|\g<notEmptyOptionControlVerb>|\g<notEmptyAtStartOptionControlVerb>|\g<noJITOptionControlVerb>|\g<noAutoPossessOptionControlVerb>|\g<noDotStarAnchorOptionControlVerb>|\g<noStartOptimizationOptionControlVerb>'
+// Engine Limits Control Verbs:
+		limitMatchControlVerb:
+			pattern: '\(\*LIMIT_MATCH=\d+\)'
+		limitDepthControlVerb:
+			pattern: '\(\*LIMIT_DEPTH=\d+\)'
+		limitRecursionControlVerb:
+			pattern: '\(\*LIMIT_RECURSION=\d+\)'
+		limitHeapControlVerb:
+			pattern: '\(\*LIMIT_HEAP=\d+\)'
+		limitControlVerb:
+			pattern: '\g<limitMatchControlVerb>|\g<limitDepthControlVerb>|\g<limitRecursionControlVerb>|\g<limitHeapControlVerb>'
+// Base Expressions
+		textLiteral: 
+			pattern: '.'
+		expression: {
+			pattern: '\g<anchorExpression>|\g<directiveExpression>|\g<comboExpression>'
+		comboExpression:
+			pattern: '\g<lookbehindExpression>?\g<atomExpression>\g<quantifierExpression>?\g<lookaheadExpression>?'
+		atomExpression: {
+			pattern: '\g<captureGroupExpression>|\g<characterClassAtom>|\g<metaSequence>|\g<textLiteral>'
+		},
+		directiveExpression: {
+			pattern: '\g<metaSequence>|\g<inlineModifierExpression>|\g<conditionalExpression|\g<controlVerb>'
+		anchorExpression:
+			pattern: '\g<startOfStringAnchor>|\g<endOfStringAnchor>|\g<wordBoundryAnchor>|\g<nonWordBoundryAnchor>|\g<startOfMatchAnchor>|\g<absoluteEndOfStringAnchor>'
+// Character Class Expressions
+		characterClassRangeExpression:
+			pattern: '(?<rangeStart>\g<escapeMetaSequence>|\g<textLiteral>)-(?<rangeEnd>\g<escapeMetaSequence>|\g<textLiteral>)'
+		characterClassPosixNameExpression:
+			pattern: ':(?<inverted>\^)?\g<CC_NAME>:'
+		characterClassSubExpression:
+			pattern: '\[(?:\g<characterClassPosixNameExpression>|\g<characterClassExpression>\]'
+		characterClassExpression:
+			pattern: '(?<inverted>\^)?(?:\g<characterClassMetaSequence>|\g<characterClassSubExpression>|\g<characterClassRangeExpression>|\g<characterLiteral>)*(?<subtraction>-\g<characterClassSubExpression>)?'
+		characterClassAtom:
+			pattern: '\g<characterClassMetaSequence>|\[\g<characterClassExpression>\]'
+// Replacement tokens
+	numberedCaptureReplacementToken:
+		pattern: '\$\d|\g<numberedCaptureValueBackreferenceMetaSequence>'
+	namedCaptureReplacementToken:
+		pattern: '\$\{\g<captureGroupName>\}|\g<namedCaptureValueBackreferenceMetaSequence>'
+	wholeMatchReplacementToken:
+		pattern: '\$&|\\g<0>|\\0'
+	contentBeforeMatchReplacementToken:
+		pattern: '\$`'
+	contentAfterMatchReplacementToken:
+		pattern: '\$\''
+	lastCapturedValueReplacementToken:
+		pattern: '\$\+'
+	inputStringReplacementToken:
+		pattern: '\$_'
+	uppercaseTransformMetaSequence:
+		pattern: '\\U'
+	lowercaseTransformMetaSequence:
+		pattern: '\\L'
+	terminateTransformMetaSequence:
+		pattern: '\\E'
+	replacementToken:
+		pattern: '\g<numberedCaptureReplacementToken>|\g<namedCaptureReplacementToken>|\g<wholeMatchReplacementToken>|\g<contentBeforeMatchReplacementToken>|\g<contentAfterMatchReplacementToken>|\g<lastCapturedValueReplacementToken>|\g<inputStringReplacementToken>|\g<uppercaseTransformMetaSequence>|\g<lowercaseTransformMetaSequence>|\g<terminateTransformMetaSequence>'
+// Pattern-Level Expressions
+		searchExpression: {
+			type: 'string',
+			pattern: '(?<controlVerbs>\g<controlVerb>*)?(?<expressions>\g<expression>+)',
+		},
+		replaceExpression: {
+			type: 'string',
+			pattern: '(?:\g<replacementToken>|\g<metaSequence>|\g<textLiteral>)*'
+		},
+		modifierExpression: {
+			description: 'An expression which sets options at the start of a group.',
+			type: 'string',
+			pattern: '(?<unsetAllCharacter>\\^)?(?<setCharacters>[A-Za-z]*)|(?<setCharacters>[A-Za-z]*)-(?<unsetCharacter>[A-Za-z]+)'
+		},
+		patternExpression: {
+			description: 'A full regex pattern.',
+			type: 'string',
+			pattern: '\/?\g<searchExpression>((\/\g<replaceExpression>)?\/\g<modifierExpression>)?

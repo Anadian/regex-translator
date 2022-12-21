@@ -1,58 +1,17 @@
-#!/usr/local/bin/node
-'use strict';
-/**
-# [regex-translator.js](source/regex-translator.js)
-> Convert a Regular Expression from one flavour to another.
+#!/usr/bin/env node
 
-Internal module name: `RegexTranslator`
-
-Author: Anadian
-
-Code license: MIT
-```
-	Copyright 2020 Anadian
-	Permission is hereby granted, free of charge, to any person obtaining a copy of this 
-software and associated documentation files (the "Software"), to deal in the Software 
-without restriction, including without limitation the rights to use, copy, modify, 
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to 
-permit persons to whom the Software is furnished to do so, subject to the following 
-conditions:
-	The above copyright notice and this permission notice shall be included in all copies 
-or substantial portions of the Software.
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
-CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
-OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-```
-Documentation License: [![Creative Commons License](https://i.creativecommons.org/l/by-sa/4.0/88x31.png)](http://creativecommons.org/licenses/by-sa/4.0/)
-> The source-code comments and documentation are written in [GitHub Flavored Markdown](https://github.github.com/gfm/).
-
-> The type notation used in this documentation is based off of the [Google Closure type system](https://github.com/google/closure-compiler/wiki/Types-in-the-Closure-Type-System).
-
-> The status and feature lifecycle keywords used in this documentation are based off of my own standard [defined here](https://github.com/Anadian/FeatureLifeCycleStateStandard).
-*/
-
-//#Dependencies
-	//##Internal
-	//##Standard
-	const FileSystem = require('fs');
+//# Dependencies
+	//## Internal
+	//## Standard
+	
 	//const Utility = require('util');
-	//##External
+	//## External
 	const GetStream = require('get-stream');
 	const ClipBoardy = require('clipboardy');
 //#Constants
 const FILENAME = 'regex-translator.js';
 const MODULE_NAME = 'RegexTranslator';
-var PACKAGE_JSON = {};
-var PROCESS_NAME = '';
-/* istanbul ignore if */
-if(require.main === module){
-	PROCESS_NAME = 'regex-translator';
-} else{
-	PROCESS_NAME = process.argv0;
-}
+const PROCESS_NAME = 'regex-translator';
 //##Errors
 
 //#Global Variables
