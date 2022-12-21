@@ -5,4 +5,101 @@
 			'i',
 			'\\c'
 		]
+	},
+	{
+		id: 'OPT_CASE_SENSITIVE',
+		forms: [
+			'I'
+		]
+	},
+	{
+		id: 'OPT_GLOBAL',
+		forms: [
+			'g'
+		]
+	},
+	{
+		id: 'OPT_MULTILINE',
+		forms: [
+			'm'
+		]
+	},
+	{
+		id: 'OPT_SINGLELINE',
+		forms: [
+			's'
+		]
+	},
+	{
+		id: 'OPT_UNGREEDY',
+		forms: [
+			'U'
+		]
+	},
+	{
+		id: 'OPT_UNICODE',
+		forms: [
+			'u',
+			'U'
+		]
+	},
+	{
+		id: 'OPT_UNICODE_INSENSITIVE',
+		forms: [
+			'u'
+	},
+	{
+		id: 'OPT_SUPPRESS_ERRORS',
+		forms: [
+			'e'
+		]
+	},
+	{
+		id: 'OPT_EXTRA_ERRORS',
+		forms: [
+			'X'
+		]
+	},
+	{
+		id: 'OPT_IGNORE_WHITESPACE',
+		forms: [
+			'x'
+		]
+	},
+	{
+		id: 'OPT_IGNORE_ALL_WHITESPACE',
+		forms: [
+			'xx'
+		]
+	},
+	{
+		id: 'OPT_ANCHOR',
+		forms: [
+			'A'
+		]
+	},
+	{
+		id: 'OPT_DUPLICATE_GROUP_NAMES',
+		forms: [
+			'J'
+		]
+	},
+	{
+		id: 'OPT_STICKY',
+		forms: [
+			'y'
+		]
+	},
+	{
+		id: 'OPT_ASCII_ONLY',
+		forms: [
+			'a'
+		]
+	},
+	{
+		id: 'OPT_NO_CAPTURE_GROUPS',
+		forms: [
+			'n'
+		]
 	}
+]
