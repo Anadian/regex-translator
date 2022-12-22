@@ -1,0 +1,13 @@
+posix,basic,bre
+extended,gnu,ere
+pcre,perl,pcre2
+vim,vi,pattern
+ecma,javascript,web,regexp
+re2,golang,google
+python
+java,jre
+dotnet,csharp,microsoft,clr,cli
+abfn
+eggex,oil
+lua
+sh,glob
